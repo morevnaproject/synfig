@@ -33,6 +33,9 @@
 #include "workarea.h"
 #include "canvasview.h"
 #include "general.h"
+#ifdef OPENGL_RENDER
+	#include "glPlayfield.h"
+#endif
 
 #endif
 
@@ -103,7 +106,11 @@ Renderer_BBox::render_vfunc(
 //		w(get_w()),
 //		h(get_h());
 
+#ifdef OPENGL_RENDER
+	glPlayfield *playfield = get_work_area()->get_playfield();
+#else
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
+#endif
 
 	//const synfig::Vector grid_size(get_grid_size());
 
@@ -117,10 +124,16 @@ Renderer_BBox::render_vfunc(
 	const synfig::Point drag_point(get_bbox().get_max());
 	if(get_bbox().area()<10000000000000000.0)
 	{
+#ifdef OPENGL_RENDER
+		playfield->setFunctionGL(GL_INVERT);
+		playfield->setColorGL(1.0f, 1.0f, 1.0f);
+		playfield->setLineWidthGL(1);
+#else
 		gc->set_function(Gdk::INVERT);
 		gc->set_rgb_fg_color(Gdk::Color("#FFFFFF"));
 		//gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+#endif
 
 		Point tl(std::min(drag_point[0],curr_point[0]),std::min(drag_point[1],curr_point[1]));
 		Point br(std::max(drag_point[0],curr_point[0]),std::max(drag_point[1],curr_point[1]));
@@ -134,11 +147,15 @@ Renderer_BBox::render_vfunc(
 		if(tl[1]>br[1])
 			swap(tl[1],br[1]);
 
+#ifdef OPENGL_RENDER
+		playfield->drawRectangle(tl[0], tl[1], br[0], br[1]);
+#else
 		drawable->draw_rectangle(gc,false,
 			round_to_int(tl[0]),
 			round_to_int(tl[1]),
 			round_to_int(br[0]-tl[0]),
 			round_to_int(br[1]-tl[1])
 		);
+#endif
 	}
 }
