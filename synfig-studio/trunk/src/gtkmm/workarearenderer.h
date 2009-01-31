@@ -33,6 +33,9 @@
 #include <synfig/vector.h>
 #include <gdkmm/drawable.h>
 #include <gdkmm/rectangle.h>
+#ifdef OPENGL_RENDER
+	#include <GL/gl.h>
+#endif
 
 /* === M A C R O S ========================================================= */
 
