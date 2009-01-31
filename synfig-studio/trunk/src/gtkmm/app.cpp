@@ -65,6 +65,9 @@
 #include <synfig/savecanvas.h>
 
 #include "app.h"
+#ifdef OPENGL_RENDER
+	#include <gtkglmm.h>
+#endif
 #include "about.h"
 #include "splash.h"
 #include "instance.h"
@@ -1092,6 +1095,13 @@ App::App(int *argc, char ***argv):
 	Gtk::Main(argc,argv),
 	IconController(etl::dirname((*argv)[0]))
 {
+#ifdef OPENGL_RENDER
+	// Initialize OpenGL stuff
+	Gtk::GL::init(argc, argv);
+	int minor, major;
+	Gdk::GL::query_version(minor, major);
+	synfig::info("GLX / Windows version %d.%d", minor, major);
+#endif
 	app_base_path_=etl::dirname(etl::dirname((*argv)[0]));
 
 
