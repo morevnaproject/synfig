@@ -141,6 +141,12 @@ PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.61.09] [ETL >= 0.04.12] sigc++-2.0,,[
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)
 
+PKG_CHECK_MODULES(OPENGL, gtkglextmm-1.2 ftgl,,[
+	AC_MSG_ERROR([ ** Unable to set up OpenGL dependent libraries (GtkGlExtmm, FTGL])
+])
+AC_SUBST(OPENGL_CFLAGS)
+AC_SUBST(OPENGL_LIBS)
+
 windowsys="gtkmm"
 AC_DEFINE(STUDIO_WINSYS_H,"gtkmm/winsys.h",[blah])
 AM_CONDITIONAL(WINDOWSYS_GTKMM,true)
@@ -306,4 +312,6 @@ FMOD Enabled ---------------------> $with_libfmod
 "'$'"SYNFIG_LIBS -----------------------> '$SYNFIG_LIBS'
 "'$'"GTKMM_CFLAGS ---------------------> '$GTKMM_CFLAGS'
 "'$'"GTKMM_LIBS -----------------------> '$GTKMM_LIBS'
+"'$'"OPENGL_CFLAGS---------------------> '$OPENGL_CFLAGS'
+"'$'"OPENGL_LIBS -----------------------> '$OPENGL_LIBS'
 "

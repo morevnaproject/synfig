@@ -96,6 +96,9 @@ OTHER_CC = main.cpp \
 	instance.cpp ipc.cpp keymapsettings.cpp module.cpp onemoment.cpp preview.cpp renddesc.cpp render.cpp		\
 	splash.cpp statemanager.cpp toolbox.cpp valuelink.cpp workarea.cpp zoomdial.cpp
 
+GLPLAYFIELD_HH = glPlayfield.h
+GLPLAYFIELD_CC = glPlayfield.cpp
+
 INCLUDES = -I$(top_srcdir)/src
 
 bin_PROGRAMS = synfigstudio
@@ -104,8 +107,8 @@ synfigstudio_SOURCES = \
 	$(ACTION_MANAGERS_HH) $(ACTION_MANAGERS_CC) $(DOCK_HH) $(DOCK_CC) $(OTHER_HH) $(OTHER_CC) $(EVENTS_HH)		\
 	$(DUCKTRANSFORM_HH) $(DUCKTRANSFORM_CC) $(TREEVIEW_HH) $(TREEVIEW_CC) $(TREESTORE_HH) $(TREESTORE_CC)		\
 	$(STATE_CC) $(STATE_HH) $(WIDGET_CC) $(WIDGET_HH) $(CELLRENDERER_HH) $(CELLRENDERER_CC)				\
-	$(DIALOG_HH) $(DIALOG_CC)
+	$(DIALOG_HH) $(DIALOG_CC) $(GLPLAYFIELD_CC)
 
-synfigstudio_LDADD = ../synfigapp/libsynfigapp.la @SYNFIG_LIBS@ @GTKMM_LIBS@ @FMOD_LIBS@
+synfigstudio_LDADD = ../synfigapp/libsynfigapp.la @SYNFIG_LIBS@ @GTKMM_LIBS@ @FMOD_LIBS@ @OPENGL_LIBS@
 synfigstudio_LDFLAGS = -dlopen self
-synfigstudio_CXXFLAGS = @SYNFIG_CFLAGS@ @GTKMM_CFLAGS@ -DIMAGE_DIR=\"$(imagedir)\" -DIMAGE_EXT=\"$(imageext)\" "-DLOCALEDIR=\"$(localedir)\""
+synfigstudio_CXXFLAGS = @SYNFIG_CFLAGS@ @GTKMM_CFLAGS@ @OPENGL_CFLAGS@ -DRENDER_OPENGL -DIMAGE_DIR=\"$(imagedir)\" -DIMAGE_EXT=\"$(imageext)\" "-DLOCALEDIR=\"$(localedir)\""
