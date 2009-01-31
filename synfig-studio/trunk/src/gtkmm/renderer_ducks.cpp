@@ -39,6 +39,9 @@
 #include "widget_color.h"
 #include <synfig/distance.h>
 #include "app.h"
+#ifdef OPENGL_RENDER
+	#include "glPlayfield.h"
+#endif
 
 #include "general.h"
 
@@ -113,11 +116,23 @@ Renderer_Ducks::render_vfunc(
 
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
+#ifdef OPENGL_RENDER
+#define ADD_POINT(point) points.push_back(point[0]); points.push_back(point[1]); points.push_back(0);
+#define GDK2GL(color) (GLubyte)color.get_red(), color.get_green(), color.get_blue()
+	glPlayfield *playfield = get_work_area()->get_playfield();
+	playfield->setLineWidthGL(1);
+	playfield->setFunctionGL(GL_COPY);
+#endif
+
 	// Render the strokes
 	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
 		Point window_start(window_startx,window_starty);
+#ifdef OPENGL_RENDER
+		vector<GLfloat> points;
+#else
 		vector<Gdk::Point> points;
+#endif
 		std::list<synfig::Point>::iterator iter2;
 		Point holder;
 
@@ -125,15 +140,29 @@ Renderer_Ducks::render_vfunc(
 		{
 			holder=*iter2-window_start;
 			holder[0]/=pw;holder[1]/=ph;
+#ifdef OPENGL_RENDER
+			ADD_POINT(holder);
+#else
 			points.push_back(Gdk::Point(round_to_int(holder[0]),round_to_int(holder[1])));
+#endif
 		}
 
+#ifdef OPENGL_RENDER
+		synfig::Color &c = (*iter)->color;
+		// FIXME: Colors are not the same as shown
+		//playfield->setColorGL(GDK2GL(colorconv_synfig2gdk((*iter)->color)));
+		playfield->setColorGL(c.get_r(), c.get_g(), c.get_b());
+		//playfield->setLineWidthGL(1);
+		//playfield->setFunctionGL(GL_COPY);
+		playfield->drawLines(points);
+#else
 		gc->set_rgb_fg_color(colorconv_synfig2gdk((*iter)->color));
 		gc->set_function(Gdk::COPY);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 
 		// Draw the stroke
   		drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+#endif
 	}
 
 
@@ -141,6 +170,8 @@ Renderer_Ducks::render_vfunc(
 	// Render the beziers
 	for(std::list<handle<Duckmatic::Bezier> >::const_iterator iter=bezier_list.begin();iter!=bezier_list.end();++iter)
 	{
+		const int NSTEPS = 17;
+
 		Point window_start(window_startx,window_starty);
 		Point p1((*iter)->p1->get_trans_point()-window_start);
 		Point p2((*iter)->p2->get_trans_point()-window_start);
@@ -150,12 +181,26 @@ Renderer_Ducks::render_vfunc(
 		p2[0]/=pw;p2[1]/=ph;
 		c1[0]/=pw;c1[1]/=ph;
 		c2[0]/=pw;c2[1]/=ph;
+#ifdef OPENGL_RENDER
+		vector<GLfloat> points;
+		ADD_POINT(p1);
+		ADD_POINT(c1);
+		ADD_POINT(c2);
+		ADD_POINT(p2);
+
+		playfield->prepareBezier(points, NSTEPS);
+		playfield->setColorGL(GDK2GL(DUCK_COLOR_BEZIER_1));
+		//playfield->setFunctionGL(GL_COPY);
+		playfield->drawBezier();
+		playfield->setColorGL(GDK2GL(DUCK_COLOR_BEZIER_2));
+		playfield->drawBezier(GL_LINES);
+#else
 		bezier<Point> curve(p1,c1,c2,p2);
 		vector<Gdk::Point> points;
 
 		float f;
 		Point pt;
-		for(f=0;f<1.0;f+=1.0/17.0)
+		for(f=0;f<1.0;f+=1.0/NSTEPS)
 		{
 			pt=curve(f);
 			points.push_back(Gdk::Point(round_to_int(pt[0]),round_to_int(pt[1])));
@@ -189,8 +234,8 @@ Renderer_Ducks::render_vfunc(
 			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
 
 		}
+#endif
 	}
-
 
 	const DuckList duck_list(get_work_area()->get_duck_list());
 	//Gtk::StateType state = Gtk::STATE_ACTIVE;
@@ -254,6 +299,12 @@ Renderer_Ducks::render_vfunc(
 				((value_desc.is_value_node()		&& get_work_area()->get_selected_value_node() == value_desc.get_value_node()) ||
 				 (value_desc.parent_is_value_node()	&& get_work_area()->get_selected_value_node() == value_desc.get_parent_value_node())))
 			{
+#ifdef OPENGL_RENDER
+				playfield->setColorGL(GDK2GL(DUCK_COLOR_SELECTED));
+				playfield->setFunctionGL(GL_COPY);
+				playfield->setLineWidthGL(2);
+				playfield->drawRectangle(point[0] - 5, point[1] - 5, point[0] + 5, point[1] + 5);
+#else
 				gc->set_function(Gdk::COPY);
 				gc->set_rgb_fg_color(DUCK_COLOR_SELECTED);
 				//gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
@@ -265,6 +316,7 @@ Renderer_Ducks::render_vfunc(
 					10,
 					10
 				);
+#endif
 			}
 
 		}
@@ -276,6 +328,8 @@ Renderer_Ducks::render_vfunc(
 			boxpoint[1]=(boxpoint[1]-window_starty)/ph;
 			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
 
+#ifdef OPENGL_RENDER
+#else
 			gc->set_function(Gdk::COPY);
 			gc->set_rgb_fg_color(DUCK_COLOR_BOX_1);
 			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
@@ -294,6 +348,7 @@ Renderer_Ducks::render_vfunc(
 				round_to_int(abs(boxpoint[0]-point[0])),
 				round_to_int(abs(boxpoint[1]-point[1]))
 			);
+#endif
 		}
 
 		ScreenDuck screen_duck;
@@ -322,6 +377,15 @@ Renderer_Ducks::render_vfunc(
 		{
 			if(solid_lines)
 			{
+#ifdef OPENGL_RENDER
+				playfield->setColorGL(GDK2GL(DUCK_COLOR_CONNECT_OUTSIDE));
+				playfield->setLineWidthGL(3);
+				playfield->setFunctionGL(GL_COPY);
+				playfield->drawLine(origin[0], origin[1], point[0], point[1]);
+				playfield->setColorGL(GDK2GL(DUCK_COLOR_CONNECT_INSIDE));
+				playfield->setLineWidthGL(1);
+				playfield->drawLine(origin[0], origin[1], point[0], point[1]);
+#else
 				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
 				gc->set_function(Gdk::COPY);
@@ -329,9 +393,12 @@ Renderer_Ducks::render_vfunc(
 				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
 				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
+#endif
 			}
 			else
 			{
+#ifdef OPENGL_RENDER
+#else
 //				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
 //				gc->set_function(Gdk::INVERT);
 //				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
@@ -342,12 +409,30 @@ Renderer_Ducks::render_vfunc(
 				gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
 				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
+#endif
 			}
 		}
 
 		if((*iter)->is_radius())
 		{
 			const Real mag((point-origin).mag());
+#ifdef OPENGL_RENDER
+			if(solid_lines)
+			{
+				playfield->setColorGL(0.0f, 0.0f, 0.0f);
+				playfield->setLineWidthGL(3);
+				playfield->setFunctionGL(GL_COPY);
+				playfield->drawCircle(origin[0], origin[1], mag);
+				playfield->setColorGL((GLubyte)0xAF, 0xAF, 0xAF);
+			}
+			else
+			{
+				playfield->setColorGL(1.0f, 1.0f, 1.0f);
+				playfield->setFunctionGL(GL_INVERT);
+			}
+			playfield->setLineWidthGL(1);
+			playfield->drawCircle(origin[0], origin[1], mag);
+#else
 			const int d(round_to_int(mag*2));
 			const int x(round_to_int(origin[0]-mag));
 			const int y(round_to_int(origin[1]-mag));
@@ -386,6 +471,7 @@ Renderer_Ducks::render_vfunc(
 				0,
 				360*64
 			);
+#endif
 
 			if(hover)
 			{
@@ -410,6 +496,12 @@ Renderer_Ducks::render_vfunc(
 
 				Distance real_mag(mag, Distance::SYSTEM_UNITS);
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
+#ifdef OPENGL_RENDER
+				playfield->setColorGL(GDK2GL(DUCK_COLOR_WIDTH_TEXT_1));
+				playfield->drawText(real_mag.get_string().c_str(), point[0]+1+6, point[1]+1+8);
+				playfield->setColorGL(GDK2GL(DUCK_COLOR_WIDTH_TEXT_2));
+				playfield->drawText(real_mag.get_string().c_str(), point[0]+6, point[1]+8);
+#else
 				layout->set_text(real_mag.get_string());
 
 				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_1);
@@ -426,6 +518,7 @@ Renderer_Ducks::render_vfunc(
 					round_to_int(point[1])-8,
 					layout
 				);
+#endif
 			}
 
 		}
@@ -458,6 +551,15 @@ Renderer_Ducks::render_vfunc(
 			outline++;
 		}
 
+#ifdef OPENGL_RENDER
+		playfield->setFunctionGL(GL_COPY);
+		playfield->setColorGL(GDK2GL(DUCK_COLOR_OUTLINE));
+		playfield->setPointSizeGL(radius*2);
+		playfield->drawPoint(screen_duck_list.front().pos[0], screen_duck_list.front().pos[1]);
+		playfield->setColorGL(GDK2GL(color));
+		playfield->setPointSizeGL((radius-outline)*2);
+		playfield->drawPoint(screen_duck_list.front().pos[0], screen_duck_list.front().pos[1]);
+#else
 		gc->set_function(Gdk::COPY);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		gc->set_rgb_fg_color(DUCK_COLOR_OUTLINE);
@@ -485,5 +587,6 @@ Renderer_Ducks::render_vfunc(
 			0,
 			360*64
 		);
+#endif
 	}
 }
