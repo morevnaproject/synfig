@@ -36,6 +36,10 @@
 #include "workarea.h"
 #include "canvasview.h"
 #include "app.h"
+#ifdef OPENGL_RENDER
+	#include <gtkglmm.h>
+	#include "glPlayfield.h"
+#endif
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/drawingarea.h>
@@ -643,6 +647,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	Gtk::Table(4+RULER_FIX, 3, false),
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
+#ifdef OPENGL_RENDER
+	playfield(NULL),
+#endif
 	scrollx_adjustment(0,-4,4,0.01,0.1),
 	scrolly_adjustment(0,-4,4,0.01,0.1),
 	w(TILE_SIZE),
@@ -776,7 +783,40 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
 
+#ifdef OPENGL_RENDER
+	//
+	// Configure OpenGL-capable visual.
+	//
 
+	Glib::RefPtr<Gdk::GL::Config> glconfig;
+
+	// Try double-buffered visual
+	glconfig = Gdk::GL::Config::create(Gdk::GL::MODE_RGB    |
+			Gdk::GL::MODE_DEPTH  |
+			Gdk::GL::MODE_DOUBLE);
+	if (!glconfig)
+	{
+		synfig::error(_("*** Cannot find the double-buffered visual.\n*** Trying single-buffered visual."));
+
+		// Try single-buffered visual
+		glconfig = Gdk::GL::Config::create(Gdk::GL::MODE_RGB   |
+				Gdk::GL::MODE_DEPTH);
+		if (!glconfig)
+		{
+			synfig::error(_("*** Cannot find any OpenGL-capable visual."));
+			//std::exit(1);
+			throw;
+		}
+	}
+
+	gl_drawing_area = &(static_cast<Gtk::Widget&>(*drawing_area));
+	Gtk::GL::widget_set_gl_capability(*gl_drawing_area, glconfig, true);
+	if (!Gtk::GL::widget_is_gl_capable(*gl_drawing_area)) {
+		synfig::error(_("Cannot set drawing OpenGL area"));
+		throw;
+	}
+	drawing_area->signal_realize().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_realize));
+#endif
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info));
 	// When either of the scrolling adjustments change, then redraw.
@@ -826,6 +866,9 @@ WorkArea::~WorkArea()
 	// that causes crashes
 	if(render_idle_func_id)
 		render_idle_func_id=0;
+#ifdef OPENGL_RENDER
+	delete playfield;
+#endif
 }
 
 #ifdef SINGLE_THREADED
@@ -1191,6 +1234,25 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 
 	return true;
 }
+
+#ifdef OPENGL_RENDER
+void
+WorkArea::on_drawing_area_realize()
+{
+	Glib::RefPtr<Gdk::GL::Window> glwindow = Gtk::GL::widget_get_gl_window(*gl_drawing_area);
+
+	// *** OpenGL BEGIN ***
+	if (!glwindow->gl_begin(Gtk::GL::widget_get_gl_context(*gl_drawing_area)))
+		return;
+
+	playfield = new glPlayfield();
+	playfield->initializeGL();
+	synfig::info("OpenGL version: %s", glGetString(GL_VERSION));
+
+	glwindow->gl_end();
+	// *** OpenGL END ***
+}
+#endif
 
 bool
 WorkArea::on_drawing_area_event(GdkEvent *event)
@@ -1961,6 +2023,21 @@ WorkArea::refresh_dimension_info()
 	vruler->property_lower()=Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
 	vruler->property_upper()=Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
 
+#ifdef OPENGL_RENDER
+	if (playfield) {
+		Glib::RefPtr<Gdk::GL::Window> glwindow = Gtk::GL::widget_get_gl_window(*gl_drawing_area);
+
+		// *** OpenGL BEGIN ***
+		if (!glwindow->gl_begin(Gtk::GL::widget_get_gl_context(*gl_drawing_area)))
+			return;
+
+		playfield->resizeGL(drawing_area->get_width(), drawing_area->get_height());
+
+		glwindow->gl_end();
+		// *** OpenGL END ***
+	}
+#endif
+
 	view_window_changed();
 }
 
@@ -2076,7 +2153,19 @@ WorkArea::refresh(GdkEventExpose*event)
 {
 	assert(get_canvas());
 
+#ifdef OPENGL_RENDER
+	//if (playfield) {
+		Glib::RefPtr<Gdk::GL::Window> glwindow = Gtk::GL::widget_get_gl_window(*gl_drawing_area);
+
+		// *** OpenGL BEGIN ***
+		if (!glwindow->gl_begin(Gtk::GL::widget_get_gl_context(*gl_drawing_area)))
+			return false;
+
+		playfield->clearGL();
+	//}
+#else
 	drawing_area->get_window()->clear();
+#endif
 
 	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
@@ -2109,6 +2198,14 @@ WorkArea::refresh(GdkEventExpose*event)
 	//const synfig::Vector::value_type window_starty(window_tl[1]);
 	//const synfig::Vector::value_type window_endy(window_br[1]);
 
+#ifdef OPENGL_RENDER
+	// If we are in animate mode, draw a red border around the screen
+	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
+	{
+		playfield->setColorGL(1.0f, 0.0f, 0.0f);
+		playfield->drawAnimateBorder();
+	}
+#else
 	Glib::RefPtr<Gdk::GC> gc=Gdk::GC::create(drawing_area->get_window());
 
 	// If we are in animate mode, draw a red border around the screen
@@ -2136,7 +2233,18 @@ WorkArea::refresh(GdkEventExpose*event)
 	else
 		drawing_frame->unset_bg(Gtk::STATE_NORMAL);
 #endif
+#endif	// OPENGL_RENDER
 
+#ifdef OPENGL_RENDER
+	// Swap buffers.
+	if (glwindow->is_double_buffered())
+		glwindow->swap_buffers();
+	else
+		glFlush();
+
+	glwindow->gl_end();
+	// *** OpenGL END ***
+#endif
 	return true;
 }
 
@@ -2525,6 +2633,10 @@ WorkArea::queue_scroll()
 	const int
 		dx(round_to_int(old_x)-round_to_int(new_x)),
 		dy(round_to_int(old_y)-round_to_int(new_y));
+
+#ifdef OPENGL_RENDER
+	playfield->scroll(-dx, -dy);
+#endif
 
 	drawing_area->get_window()->scroll(-dx,-dy);
 

@@ -80,6 +80,10 @@ namespace synfigapp { class CanvasInterface; };
 namespace synfig { class Layer; };
 namespace Gtk { class Frame; };
 
+#ifdef OPENGL_RENDER
+	class glPlayfield;
+#endif
+
 namespace studio
 {
 class WorkAreaTarget;
@@ -146,6 +150,10 @@ private:
 
 	// Widgets
 	Gtk::DrawingArea *drawing_area;
+#ifdef OPENGL_RENDER
+	Gtk::Widget *gl_drawing_area;
+	glPlayfield *playfield;
+#endif
 	Gtk::Adjustment scrollx_adjustment;
 	Gtk::Adjustment scrolly_adjustment;
 	Gtk::VRuler *vruler;
@@ -255,6 +263,9 @@ public:
 	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book(){ return tile_book; }
+#ifdef OPENGL_RENDER
+	glPlayfield *get_playfield() { return playfield; }
+#endif
 	int get_refreshes()const { return refreshes; }
 	bool get_canceled()const { return canceled_; }
 	bool get_queued()const { return queued; }
@@ -485,6 +496,9 @@ public:
 
 private:
 	bool on_key_press_event(GdkEventKey* event);
+#ifdef OPENGL_RENDER
+	void on_drawing_area_realize();
+#endif
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
