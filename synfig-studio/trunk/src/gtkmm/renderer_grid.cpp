@@ -32,6 +32,9 @@
 #include "renderer_grid.h"
 #include "workarea.h"
 #include <ETL/misc>
+#ifdef OPENGL_RENDER
+	#include "glPlayfield.h"
+#endif
 
 #include "general.h"
 
@@ -106,7 +109,11 @@ Renderer_Grid::render_vfunc(
 //		w(get_w()),
 //		h(get_h());
 
+#ifdef OPENGL_RENDER
+	glPlayfield *playfield = get_work_area()->get_playfield();
+#else
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
+#endif
 
 	const synfig::Vector grid_size(get_grid_size());
 
@@ -124,50 +131,73 @@ Renderer_Grid::render_vfunc(
 		x=floor(window_startx/grid_size[0])*grid_size[0];
 		y=floor(window_starty/grid_size[1])*grid_size[1];
 
+#ifdef OPENGL_RENDER
+		playfield->setFunctionGL(GL_COPY);
+		playfield->setColorGL((GLubyte)0x9F, 0x9F, 0x9F);
+		playfield->setLineWidthGL(1);
+#else
 		gc->set_function(Gdk::COPY);
 		gc->set_rgb_fg_color(Gdk::Color("#9f9f9f"));
 		gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+#endif
 
 		if(x<window_endx)
 			for(;x<window_endx;x+=grid_size[0])
 			{
+#ifdef OPENGL_RENDER
+				playfield->drawLine((x-window_startx)/pw, 0, (x-window_startx)/pw, drawable_h);
+#else
 				drawable->draw_line(gc,
 					round_to_int((x-window_startx)/pw),
 					0,
 					round_to_int((x-window_startx)/pw),
 					drawable_h
 				);
+#endif
 			}
 		else
 			for(;x>window_endx;x-=grid_size[0])
 			{
+#ifdef OPENGL_RENDER
+				playfield->drawLine((x-window_startx)/pw, 0, (x-window_startx)/pw, drawable_h);
+#else
 				drawable->draw_line(gc,
 					round_to_int((x-window_startx)/pw),
 					0,
 					round_to_int((x-window_startx)/pw),
 					drawable_h
 				);
+#endif
 			}
 
 		if(y<window_endy)
 			for(;y<window_endy;y+=grid_size[1])
 			{
+#ifdef OPENGL_RENDER
+				playfield->drawLine(0, (y-window_starty)/ph, drawable_w, (y-window_starty)/ph);
+#else
 				drawable->draw_line(gc,
 					0,
 					round_to_int((y-window_starty)/ph),
 					drawable_w,
 					round_to_int((y-window_starty)/ph)
 				);
+#endif
 			}
 		else
 			for(;y>window_endy;y-=grid_size[1])
 			{
+#ifdef OPENGL_RENDER
+				playfield->drawLine(0, (y-window_starty)/ph, drawable_w, (y-window_starty)/ph);
+#else
 				drawable->draw_line(gc,
 					0,
 					round_to_int((y-window_starty)/ph),
 					drawable_w,
 					round_to_int((y-window_starty)/ph)
 				);
+#endif
 			}
+
 	}
 }
