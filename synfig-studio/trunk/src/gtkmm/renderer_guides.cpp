@@ -32,6 +32,9 @@
 #include "renderer_guides.h"
 #include "workarea.h"
 #include <ETL/misc>
+#ifdef OPENGL_RENDER
+	#include "glPlayfield.h"
+#endif
 
 #include "general.h"
 
@@ -228,7 +231,11 @@ Renderer_Guides::render_vfunc(
 	// 	w(get_w()),
 	// 	h(get_h());
 
+#ifdef OPENGL_RENDER
+	glPlayfield *playfield = get_work_area()->get_playfield();
+#else
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
+#endif
 
 	//const synfig::Vector grid_size(get_grid_size());
 
@@ -240,9 +247,15 @@ Renderer_Guides::render_vfunc(
 
 	// Draw out the guides
 	{
+#ifdef OPENGL_RENDER
+		playfield->setFunctionGL(GL_COPY);
+		playfield->setColorGL((GLubyte)0x9F, 0x9F, 0xFF);
+		playfield->setLineWidthGL(1);
+#else
 		gc->set_function(Gdk::COPY);
 		gc->set_rgb_fg_color(Gdk::Color("#9f9fff"));
 		gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+#endif
 
 		Duckmatic::GuideList::const_iterator iter;
 
@@ -251,6 +264,14 @@ Renderer_Guides::render_vfunc(
 		{
 			const float x((*iter-window_startx)/pw);
 
+#ifdef OPENGL_RENDER
+			if(iter==get_work_area()->curr_guide)
+				playfield->setColorGL((GLubyte)0xFF, 0x6F, 0x6F);
+			else
+				playfield->setColorGL((GLubyte)0x6F, 0x6F, 0x6F);
+
+			playfield->drawLine(x, 0, x, drawable_h);
+#else
 			if(iter==get_work_area()->curr_guide)
 				gc->set_rgb_fg_color(Gdk::Color("#ff6f6f"));
 			else
@@ -262,12 +283,21 @@ Renderer_Guides::render_vfunc(
 				round_to_int(x),
 				drawable_h
 			);
+#endif
 		}
 		// horizontal
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
 		{
 			const float y((*iter-window_starty)/ph);
 
+#ifdef OPENGL_RENDER
+			if(iter==get_work_area()->curr_guide)
+				playfield->setColorGL((GLubyte)0xFF, 0x6F, 0x6F);
+			else
+				playfield->setColorGL((GLubyte)0x6F, 0x6F, 0x6F);
+
+			playfield->drawLine(0, y, drawable_w, y);
+#else
 			if(iter==get_work_area()->curr_guide)
 				gc->set_rgb_fg_color(Gdk::Color("#ff6f6f"));
 			else
@@ -279,6 +309,7 @@ Renderer_Guides::render_vfunc(
 				drawable_w,
 				round_to_int(y)
 			);
+#endif
 		}
 	}
 }
