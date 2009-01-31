@@ -33,6 +33,9 @@
 #include "renderer_canvas.h"
 #include "workarea.h"
 #include <ETL/misc>
+#ifdef OPENGL_RENDER
+	#include "glPlayfield.h"
+#endif
 
 #include "general.h"
 
@@ -129,7 +132,11 @@ Renderer_Canvas::render_vfunc(
 		w(get_w()),
 		h(get_h());
 
+#ifdef OPENGL_RENDER
+	glPlayfield *playfield = get_work_area()->get_playfield();
+#else
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
+#endif
 
 	if(!tile_book.empty())
 	{
@@ -137,6 +144,8 @@ Renderer_Canvas::render_vfunc(
 		{
 			if(tile_book[0].first)
 			{
+#ifdef OPENGL_RENDER
+#else
 				drawable->draw_pixbuf(
 					gc, //GC
 					tile_book[0].first, //pixbuf
@@ -146,6 +155,7 @@ Renderer_Canvas::render_vfunc(
 					Gdk::RGB_DITHER_MAX,		// RgbDither
 					2, 2 // Dither offset X and Y
 					);
+#endif
 			}
 			if(tile_book[0].second!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
 				get_work_area()->async_update_preview();
@@ -180,6 +190,8 @@ Renderer_Canvas::render_vfunc(
 						tx=u*tile_w;
 						ty=v*tile_w;
 
+#ifdef OPENGL_RENDER
+#else
 						drawable->draw_pixbuf(
 							gc, //GC
 							tile_book[index].first, //pixbuf
@@ -189,6 +201,7 @@ Renderer_Canvas::render_vfunc(
 							Gdk::RGB_DITHER_MAX,		// RgbDither
 							2, 2 // Dither offset X and Y
 							);
+#endif
 					}
 					if(tile_book[index].second!=get_refreshes())
 						needs_refresh=true;
@@ -207,6 +220,12 @@ Renderer_Canvas::render_vfunc(
 
 	// Draw the border around the rendered region
 	{
+#ifdef OPENGL_RENDER
+		playfield->setColorGL(0.0f, 0.0f, 0.0f);
+		playfield->setFunctionGL(GL_COPY);
+		playfield->setLineWidthGL(1);
+		playfield->drawRectangle(x, y, x + w, y + h);
+#else
 		gc->set_rgb_fg_color(Gdk::Color("#000000"));
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		drawable->draw_rectangle(
@@ -215,5 +234,6 @@ Renderer_Canvas::render_vfunc(
 			round_to_int(x),round_to_int(y),	// x,y
 			w,h	//w,h
 		);
+#endif
 	}
 }
