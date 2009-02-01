@@ -25,13 +25,17 @@ class glPlayfield
 		void resizeGL(int width, int height);
 		void clearGL();
 		inline void setColorGL(const GLfloat r, const GLfloat g, const GLfloat b) { glColor3f(r, g, b); }
+		inline void setColorGL(const GLdouble r, const GLdouble g, const GLdouble b) { glColor3d(r, g, b); }
 		inline void setColorGL(const GLubyte r, const GLubyte g, const GLubyte b) { glColor3ub(r, g, b); }
+		inline void setColorGL(const GLushort r, const GLushort g, const GLushort b) { glColor3us(r, g, b); }
 		inline void setColorGL(const GLuint rgb) { glColor3ub((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF); }
 		inline void setFunctionGL(const unsigned int op) { if (op == GL_COPY) glDisable(GL_COLOR_LOGIC_OP); else { glEnable(GL_COLOR_LOGIC_OP); glLogicOp(op); } }
 		inline void setLineWidthGL(const GLfloat width) { glLineWidth(width); }
 		inline void setPointSizeGL(const GLfloat size) { glPointSize(size); }
 		inline void setFontSize(const unsigned int size) { _font.FaceSize(size); }
 
+		inline void enableStippling(int size = 1) { glEnable(GL_LINE_STIPPLE); glLineStipple(size, 0x0F0F); }
+		inline void disableStippling() { glDisable(GL_LINE_STIPPLE); }
 		void drawAnimateBorder();
 		inline void drawPoint(const GLfloat x, const GLfloat y) { glBegin(GL_POINTS); glVertex2f(x, y); glEnd(); }
 		void drawLine(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2, int precision = 1);

@@ -118,7 +118,7 @@ Renderer_Ducks::render_vfunc(
 
 #ifdef OPENGL_RENDER
 #define ADD_POINT(point) points.push_back(point[0]); points.push_back(point[1]); points.push_back(0);
-#define GDK2GL(color) (GLubyte)color.get_red(), color.get_green(), color.get_blue()
+#define GDK2GL(color) (GLushort)color.get_red(), color.get_green(), color.get_blue()
 	glPlayfield *playfield = get_work_area()->get_playfield();
 	playfield->setLineWidthGL(1);
 	playfield->setFunctionGL(GL_COPY);
