@@ -111,4 +111,4 @@ synfigstudio_SOURCES = \
 
 synfigstudio_LDADD = ../synfigapp/libsynfigapp.la @SYNFIG_LIBS@ @GTKMM_LIBS@ @FMOD_LIBS@ @OPENGL_LIBS@
 synfigstudio_LDFLAGS = -dlopen self
-synfigstudio_CXXFLAGS = @SYNFIG_CFLAGS@ @GTKMM_CFLAGS@ @OPENGL_CFLAGS@ -DRENDER_OPENGL -DIMAGE_DIR=\"$(imagedir)\" -DIMAGE_EXT=\"$(imageext)\" "-DLOCALEDIR=\"$(localedir)\""
+synfigstudio_CXXFLAGS = @SYNFIG_CFLAGS@ @GTKMM_CFLAGS@ @OPENGL_CFLAGS@ -DOPENGL_RENDER -DIMAGE_DIR=\"$(imagedir)\" -DIMAGE_EXT=\"$(imageext)\" "-DLOCALEDIR=\"$(localedir)\""
