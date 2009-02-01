@@ -193,7 +193,9 @@ Renderer_Ducks::render_vfunc(
 		//playfield->setFunctionGL(GL_COPY);
 		playfield->drawBezier();
 		playfield->setColorGL(GDK2GL(DUCK_COLOR_BEZIER_2));
-		playfield->drawBezier(GL_LINES);
+		playfield->enableStippling();
+		playfield->drawBezier();
+		playfield->disableStippling();
 #else
 		bezier<Point> curve(p1,c1,c2,p2);
 		vector<Gdk::Point> points;
@@ -329,6 +331,14 @@ Renderer_Ducks::render_vfunc(
 			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
 
 #ifdef OPENGL_RENDER
+			playfield->setFunctionGL(GL_COPY);
+			playfield->setColorGL(GDK2GL(DUCK_COLOR_BOX_1));
+			playfield->setLineWidthGL(1);
+			playfield->drawRectangle(tl[0], tl[1], tl[0]+abs(boxpoint[0]-point[0]), tl[1]+abs(boxpoint[1]-point[1]));
+			playfield->setColorGL(GDK2GL(DUCK_COLOR_BOX_2));
+			playfield->enableStippling();
+			playfield->drawRectangle(tl[0], tl[1], tl[0]+abs(boxpoint[0]-point[0]), tl[1]+abs(boxpoint[1]-point[1]));
+			playfield->disableStippling();
 #else
 			gc->set_function(Gdk::COPY);
 			gc->set_rgb_fg_color(DUCK_COLOR_BOX_1);
@@ -398,6 +408,13 @@ Renderer_Ducks::render_vfunc(
 			else
 			{
 #ifdef OPENGL_RENDER
+				playfield->setLineWidthGL(1);
+				playfield->setColorGL(GDK2GL(DUCK_COLOR_CONNECT_OUTSIDE));
+				playfield->setFunctionGL(GL_COPY);
+				playfield->drawLine(origin[0], origin[1], point[0], point[1]);
+				playfield->enableStippling();
+				playfield->drawLine(origin[0], origin[1], point[0], point[1]);
+				playfield->disableStippling();
 #else
 //				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
 //				gc->set_function(Gdk::INVERT);
