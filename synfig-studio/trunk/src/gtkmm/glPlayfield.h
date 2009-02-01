@@ -36,7 +36,12 @@ class glPlayfield
 
 		inline void enableStippling(int size = 1) { glEnable(GL_LINE_STIPPLE); glLineStipple(size, 0x0F0F); }
 		inline void disableStippling() { glDisable(GL_LINE_STIPPLE); }
+		inline void startPrimitive(const int mode) { glBegin(mode); }
+		inline void endPrimitive() { glEnd(); }	
+
 		void drawAnimateBorder();
+		void drawPoints(std::vector<GLfloat> points);
+		inline void addPoint(const GLfloat x, const GLfloat y) { glVertex2f(x, y); }
 		inline void drawPoint(const GLfloat x, const GLfloat y) { glBegin(GL_POINTS); glVertex2f(x, y); glEnd(); }
 		void drawLine(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2, int precision = 1);
 		void drawLines(std::vector<GLfloat> points, const unsigned int mode = GL_LINE_STRIP);

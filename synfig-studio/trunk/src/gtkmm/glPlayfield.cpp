@@ -25,6 +25,8 @@ void glPlayfield::initializeGL() {
 	//glShadeModel(GL_SMOOTH);
 	//glEnable(GL_DEPTH_TEST);
 	glDisable(GL_DEPTH_TEST);
+	// Dithering off by default
+	glDisable(GL_DITHER);
 
 	glClearColor(0.5, 0.5, 0.5, 1);
 
@@ -86,6 +88,14 @@ void glPlayfield::drawAnimateBorder() {
 	glVertex2f(w2 - 1 - _scrollX, h2 - 1 - _scrollY);
 	glVertex2f(-w2 - _scrollX, h2 - 1 - _scrollY);
 	glEnd();
+}
+
+void glPlayfield::drawPoints(std::vector<GLfloat> points) {
+	glEnableClientState(GL_VERTEX_ARRAY);
+	// Yes, vector elements are ALWAYS contiguous
+	glVertexPointer(2, GL_FLOAT, 0, &points[0]);
+	glDrawArrays(GL_POINTS, 0, points.size() / 2);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void glPlayfield::drawLine(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2, int precision) {
