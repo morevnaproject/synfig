@@ -135,6 +135,7 @@ Renderer_Grid::render_vfunc(
 		playfield->setFunctionGL(GL_COPY);
 		playfield->setColorGL((GLubyte)0x9F, 0x9F, 0x9F);
 		playfield->setLineWidthGL(1);
+		playfield->enableStippling();
 #else
 		gc->set_function(Gdk::COPY);
 		gc->set_rgb_fg_color(Gdk::Color("#9f9f9f"));
@@ -198,6 +199,9 @@ Renderer_Grid::render_vfunc(
 				);
 #endif
 			}
+#ifdef OPENGL_RENDER
+		playfield->disableStippling();
+#endif
 
 	}
 }
