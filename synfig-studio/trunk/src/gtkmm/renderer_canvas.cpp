@@ -221,8 +221,9 @@ Renderer_Canvas::render_vfunc(
 	// Draw the border around the rendered region
 	{
 #ifdef OPENGL_RENDER
-		playfield->setColorGL(0.0f, 0.0f, 0.0f);
 		playfield->setFunctionGL(GL_COPY);
+		playfield->drawPlayfield(x, y, x + w, y + h);
+		playfield->setColorGL(0.0f, 0.0f, 0.0f);
 		playfield->setLineWidthGL(1);
 		playfield->drawRectangle(x, y, x + w, y + h);
 #else

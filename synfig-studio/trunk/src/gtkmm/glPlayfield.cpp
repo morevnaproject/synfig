@@ -82,6 +82,20 @@ void glPlayfield::clearGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void glPlayfield::drawPlayfield(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2) {
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(0, 0, -(FAR - 1));
+	glColor3f(1.0, 1.0, 1.0);
+	glBegin(GL_QUADS);
+	glVertex2f(x1, y1);
+	glVertex2f(x2, y1);
+	glVertex2f(x2, y2);
+	glVertex2f(x1, y2);
+	glEnd();
+	glPopMatrix();
+}
+
 void glPlayfield::drawAnimateBorder() {
 	// FIXME: Rectangle sometimes doesn't have the right size
 	const float w2 = _width / 2.0f, h2 = _height / 2.0f;

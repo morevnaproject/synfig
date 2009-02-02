@@ -39,6 +39,8 @@ class glPlayfield
 		inline void startPrimitive(const int mode) { glBegin(mode); }
 		inline void endPrimitive() { glEnd(); }	
 
+		void drawPlayfield(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2);
+
 		void drawAnimateBorder();
 		void drawPoints(std::vector<GLfloat> points);
 		inline void addPoint(const GLfloat x, const GLfloat y) { glVertex2f(x, y); }
