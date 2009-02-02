@@ -70,6 +70,12 @@ class RendDesc;
 class Canvas;
 class ProgressCallback;
 
+//! Available rendering methods
+enum RenderMethod {
+	SOFTWARE = 0x100,		//!< Software rendering
+	OPENGL					//!< OpenGL rendering
+};
+
 /*!	\class Target
 **	\brief This class provides a skeleton in top of which rendering targets will be built.
 **
@@ -104,7 +110,7 @@ public:
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
 
-private:
+public:
 	typedef Target* (*Factory)(const char *filename);
 
 	//! A type for a map of targets, indexed by the name of the Target
@@ -121,6 +127,7 @@ private:
 	static Book& book();
 	static ExtBook& ext_book();
 
+private:
 	//! Current Target quality
 	int quality_;
 	//! Current Target gamma
@@ -129,6 +136,8 @@ private:
 	bool remove_alpha;
 
 	bool avoid_time_sync_;
+	//! Rendering method used by the Target to generate images from data
+	RenderMethod render_method_;
 
 protected:
 
@@ -142,6 +151,10 @@ protected:
 public:
 	virtual ~Target() { }
 
+	//! Returns Target rendering method
+	RenderMethod get_render_method()const { return render_method_; }
+	//! Sets Target rendering method
+	void set_render_method(RenderMethod method) { render_method_ = method; }
 	//! Returns Target quality
 	int get_quality()const { return quality_; }
 	//! Sets Target quality to \a q
