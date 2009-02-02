@@ -11,8 +11,8 @@
 class glPlayfield
 {
 	private:
-		static const int NEAR = -100;
-		static const int FAR = 0;
+		static const int NEAR = 1;
+		static const int FAR = 100;
 		int _width, _height;
 		int _scrollX, _scrollY;
 		GLint _lastPrecision;

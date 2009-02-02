@@ -23,12 +23,14 @@ glPlayfield::~glPlayfield() {
 
 void glPlayfield::initializeGL() {
 	//glShadeModel(GL_SMOOTH);
-	//glEnable(GL_DEPTH_TEST);
-	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	//glDisable(GL_DEPTH_TEST);
 	// Dithering off by default
 	glDisable(GL_DITHER);
 
 	glClearColor(0.5, 0.5, 0.5, 1);
+	glClearDepth(1.0f);
 
 	// Smooth lines
 	//glEnable(GL_LINE_SMOOTH);
@@ -54,29 +56,30 @@ void glPlayfield::resizeGL(int width, int height) {
 	_width = width;
 	_height = height;
 
-	/*glViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//gluOrtho2D(-width/2, width/2, height/2, -height/2);
 	glOrtho(0, width, height, 0, NEAR, FAR);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();*/
+	glLoadIdentity();
 	
-	glMatrixMode(GL_PROJECTION);
+	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glScalef(2.0f / (float)width, -2.0f / (float)height, 1.0f);
 	glTranslatef(-((float)width / 2.0f), -((float)height / 2.0f), 0.0f);
-	glViewport(0, 0, width, height); /* viewport size in pixels */
+	glViewport(0, 0, width, height); *//* viewport size in pixels */
 
 	// Translate so we draw in the middle of the pixel
 	//glTranslatef(/*_scrollX + */0.5, /*_scrollY + */0.5, 0);
+	glTranslatef(0, 0, -2);
 }
 
 void glPlayfield::clearGL() {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void glPlayfield::drawAnimateBorder() {
