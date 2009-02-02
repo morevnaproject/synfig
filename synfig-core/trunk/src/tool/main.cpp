@@ -329,14 +329,15 @@ void display_help(int amount)
 		Argument("-w","<pixel width>",_("Set the image width (Use zero for file default)"));
 		Argument("-h","<pixel height>",_("Set the image height (Use zero for file default)"));
 		Argument("-s","<image dist>",_("Set the diagonal size of image window (Span)"));
-		Argument("-a","<1...30>",_("Set antialias amount for parametric renderer."));
+		Argument("-a","<1...30>",_("Set antialias amount for parametric renderer"));
 		Argument("-Q","<0...10>",strprintf(_("Specify image quality for accelerated renderer (default=%d)"),DEFAULT_QUALITY).c_str());
 		Argument("-g","<amount>",_("Gamma (default=2.2)"));
 		Argument("-v",NULL,_("Verbose Output (add more for more verbosity)"));
 		Argument("-q",NULL,_("Quiet mode (No progress/time-remaining display)"));
-		Argument("-c","<canvas id>",_("Render the canvas with the given id instead of the root."));
+		Argument("-c","<canvas id>",_("Render the canvas with the given id instead of the root"));
 		Argument("-o","<output file>",_("Specify output filename"));
 		Argument("-T","<# of threads>",_("Enable multithreaded renderer using specified # of threads"));
+		Argument("-r","<rendering method>",_("Render scene with the specified method - 0: Software (Default), 1: OpenGL"));
 		Argument("-b",NULL,_("Print Benchmarks"));
 		Argument("--fps","<framerate>",_("Set the frame rate"));
 		Argument("--time","<time>",_("Render a single frame at <seconds>"));
@@ -548,7 +549,7 @@ int process_global_flags(arg_list_t &arg_list)
 bool flag_requires_value(String flag)
 {
 	return (flag=="-a"			|| flag=="-c"			|| flag=="-g"			|| flag=="-h"			|| flag=="-o"			||
-			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"			||
+			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-r"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
 			flag=="--time"		);
@@ -742,6 +743,33 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 			iter=next++;
 			threads=atoi(iter->c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Threads set to %d"),threads)<<endl;
+			arg_list.erase(iter);
+		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
+	}
+
+	return SYNFIGTOOL_OK;
+}
+
+int extract_render_method(arg_list_t &arg_list,RenderMethod &render_method)
+{
+	const char *methods[] = {"Software", "OpenGL"};
+	arg_list_t::iterator iter, next;
+	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	{
+		if(*iter=="-r")
+		{
+			arg_list.erase(iter);
+			iter=next++;
+			int method = atoi(iter->c_str());
+			if ((method != 0) || (method != 1)) {
+				method = 0;
+				VERBOSE_OUT(1)<<strprintf(_("Unknown specified rendering method, using %s"), methods[method])<<endl;
+			} else {
+				VERBOSE_OUT(1)<<strprintf(_("Rendering method set to %s"),methods[method])<<endl;
+			}
+			render_method = method ? SOFTWARE : OPENGL;
 			arg_list.erase(iter);
 		}
 		else if (flag_requires_value(*iter))
@@ -1166,6 +1194,7 @@ int main(int argc, char *argv[])
 			string target_name;
 			job_list.push_front(Job());
 			int threads=0;
+			RenderMethod render_method = SOFTWARE;
 
 			imageargs=defaults;
 			job_list.front().filename=arg_list.front();
@@ -1232,6 +1261,7 @@ int main(int argc, char *argv[])
 			extract_RendDesc(imageargs,job_list.front().canvas->rend_desc());
 			extract_target(imageargs,target_name);
 			extract_threads(imageargs,threads);
+			extract_render_method(imageargs,render_method);
 			job_list.front().quality=DEFAULT_QUALITY;
 			extract_quality(imageargs,job_list.front().quality);
 			VERBOSE_OUT(2)<<_("Quality set to ")<<job_list.front().quality<<endl;
@@ -1345,6 +1375,10 @@ int main(int argc, char *argv[])
 			// Set the threads for the target
 			if(job_list.front().target && Target_Scanline::Handle::cast_dynamic(job_list.front().target))
 				Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_threads(threads);
+
+			// Set the rendering method for the target
+			if(job_list.front().target && Target_Scanline::Handle::cast_dynamic(job_list.front().target))
+				Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_render_method(render_method);
 
 			if(imageargs.size())
 			{
