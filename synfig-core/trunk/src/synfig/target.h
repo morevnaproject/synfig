@@ -71,8 +71,11 @@ class Canvas;
 class ProgressCallback;
 
 /*!	\class Target
-**	\brief Render-target
-**	\todo writeme
+**	\brief This class provides a skeleton in top of which rendering targets will be built.
+**
+**	When a scene needs rendering, the source will call Target render() method in order to
+** redraw each child layer. Target_Tile and Target_Scanline are the main implementations
+** of this class
 */
 class Target : public etl::shared_object
 {
@@ -118,9 +121,11 @@ private:
 	static Book& book();
 	static ExtBook& ext_book();
 
+	//! Current Target quality
 	int quality_;
+	//! Current Target gamma
 	Gamma gamma_;
-
+	//! If this flag is set, Alpha will be set to 1.0f in the implemented Target
 	bool remove_alpha;
 
 	bool avoid_time_sync_;
@@ -137,27 +142,29 @@ protected:
 public:
 	virtual ~Target() { }
 
+	//! Returns Target quality
 	int get_quality()const { return quality_; }
-
+	//! Sets Target quality to \a q
 	void set_quality(int q) { quality_=q; }
 
 	void set_avoid_time_sync(bool x=true) { avoid_time_sync_=x; }
 
 	bool get_avoid_time_sync()const { return avoid_time_sync_; }
-
+	//! Returns Target remove_alpha flag
 	bool get_remove_alpha()const { return remove_alpha; }
-
+	//! Sets Target remove_alpha flag to \a x
 	void set_remove_alpha(bool x=true) { remove_alpha=x; }
-
+	//! Returns Target gamma
 	Gamma &gamma() { return gamma_; }
-
+	//! Returns Target gamma
 	const Gamma &gamma()const { return gamma_; }
 
 	virtual void set_canvas(etl::handle<Canvas> c);
 
 	const etl::handle<Canvas> &get_canvas()const { return canvas; }
-
+	//! Returns Target RendDesc	
 	RendDesc &rend_desc() { return desc; }
+	//! Returns Target RendDesc	
 	const RendDesc &rend_desc()const { return desc; }
 
 	//! Renders the canvas to the target
@@ -171,8 +178,9 @@ public:
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
 
 	virtual bool init() { return true; }
-
+	//! Initializes Target subsystems (Book, ExtBook and Gamma)
 	static bool subsys_init();
+	//! Removes Target subsystems
 	static bool subsys_stop();
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
