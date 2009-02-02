@@ -101,7 +101,7 @@ public:
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
 
-public:
+private:
 	typedef Target* (*Factory)(const char *filename);
 
 	//! A type for a map of targets, indexed by the name of the Target
@@ -118,14 +118,6 @@ public:
 	static Book& book();
 	static ExtBook& ext_book();
 
-	static bool subsys_init();
-	static bool subsys_stop();
-
-	//! Adjusted Render description set by set_rend_desc()
-	RendDesc desc;
-
-	etl::handle<Canvas> canvas;
-
 	int quality_;
 	Gamma gamma_;
 
@@ -136,6 +128,11 @@ public:
 protected:
 
 	Target();
+
+	//! Adjusted Render description set by set_rend_desc()
+	RendDesc desc;
+
+	etl::handle<Canvas> canvas;
 
 public:
 	virtual ~Target() { }
@@ -174,6 +171,9 @@ public:
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
 
 	virtual bool init() { return true; }
+
+	static bool subsys_init();
+	static bool subsys_stop();
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
 	static Handle create(const String &type, const String &filename);
