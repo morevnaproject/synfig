@@ -34,7 +34,7 @@
 #endif
 
 #include <synfig/module.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <synfig/canvas.h>
 
 #include "lineargradient.h"

@@ -29,10 +29,10 @@
 /* === H E A D E R S ======================================================= */
 
 //#include "vector.h"
-//#include "time.h"
+//#include "synfig_time.h"
 #include "segment.h"
 //#include "color.h"
-#include "string.h"
+#include "synfig_string.h"
 #include <list>
 #include <vector>
 #include <ETL/trivial>

@@ -29,7 +29,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "protocol.h"
-#include "string.h"
+#include "synfig_string.h"
 #include "guid.h"
 #include <sigc++/slot.h>
 

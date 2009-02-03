@@ -35,7 +35,7 @@
 #endif
 
 #include <synfig/module.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 
 #include "zoom.h"
 //#include "blur.h"

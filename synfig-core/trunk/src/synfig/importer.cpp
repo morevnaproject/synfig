@@ -36,7 +36,7 @@
 #include "importer.h"
 #include "surface.h"
 #include <algorithm>
-#include "string.h"
+#include "synfig_string.h"
 #include <map>
 #include <ctype.h>
 #include <functional>

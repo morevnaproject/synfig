@@ -35,7 +35,7 @@
 
 #include "canvas.h"
 #include "surface.h"
-#include "target_scanline.h"
+#include "targets/target_scanline.h"
 #include "general.h"
 
 #ifdef HAS_VIMAGE

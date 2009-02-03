@@ -34,18 +34,18 @@
 //#define USE_MAC_FT_FUNCS	(1)
 //#endif
 
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/vector.h>
 #include <synfig/color.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include <vector>
 
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/synfig_string.h>
+#include <synfig/synfig_time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>

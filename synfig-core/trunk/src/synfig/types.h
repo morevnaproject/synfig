@@ -33,7 +33,7 @@
 #include "angle.h"
 #endif
 
-#include "time.h"
+#include "synfig_time.h"
 #include "vector.h"
 
 /* === M A C R O S ========================================================= */

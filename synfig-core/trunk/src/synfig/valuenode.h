@@ -30,7 +30,7 @@
 
 #include "vector.h"
 #include "value.h"
-#include "string.h"
+#include "synfig_string.h"
 #include "releases.h"
 #include <ETL/handle>
 #include <ETL/stringf>

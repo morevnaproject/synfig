@@ -30,9 +30,9 @@
 
 #include <synfig/vector.h>
 #include <synfig/valuenode.h>
-#include <synfig/layer_composite.h>
+#include <synfig/layers/layer_composite.h>
 #include <synfig/gradient.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include "random_noise.h"
 
 /* === M A C R O S ========================================================= */

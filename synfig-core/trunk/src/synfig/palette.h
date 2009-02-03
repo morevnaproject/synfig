@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "color.h"
-#include "string.h"
+#include "synfig_string.h"
 #include <vector>
 
 /* === M A C R O S ========================================================= */

@@ -29,10 +29,10 @@
 #endif
 
 #include "target.h"
-#include "string.h"
+#include "synfig_string.h"
 #include "canvas.h"
-#include "target_null.h"
-#include "target_null_tile.h"
+#include "targets/target_null.h"
+#include "targets/target_null_tile.h"
 
 using namespace synfig;
 using namespace etl;

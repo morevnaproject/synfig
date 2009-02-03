@@ -33,7 +33,7 @@
 #include <math.h>
 #include <cassert>
 #include "gamma.h"
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>

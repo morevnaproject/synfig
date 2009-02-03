@@ -35,7 +35,7 @@
 #include <sigc++/connection.h>
 
 #include "vector.h"
-#include "string.h"
+#include "synfig_string.h"
 #include "canvasbase.h"
 #include "valuenode.h"
 #include "keyframe.h"

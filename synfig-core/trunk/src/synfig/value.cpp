@@ -39,7 +39,7 @@
 
 
 #include "vector.h"
-#include "time.h"
+#include "synfig_time.h"
 #include "segment.h"
 #include "color.h"
 

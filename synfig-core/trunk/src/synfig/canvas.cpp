@@ -36,9 +36,9 @@
 #include "canvas.h"
 #include <cassert>
 #include "exception.h"
-#include "time.h"
+#include "synfig_time.h"
 #include "context.h"
-#include "layer_pastecanvas.h"
+#include "layers/layer_pastecanvas.h"
 #include "loadcanvas.h"
 #include <sigc++/bind.h>
 

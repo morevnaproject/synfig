@@ -30,7 +30,7 @@
 #endif
 
 #include "waypoint.h"
-#include "valuenode_const.h"
+#include "valuenodes/valuenode_const.h"
 
 #endif
 

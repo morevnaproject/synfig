@@ -32,8 +32,8 @@
 
 #include "checkerboard.h"
 
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/synfig_string.h>
+#include <synfig/synfig_time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>

@@ -33,7 +33,7 @@
 
 #include "mptr_ppm.h"
 #include <synfig/importer.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/surface.h>
 #include <synfig/general.h>
 #include <synfig/smartfile.h>

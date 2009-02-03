@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "string.h"
+#include "synfig_string.h"
 #include "real.h"
 #include "color.h"
 #include <list>

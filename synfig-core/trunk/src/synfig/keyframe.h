@@ -29,8 +29,8 @@
 
 #include <ETL/handle>
 #include <vector>
-#include "string.h"
-#include "time.h"
+#include "synfig_string.h"
+#include "synfig_time.h"
 #include "uniqueid.h"
 #include "guid.h"
 

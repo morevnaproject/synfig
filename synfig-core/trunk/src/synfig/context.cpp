@@ -32,8 +32,8 @@
 
 #include "context.h"
 #include "layer.h"
-#include "layer_composite.h"
-#include "string.h"
+#include "layers/layer_composite.h"
+#include "synfig_string.h"
 #include "vector.h"
 #include "color.h"
 #include "surface.h"

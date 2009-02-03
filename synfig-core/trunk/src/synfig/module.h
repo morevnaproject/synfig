@@ -31,7 +31,7 @@
 #include "general.h"
 #include <ETL/handle>
 #include <map>
-#include "string.h"
+#include "synfig_string.h"
 #include "releases.h"
 #include <utility>
 #include "vector.h"

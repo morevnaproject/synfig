@@ -30,8 +30,8 @@
 /* === H E A D E R S ======================================================= */
 
 #define NOMINMAX
-#include <synfig/target_scanline.h>
-#include <synfig/string.h>
+#include <synfig/targets/target_scanline.h>
+#include <synfig/synfig_string.h>
 #include <cstdio>
 _ETL_BEGIN_CDECLS
 #include <jpeglib.h>

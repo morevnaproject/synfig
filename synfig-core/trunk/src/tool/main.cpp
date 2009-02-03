@@ -39,14 +39,14 @@
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
-#include <synfig/target_scanline.h>
+#include <synfig/targets/target_scanline.h>
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfig/target.h>
-#include <synfig/time.h>
-#include <synfig/string.h>
+#include <synfig/synfig_time.h>
+#include <synfig/synfig_string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/main.h>
 #include <synfig/guid.h>

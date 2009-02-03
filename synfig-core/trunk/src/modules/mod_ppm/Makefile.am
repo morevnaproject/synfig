@@ -2,7 +2,7 @@
 
 
 MAINTAINERCLEANFILES=Makefile.in
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/synfig
 
 moduledir=@MODULE_DIR@
 

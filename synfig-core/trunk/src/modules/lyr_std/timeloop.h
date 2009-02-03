@@ -30,7 +30,7 @@
 
 #include <synfig/layer.h>
 #include <synfig/color.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/context.h>
 
 /* === M A C R O S ========================================================= */

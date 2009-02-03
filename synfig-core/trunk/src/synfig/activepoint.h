@@ -29,7 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "time.h"
+#include "synfig_time.h"
 #include "uniqueid.h"
 #include <ETL/handle>
 

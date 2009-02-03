@@ -29,8 +29,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/target_scanline.h>
-#include <synfig/string.h>
+#include <synfig/targets/target_scanline.h>
+#include <synfig/synfig_string.h>
 #include <sys/types.h>
 #include <cstdio>
 

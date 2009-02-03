@@ -31,7 +31,7 @@
 
 #define NOMINMAX
 #include <synfig/importer.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <synfig/surface.h>
 _ETL_BEGIN_CDECLS
 #include <jpeglib.h>

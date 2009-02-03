@@ -178,7 +178,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	signal(SIGPIPE, broken_pipe_signal);
 #endif
 
-	//_config_search_path=new vector"string.h"();
+	//_config_search_path=new vector"synfig_string.h"();
 
 	// Init the subsystems
 	if(cb)cb->amount_complete(0, 100);

@@ -32,11 +32,11 @@
 #include <map>
 #include <ETL/handle>
 #include "real.h"
-#include "string.h"
+#include "synfig_string.h"
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 #include "node.h"
-#include "time.h"
+#include "synfig_time.h"
 #include "guid.h"
 
 /* === M A C R O S ========================================================= */

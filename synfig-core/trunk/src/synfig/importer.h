@@ -31,11 +31,11 @@
 #include <map>
 //#include <cmath>
 #include <ETL/handle>
-#include "string.h"
+#include "synfig_string.h"
 //#include "surface.h"
 //#include "general.h"
 //#include "vector.h"
-#include "time.h"
+#include "synfig_time.h"
 #include "gamma.h"
 
 /* === M A C R O S ========================================================= */

@@ -31,8 +31,8 @@
 #endif
 
 #include "timepointcollect.h"
-#include "valuenode_animated.h"
-#include "layer_pastecanvas.h"
+#include "valuenodes/valuenode_animated.h"
+#include "layers/layer_pastecanvas.h"
 #include "layer.h"
 #include "canvas.h"
 #include "value.h"

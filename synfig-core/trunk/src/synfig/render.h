@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "target_scanline.h"
+#include "targets/target_scanline.h"
 #include "vector.h"
 #include "color.h"
 #include "renddesc.h"

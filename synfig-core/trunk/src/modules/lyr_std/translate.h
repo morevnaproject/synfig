@@ -31,7 +31,7 @@
 
 #include <synfig/layer.h>
 #include <synfig/vector.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 
 /* === M A C R O S ========================================================= */
 

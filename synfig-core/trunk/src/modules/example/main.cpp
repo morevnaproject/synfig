@@ -35,7 +35,7 @@
 
 #include <synfig/module.h>
 #include <synfig/canvas.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include "simplecircle.h"
 #include "filledrect.h"
 #include "metaballs.h"

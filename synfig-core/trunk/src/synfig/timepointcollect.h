@@ -31,7 +31,7 @@
 #include "activepoint.h"
 #include "waypoint.h"
 #include "node.h"
-#include "time.h"
+#include "synfig_time.h"
 
 /* === M A C R O S ========================================================= */
 

@@ -30,7 +30,7 @@
 
 #include <sigc++/signal.h>
 #include <set>
-#include "time.h"
+#include "synfig_time.h"
 #include "guid.h"
 #include <ETL/handle>
 #include "interpolation.h"

@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/stringf>
-#include "string.h"
+#include "synfig_string.h"
 #include "version.h"
 #ifdef ENABLE_NLS
  #include <locale.h>
