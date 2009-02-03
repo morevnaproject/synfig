@@ -91,6 +91,9 @@ public:
 
 	bool add_frame(const synfig::Surface *surface);
 private:
+
+	bool render_frame_(int quality, ProgressCallback *cb=0);
+
 }; // END of class Target_Scanline
 
 }; // END of namespace synfig
