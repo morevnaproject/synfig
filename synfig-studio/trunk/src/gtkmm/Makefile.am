@@ -4,16 +4,16 @@ EXTRA_DIST = compview.cpp
 MAINTAINERCLEANFILES = Makefile.in $(GLADE_FILES)
 
 CELLRENDERER_HH = \
-	cellrenderer_gradient.h	  cellrenderer_time.h	cellrenderer_timetrack.h   cellrenderer_value.h
+	cellrenderers/cellrenderer_gradient.h	  cellrenderers/cellrenderer_time.h	cellrenderers/cellrenderer_timetrack.h   cellrenderers/cellrenderer_value.h
 CELLRENDERER_CC = \
-	cellrenderer_gradient.cpp cellrenderer_time.cpp cellrenderer_timetrack.cpp cellrenderer_value.cpp
+	cellrenderers/cellrenderer_gradient.cpp cellrenderers/cellrenderer_time.cpp cellrenderers/cellrenderer_timetrack.cpp cellrenderers/cellrenderer_value.cpp
 
 WORKAREARENDERER_HH = \
-	renderer_bbox.h	  renderer_canvas.h   renderer_dragbox.h   renderer_ducks.h   renderer_grid.h			\
-	renderer_guides.h   renderer_timecode.h	  workarearenderer.h
+	renderers/renderer_bbox.h	  renderers/renderer_canvas.h   renderers/renderer_dragbox.h   renderers/renderer_ducks.h   renderers/renderer_grid.h			\
+	renderers/renderer_guides.h   renderers/renderer_timecode.h	  workarearenderer.h
 WORKAREARENDERER_CC = \
-	renderer_bbox.cpp renderer_canvas.cpp renderer_dragbox.cpp renderer_ducks.cpp renderer_grid.cpp			\
-	renderer_guides.cpp renderer_timecode.cpp workarearenderer.cpp
+	renderers/renderer_bbox.cpp renderers/renderer_canvas.cpp renderers/renderer_dragbox.cpp renderers/renderer_ducks.cpp renderers/renderer_grid.cpp			\
+	renderers/renderer_guides.cpp renderers/renderer_timecode.cpp workarearenderer.cpp
 
 PALETTE_HH = \
 	mod_palette/dock_palbrowse.h   mod_palette/dock_paledit.h   mod_palette/mod_palette.h
@@ -26,40 +26,40 @@ MOD_MIRROR_CC = \
 	mod_mirror/mod_mirror.cpp mod_mirror/state_mirror.cpp
 
 DIALOG_HH = \
-	dialog_color.h	 dialog_gradient.h   dialog_keyframe.h	 dialog_preview.h   dialog_setup.h			\
-	dialog_soundselect.h   dialog_waypoint.h
+	dialogs/dialog_color.h	 dialogs/dialog_gradient.h   dialogs/dialog_keyframe.h	 dialogs/dialog_preview.h   dialogs/dialog_setup.h			\
+	dialogs/dialog_soundselect.h   dialogs/dialog_waypoint.h
 DIALOG_CC = \
-	dialog_color.cpp dialog_gradient.cpp dialog_keyframe.cpp dialog_preview.cpp dialog_setup.cpp			\
-	dialog_soundselect.cpp dialog_waypoint.cpp
+	dialogs/dialog_color.cpp dialogs/dialog_gradient.cpp dialogs/dialog_keyframe.cpp dialogs/dialog_preview.cpp dialogs/dialog_setup.cpp			\
+	dialogs/dialog_soundselect.cpp dialogs/dialog_waypoint.cpp
 
 DOCK_HH = \
-	dialog_tooloptions.h   dock_canvases.h	 dock_canvasspecific.h	 dock_children.h   dock_curves.h		\
-	dock_history.h	 dock_info.h   dock_keyframes.h	  dock_layergroups.h   dock_layers.h   dock_metadata.h		\
-	dock_navigator.h   dock_params.h   dock_timetrack.h   dockable.h   dockbook.h	dockdialog.h   dockmanager.h
+	dialogs/dialog_tooloptions.h   docks/dock_canvases.h	 docks/dock_canvasspecific.h	 docks/dock_children.h   docks/dock_curves.h		\
+	docks/dock_history.h	 docks/dock_info.h   docks/dock_keyframes.h	  docks/dock_layergroups.h   docks/dock_layers.h   docks/dock_metadata.h		\
+	docks/dock_navigator.h   docks/dock_params.h   docks/dock_timetrack.h   dockable.h   dockbook.h	dockdialog.h   dockmanager.h
 DOCK_CC = \
-	dialog_tooloptions.cpp dock_canvases.cpp dock_canvasspecific.cpp dock_children.cpp dock_curves.cpp		\
-	dock_history.cpp dock_info.cpp dock_keyframes.cpp dock_layergroups.cpp dock_layers.cpp dock_metadata.cpp	\
-	dock_navigator.cpp dock_params.cpp dock_timetrack.cpp dockable.cpp dockbook.cpp dockdialog.cpp dockmanager.cpp
+	dialogs/dialog_tooloptions.cpp docks/dock_canvases.cpp docks/dock_canvasspecific.cpp docks/dock_children.cpp docks/dock_curves.cpp		\
+	docks/dock_history.cpp docks/dock_info.cpp docks/dock_keyframes.cpp docks/dock_layergroups.cpp docks/dock_layers.cpp docks/dock_metadata.cpp	\
+	docks/dock_navigator.cpp docks/dock_params.cpp docks/dock_timetrack.cpp dockable.cpp dockbook.cpp dockdialog.cpp dockmanager.cpp
 
 WIDGET_HH = \
-	widget_canvaschooser.h	 widget_color.h	  widget_coloredit.h   widget_compselect.h   widget_curves.h		\
-	widget_defaults.h   widget_distance.h	widget_enum.h	widget_filename.h   widget_gradient.h			\
-	widget_sound.h	 widget_time.h	 widget_timeslider.h   widget_value.h	widget_vector.h	  widget_waypoint.h	\
-	widget_waypointmodel.h
+	widgets/widget_canvaschooser.h	 widgets/widget_color.h	  widgets/widget_coloredit.h   widgets/widget_compselect.h   widgets/widget_curves.h		\
+	widgets/widget_defaults.h   widgets/widget_distance.h	widgets/widget_enum.h	widgets/widget_filename.h   widgets/widget_gradient.h			\
+	widgets/widget_sound.h	 widgets/widget_time.h	 widgets/widget_timeslider.h   widgets/widget_value.h	widgets/widget_vector.h	  widgets/widget_waypoint.h	\
+	widgets/widget_waypointmodel.h
 WIDGET_CC = \
-	widget_canvaschooser.cpp widget_color.cpp widget_coloredit.cpp widget_compselect.cpp widget_curves.cpp		\
-	widget_defaults.cpp widget_distance.cpp widget_enum.cpp widget_filename.cpp widget_gradient.cpp			\
-	widget_sound.cpp widget_time.cpp widget_timeslider.cpp widget_value.cpp widget_vector.cpp widget_waypoint.cpp	\
-	widget_waypointmodel.cpp
+	widgets/widget_canvaschooser.cpp widgets/widget_color.cpp widgets/widget_coloredit.cpp widgets/widget_compselect.cpp widgets/widget_curves.cpp		\
+	widgets/widget_defaults.cpp widgets/widget_distance.cpp widgets/widget_enum.cpp widgets/widget_filename.cpp widgets/widget_gradient.cpp			\
+	widgets/widget_sound.cpp widgets/widget_time.cpp widgets/widget_timeslider.cpp widgets/widget_value.cpp widgets/widget_vector.cpp widgets/widget_waypoint.cpp	\
+	widgets/widget_waypointmodel.cpp
 
 STATE_HH = \
-	state_bline.h	state_circle.h	 state_draw.h	state_eyedrop.h	  state_fill.h	 state_gradient.h		\
-	state_normal.h	 state_polygon.h   state_rectangle.h   state_rotate.h	state_scale.h	state_sketch.h		\
-	state_smoothmove.h   state_star.h   state_stroke.h   state_text.h   state_width.h   state_zoom.h
+	states/state_bline.h	states/state_circle.h	 states/state_draw.h	states/state_eyedrop.h	  states/state_fill.h	 states/state_gradient.h		\
+	states/state_normal.h	 states/state_polygon.h   states/state_rectangle.h   states/state_rotate.h	states/state_scale.h	states/state_sketch.h		\
+	states/state_smoothmove.h   states/state_star.h   states/state_stroke.h   states/state_text.h   states/state_width.h   states/state_zoom.h
 STATE_CC = \
-	state_bline.cpp state_circle.cpp state_draw.cpp state_eyedrop.cpp state_fill.cpp state_gradient.cpp		\
-	state_normal.cpp state_polygon.cpp state_rectangle.cpp state_rotate.cpp state_scale.cpp state_sketch.cpp	\
-	state_smoothmove.cpp state_star.cpp state_stroke.cpp state_text.cpp state_width.cpp state_zoom.cpp
+	states/state_bline.cpp states/state_circle.cpp states/state_draw.cpp states/state_eyedrop.cpp states/state_fill.cpp states/state_gradient.cpp		\
+	states/state_normal.cpp states/state_polygon.cpp states/state_rectangle.cpp states/state_rotate.cpp states/state_scale.cpp states/state_sketch.cpp	\
+	states/state_smoothmove.cpp states/state_star.cpp states/state_stroke.cpp states/state_text.cpp states/state_width.cpp states/state_zoom.cpp
 
 TREEVIEW_HH = \
 	childrentree.h	 keyframetree.h	  layergrouptree.h   layertree.h

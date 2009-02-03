@@ -35,13 +35,13 @@
 #include <iostream>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_radialcomposite.h>
-#include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_greyed.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_radialcomposite.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_greyed.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <map>
 
 #include "general.h"

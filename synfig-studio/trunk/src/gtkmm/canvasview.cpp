@@ -45,18 +45,18 @@
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
 
-#include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_subtract.h>
-#include <synfig/valuenode_linear.h>
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_scale.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_twotone.h>
-#include <synfig/valuenode_stripes.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
-#include <synfig/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
+#include <synfig/valuenodes/valuenode_linear.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_twotone.h>
+#include <synfig/valuenodes/valuenode_stripes.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/layer.h>
 
 #include <synfigapp/uimanager.h>
@@ -72,17 +72,17 @@
 #include "canvasview.h"
 #include "instance.h"
 #include "app.h"
-#include "cellrenderer_value.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderers/cellrenderer_value.h"
+#include "cellrenderers/cellrenderer_timetrack.h"
 #include "workarea.h"
-#include "dialog_color.h"
+#include "dialogs/dialog_color.h"
 #include "eventkey.h"
 
-#include "state_polygon.h"
-#include "state_bline.h"
-#include "state_normal.h"
-#include "state_eyedrop.h"
-#include "state_draw.h"
+#include "states/state_polygon.h"
+#include "states/state_bline.h"
+#include "states/state_normal.h"
+#include "states/state_eyedrop.h"
+#include "states/state_draw.h"
 
 #include "ducktransform_scale.h"
 #include "ducktransform_translate.h"
@@ -93,12 +93,12 @@
 
 #include "toolbox.h"
 
-#include "dialog_preview.h"
-#include "dialog_soundselect.h"
+#include "dialogs/dialog_preview.h"
+#include "dialogs/dialog_soundselect.h"
 
 #include "preview.h"
 #include "audiocontainer.h"
-#include "widget_timeslider.h"
+#include "widgets/widget_timeslider.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
@@ -902,7 +902,7 @@ CanvasView::~CanvasView()
 std::list<int>&
 CanvasView::get_pixel_sizes()
 {
-	// prime factors of 120 are 2, 2, 2, 3, 5 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
+	// prime factors of 120 are 2, 2, 2, 3, 5 - see TILE_SIZE in synfig-core/trunk/src/synfig/targets/target_tile.h
 	static int pixel_size_array[] = {2,3,4,5,6,8,10,12,15,20,24,30,40,60,120};
 	static list<int> pixel_sizes = list<int>(pixel_size_array, pixel_size_array + sizeof(pixel_size_array) / sizeof(int));
 

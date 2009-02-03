@@ -40,13 +40,13 @@
 #include <gtkmm/canvasview.h>
 #include <gtkmm/tooltips.h>
 
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/vector.h>
 #include <synfig/general.h>
 #include <synfig/renddesc.h>
 #include <synfig/canvas.h>
 
-#include "widget_sound.h"
+#include "widgets/widget_sound.h"
 
 #include <vector>
 

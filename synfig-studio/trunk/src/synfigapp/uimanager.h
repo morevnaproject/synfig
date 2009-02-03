@@ -29,7 +29,7 @@
 
 #include <ETL/handle>
 #include <synfig/general.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <sigc++/object.h>
 
 /* === M A C R O S ========================================================= */

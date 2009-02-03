@@ -38,8 +38,8 @@
 #include <ETL/smart_ptr>
 
 #include <synfig/distance.h>
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/synfig_string.h>
+#include <synfig/synfig_time.h>
 
 #include <gtkmm/uimanager.h>
 

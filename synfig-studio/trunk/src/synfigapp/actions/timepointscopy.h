@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfigapp/value_desc.h>

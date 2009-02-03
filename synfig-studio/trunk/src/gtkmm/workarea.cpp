@@ -53,24 +53,24 @@
 #include <sigc++/hide.h>
 #include <ETL/misc>
 
-#include <synfig/target_scanline.h>
-#include <synfig/target_tile.h>
+#include <synfig/targets/target_scanline.h>
+#include <synfig/targets/target_tile.h>
 #include <synfig/surface.h>
-#include <synfig/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 #include <synfigapp/canvasinterface.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "widget_color.h"
+#include "widgets/widget_color.h"
 #include <synfig/distance.h>
 #include "workarearenderer.h"
 
-#include "renderer_canvas.h"
-#include "renderer_grid.h"
-#include "renderer_guides.h"
-#include "renderer_timecode.h"
-#include "renderer_ducks.h"
-#include "renderer_dragbox.h"
-#include "renderer_bbox.h"
+#include "renderers/renderer_canvas.h"
+#include "renderers/renderer_grid.h"
+#include "renderers/renderer_guides.h"
+#include "renderers/renderer_timecode.h"
+#include "renderers/renderer_ducks.h"
+#include "renderers/renderer_dragbox.h"
+#include "renderers/renderer_bbox.h"
 #include "asyncrenderer.h"
 #include <gtkmm/frame.h>
 

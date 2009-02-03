@@ -38,7 +38,7 @@
 #include <gtkmm/tooltips.h>
 #include <gtkmm/optionmenu.h>
 
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 
 #include <synfigapp/canvasinterface.h>
 

@@ -33,8 +33,8 @@
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 
-#include <synfig/target_scanline.h>
-#include <synfig/target_tile.h>
+#include <synfig/targets/target_scanline.h>
+#include <synfig/targets/target_tile.h>
 #include <synfig/surface.h>
 #include <glibmm/main.h>
 #include <ETL/ref_count>

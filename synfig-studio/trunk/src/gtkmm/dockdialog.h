@@ -30,7 +30,7 @@
 #include <gtkmm/stockid.h>
 #include <gtkmm/button.h>
 #include "dialogsettings.h"
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/tooltips.h>
 #include <gtkmm/label.h>

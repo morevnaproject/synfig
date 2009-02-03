@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/notebook.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <gtkmm/tooltips.h>
 
 /* === M A C R O S ========================================================= */

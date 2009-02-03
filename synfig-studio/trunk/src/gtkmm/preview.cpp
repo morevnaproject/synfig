@@ -36,7 +36,7 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/separator.h>
 
-#include <synfig/target_scanline.h>
+#include <synfig/targets/target_scanline.h>
 #include <synfig/surface.h>
 
 #include <algorithm>
@@ -534,7 +534,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	sx = draw_area.get_width() / (float)px->get_width();
 	sy = draw_area.get_height() / (float)px->get_height();
 
-	//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+	//synfig::info("widgets/widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 
 	//round to smallest scale (fit entire thing in window without distortion)
 	if(sx > sy) sx = sy;

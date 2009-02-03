@@ -33,7 +33,7 @@
 #include "statemanager.h"
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/action.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include "app.h"
 #include "toolbox.h"
 

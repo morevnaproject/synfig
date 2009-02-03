@@ -29,7 +29,7 @@
 
 #include <synfig/smartfile.h>
 #include <glibmm/main.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 
 /* === M A C R O S ========================================================= */
 

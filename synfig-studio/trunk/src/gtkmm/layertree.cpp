@@ -32,8 +32,8 @@
 
 #include "layertree.h"
 #include "layerparamtreestore.h"
-#include "cellrenderer_value.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderers/cellrenderer_value.h"
+#include "cellrenderers/cellrenderer_timetrack.h"
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>

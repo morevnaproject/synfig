@@ -35,7 +35,7 @@
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/table.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include "smach.h"
 #include <map>
 #include "dialogsettings.h"

@@ -68,15 +68,15 @@
 #include "instance.h"
 #include "app.h"
 #include "canvasview.h"
-#include "dialog_gradient.h"
-#include "dialog_color.h"
-#include "dialog_tooloptions.h"
-#include "dialog_preview.h"
+#include "dialogs/dialog_gradient.h"
+#include "dialogs/dialog_color.h"
+#include "dialogs/dialog_tooloptions.h"
+#include "dialogs/dialog_preview.h"
 #include "dockable.h"
 #include "dockmanager.h"
 #include "dockdialog.h"
 
-#include "widget_defaults.h"
+#include "widgets/widget_defaults.h"
 
 #include <synfigapp/main.h>
 

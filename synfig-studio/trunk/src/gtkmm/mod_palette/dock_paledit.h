@@ -37,12 +37,12 @@
 #include <gtkmm/checkbutton.h>
 
 #include <synfig/gamma.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 
-#include "../widget_coloredit.h"
+#include "widgets/widget_coloredit.h"
 
 #include <synfigapp/value_desc.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 
 #include "../dockable.h"
 #include <vector>

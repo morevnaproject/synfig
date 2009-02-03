@@ -44,7 +44,7 @@
 #include <gdkmm/cursor.h>
 #include <gdkmm/device.h>
 
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/vector.h>
 #include <synfig/general.h>
 #include <synfig/renddesc.h>

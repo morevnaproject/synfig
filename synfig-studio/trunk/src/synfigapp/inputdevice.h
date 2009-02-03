@@ -30,7 +30,7 @@
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/distance.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */

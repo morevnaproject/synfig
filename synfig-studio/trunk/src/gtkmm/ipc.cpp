@@ -64,7 +64,7 @@
 #include "toolbox.h"
 #include <glibmm/dispatcher.h>
 #include <synfig/mutex.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <glibmm/thread.h>
 
 #include "general.h"

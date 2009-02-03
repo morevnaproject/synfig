@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <map>
 #include <list>
 #include <ETL/stringf>

@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/ref_count>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <synfig/general.h>
 #include <synfig/main.h>
 #include <synfig/distance.h>

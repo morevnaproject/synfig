@@ -33,12 +33,12 @@
 #include "canvastreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 #include <gtkmm/button.h>
 #include <synfigapp/instance.h>
-#include "cellrenderer_value.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderers/cellrenderer_value.h"
+#include "cellrenderers/cellrenderer_timetrack.h"
 #include <ETL/clock>
 
 #include "general.h"

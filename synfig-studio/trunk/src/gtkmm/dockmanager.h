@@ -29,7 +29,7 @@
 
 #include <vector>
 #include <list>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
 #include <ETL/smart_ptr>

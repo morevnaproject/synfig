@@ -28,7 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <synfig/canvas.h>
 #include <ETL/handle>
 #include <ETL/stringf>
@@ -43,8 +43,8 @@
 #include <synfigapp/value_desc.h>
 #include <synfig/value.h>
 #include <synfig/activepoint.h>
-#include <synfig/valuenode_animated.h>
-#include <synfig/string.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/synfig_string.h>
 #include <synfig/keyframe.h>
 
 #include "action_param.h"

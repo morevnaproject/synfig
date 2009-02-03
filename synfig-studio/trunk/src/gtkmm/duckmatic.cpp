@@ -39,14 +39,14 @@
 #include <synfigapp/value_desc.h>
 #include <synfig/general.h>
 #include <synfig/paramdesc.h>
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_animated.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_scale.h>
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_blinecalctangent.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_blinecalctangent.h>
+#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 
 #include <synfig/curve_helper.h>
 

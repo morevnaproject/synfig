@@ -33,7 +33,7 @@
 #include "layeractionmanager.h"
 #include "layertree.h"
 #include <synfig/context.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfigapp/action_param.h>
 #include "instance.h"
 #include <synfigapp/selectionmanager.h>

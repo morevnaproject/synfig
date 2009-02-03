@@ -29,7 +29,7 @@
 
 #include <synfigapp/action.h>
 #include <synfig/keyframe.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/guid.h>
 #include <set>
 

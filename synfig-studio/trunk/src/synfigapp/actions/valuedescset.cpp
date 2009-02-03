@@ -37,9 +37,9 @@
 
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
-#include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_radialcomposite.h>
-#include <synfig/valuenode_reference.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_radialcomposite.h>
+#include <synfig/valuenodes/valuenode_reference.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>

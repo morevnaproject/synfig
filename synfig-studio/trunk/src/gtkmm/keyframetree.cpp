@@ -31,7 +31,7 @@
 #endif
 
 #include "keyframetree.h"
-#include "cellrenderer_time.h"
+#include "cellrenderers/cellrenderer_time.h"
 #include <gtkmm/treemodelsort.h>
 #include <ETL/misc>
 

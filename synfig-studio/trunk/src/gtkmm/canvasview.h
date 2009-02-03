@@ -46,14 +46,14 @@
 #include <synfigapp/selectionmanager.h>
 
 #include <synfig/canvas.h>
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/synfig_string.h>
+#include <synfig/synfig_time.h>
 
 #include "instance.h"
 #include "canvasproperties.h"
 #include "canvasoptions.h"
 #include "render.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderers/cellrenderer_timetrack.h"
 #include "app.h"
 
 #include "layertreestore.h"
@@ -63,8 +63,8 @@
 #include "keyframetreestore.h"
 #include "keyframetree.h"
 
-#include "dialog_waypoint.h"
-#include "dialog_keyframe.h"
+#include "dialogs/dialog_waypoint.h"
+#include "dialogs/dialog_keyframe.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>

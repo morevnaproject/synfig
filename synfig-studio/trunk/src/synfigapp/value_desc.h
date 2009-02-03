@@ -29,11 +29,11 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/valuenode.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <synfig/layer.h>
 #include <synfig/value.h>
-#include <synfig/valuenode_animated.h>
-#include <synfig/valuenode_const.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */

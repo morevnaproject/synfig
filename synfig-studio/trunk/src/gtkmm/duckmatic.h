@@ -36,11 +36,11 @@
 #include <ETL/handle>
 
 #include <synfig/vector.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <synfig/real.h>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
-#include <synfig/time.h>
+#include <synfig/synfig_time.h>
 #include <synfig/color.h>
 #include <ETL/smart_ptr>
 

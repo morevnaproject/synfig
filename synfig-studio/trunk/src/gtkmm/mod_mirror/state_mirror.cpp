@@ -32,7 +32,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
 #include "state_mirror.h"
@@ -44,7 +44,7 @@
 #include "../event_mouse.h"
 #include "../event_layerclick.h"
 #include "../toolbox.h"
-#include "../dialog_tooloptions.h"
+#include "dialogs/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "../duck.h"
 #include <synfigapp/main.h>

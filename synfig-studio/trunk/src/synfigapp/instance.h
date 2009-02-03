@@ -30,7 +30,7 @@
 #include "action.h"
 #include <ETL/handle>
 #include <synfig/canvas.h>
-#include <synfig/string.h>
+#include <synfig/synfig_string.h>
 #include <list>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>

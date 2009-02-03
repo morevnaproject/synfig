@@ -38,7 +38,7 @@
 #include <synfigapp/instance.h>
 #include "app.h"
 #include "instance.h"
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layers/layer_pastecanvas.h>
 #include <synfigapp/action_system.h>
 
 #include <gtk/gtkversion.h>

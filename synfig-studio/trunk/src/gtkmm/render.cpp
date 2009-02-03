@@ -34,7 +34,7 @@
 #include "app.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
-#include <synfig/target_scanline.h>
+#include <synfig/targets/target_scanline.h>
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
 
