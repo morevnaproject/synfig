@@ -36,6 +36,48 @@
 
 /* === M A C R O S ========================================================= */
 
+#define CHECK_FRAMEBUFFER_STATUS()                                    \
+{                                                                     \
+	GLenum status;                                                  \
+	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);       \
+	switch(status) {                                                \
+		case GL_FRAMEBUFFER_COMPLETE_EXT:                         \
+			break;                                              \
+		case GL_FRAMEBUFFER_UNSUPPORTED_EXT:                      \
+			synfig::error("FBO: Unsupported configuration");    \
+			throw;                                              \
+			break;                                              \
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:            \
+			synfig::error("FBO: Incomplete attachment");        \
+			throw;                                              \
+			break;                                              \
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:    \
+			synfig::error("FBO: Incomplete missing attachment"); \
+			throw;                                              \
+			break;                                              \
+		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:            \
+			synfig::error("FBO: Incomplete dimensions");        \
+			throw;                                              \
+			break;                                              \
+		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:               \
+			synfig::error("FBO: Incomplete formats");           \
+			throw;                                              \
+			break;                                              \
+		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:           \
+			synfig::error("FBO: Incomplete draw buffer");       \
+			throw;                                              \
+			break;                                              \
+		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:           \
+			synfig::error("FBO: Incomplete read buffer");       \
+			throw;                                              \
+			break;                                              \
+		default:                                                  \
+			synfig::error("FBO: Hardware error");               \
+			throw;                                              \
+	}                                                               \
+}
+
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -44,15 +86,46 @@ namespace synfig {
 
 class Renderer_OpenGL
 {
+	// Variables
 	private:
 #ifdef linux
 		Display *dpy;
 		Window win;
 		GLXContext glc;
 #endif
+		//! Type of surface
+		typedef float surface_type;
+
+		//! Number of FBOs in GPU
+		static const int N_BUFFERS = 1;
+		//! Number of textures / color attachments per FBO
+		static const int N_TEXTURES = 2;
+		//! Mipmapping level
+		static const int MIPMAP_LEVEL = 0;
+		//! Current buffers width & height
+		GLuint _w, _h;
+		//! Buffers IDs
+		GLuint _fbuf[N_BUFFERS];
+		//! Textures ids
+		GLuint _tex[N_TEXTURES];
+		//! Texture buffer
+		surface_type *_buffer;
+		//! Texture target
+		GLuint _tex_target;
+		//! Maximum attachment points
+		GLint _max_attachs;
+		//! Indicates the next read and write texture
+		unsigned int _write_tex, _read_tex;
+
+	// Functions
+	private:
+		void transfer_data(surface_type *buf, unsigned int tex_num);
+
 	public:
 		Renderer_OpenGL();
 		~Renderer_OpenGL();
+
+		void set_wh(const GLuint w, const GLuint h);
 };	// END of class Renderer_OpenGL
 
 };	// END of namespace synfig
@@ -60,3 +133,4 @@ class Renderer_OpenGL
 /* === E N D =============================================================== */
 
 #endif
+
