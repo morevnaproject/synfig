@@ -657,6 +657,7 @@ src/synfig/Makefile
 src/synfig/layers/Makefile
 src/synfig/targets/Makefile
 src/synfig/valuenodes/Makefile
+src/synfig/renderers/Makefile
 src/modules/Makefile
 src/modules/lyr_freetype/Makefile
 src/modules/lyr_std/Makefile

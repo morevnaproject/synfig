@@ -1,13 +1,13 @@
 # $Id$
 
 SUBDIRS = \
-	layers targets valuenodes
+	layers targets valuenodes renderers
 
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
 INCLUDES = \
-	-I$(top_builddir) -I$(top_srcdir)/src @INCLTDL@ -Ilayers -Itargets -Ivaluenodes
+	-I$(top_builddir) -I$(top_srcdir)/src @INCLTDL@ -Ilayers -Itargets -Ivaluenodes -Irenderers
 
 EXTRA_DIST = \
 	surfacenew.cpp pch.h synfig.nsh
@@ -41,7 +41,7 @@ lib_LTLIBRARIES = libsynfig.la
 libsynfig_la_SOURCES = \
 	$(VALUEHEADERS) $(VALUESOURCES) \
 	$(SYNFIGHEADERS) $(SYNFIGSOURCES) $(IMPORTERHEADERS) $(IMPORTERSOURCES)
-libsynfig_la_LIBADD = @LIBLTDL@ @SYNFIG_LIBS@ @LIBADD_DL@ layers/liblayer.la targets/libtarget.la valuenodes/libvaluenode.la
+libsynfig_la_LIBADD = @LIBLTDL@ @SYNFIG_LIBS@ @LIBADD_DL@ layers/liblayer.la targets/libtarget.la valuenodes/libvaluenode.la renderers/librenderer.la -lGLEW -lGL
 libsynfig_la_CXXFLAGS = @SYNFIG_CFLAGS@ -DLIBDIR="\"@libdir@\"" -DSYSCONFDIR="\"@sysconfdir@\""
 libsynfig_la_LDFLAGS = -export-dynamic -no-undefined -version-info 0:0:0
 
