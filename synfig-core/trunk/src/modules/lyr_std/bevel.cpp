@@ -251,7 +251,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	}
 
 	//render the background onto the expanded surface
-	if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
+	if(!context.render(&worksurface,quality,workdesc,&stageone, SOFTWARE))
 		return false;
 
 	// Copy over the alpha

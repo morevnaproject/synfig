@@ -231,7 +231,7 @@ Metaballs::accelerated_render(Context context,Surface *surface,int quality, cons
 
 	Point pos(tl[0],tl[1]);
 
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+	if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;

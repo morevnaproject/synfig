@@ -141,7 +141,7 @@ Target_Tile::next_tile(int& x, int& y)
 }
 
 bool
-synfig::Target_Tile::render_frame_(int quality, ProgressCallback *cb)
+synfig::Target_Tile::render_frame_(int quality, ProgressCallback *cb, RenderMethod method)
 {
 	Context context;
 
@@ -236,7 +236,7 @@ synfig::Target_Tile::render_frame_(int quality, ProgressCallback *cb)
 		tile_timer.reset();
 		}
 	}
-	else // If quality is set otherwise, then we use the accelerated renderer
+	else // If quality is set otherwise, then we use the appropiate renderer
 	{
 		Surface surface;
 
@@ -272,10 +272,10 @@ synfig::Target_Tile::render_frame_(int quality, ProgressCallback *cb)
 			etl::clock timer2;
 			timer2.reset();
 
-			if(!context.accelerated_render(&surface,get_quality(),tile_desc,&super))
+			if(!context.render(&surface,get_quality(),tile_desc,&super, method))
 			{
-				// For some reason, the accelerated renderer failed.
-				if(cb)cb->error(_("Accelerated Renderer Failure"));
+				// For some reason, the renderer failed.
+				if(cb)cb->error(_("Renderer Failure"));
 				return false;
 			}
 			else
@@ -329,6 +329,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 		t=0,
 		time_start,
 		time_end;
+	RenderMethod method = get_render_method();
 
 	assert(canvas);
 	curr_frame_=0;
@@ -396,7 +397,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			#endif
 */
 
-			if(!render_frame_(quality,0))
+			if(!render_frame_(quality,0, method))
 				return false;
 			end_frame();
 		}while((i=next_frame(t)));
@@ -415,7 +416,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
-			if(!render_frame_(quality, cb))
+			if(!render_frame_(quality, cb, method))
 				return false;
 			end_frame();
 		}

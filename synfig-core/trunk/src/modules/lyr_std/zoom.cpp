@@ -152,7 +152,7 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	desc.set_br((desc.get_br()-center)*zoomfactor+center);
 
 	// Render the scene
-	return context.accelerated_render(surface,quality,desc,cb);
+	return context.render(surface,quality,desc,cb, SOFTWARE);
 }
 
 synfig::Rect

@@ -632,7 +632,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int error;
 	Vector size(Layer_Freetype::size*2);
 
-	if(!context.accelerated_render(surface,quality,renddesc,cb))
+	if(!context.render(surface,quality,renddesc,cb, SOFTWARE))
 		return false;
 
 	if(is_disabled() || text.empty())

@@ -166,7 +166,7 @@ bool
 Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	if(quality == 10)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	if(context->empty())
 	{
@@ -180,7 +180,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	int i = 0;
 
 	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
-	if (!duplicate_param) return context.accelerated_render(surface,quality,renddesc,cb);
+	if (!duplicate_param) return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 	surface->clear();
@@ -196,7 +196,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 		// \todo can we force a re-evaluation of all the variables without changing the time twice?
 		context.set_time(time_cur+1);
 		context.set_time(time_cur);
-		if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb)) return false;
+		if(!context.render(&tmp,quality,renddesc,&subimagecb, SOFTWARE)) return false;
 
 		Surface::alpha_pen apen(surface->begin());
 		apen.set_alpha(get_amount());

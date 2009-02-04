@@ -248,5 +248,5 @@ Layer_TimeLoop::get_color(Context context, const Point &pos)const
 bool
 Layer_TimeLoop::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	return context.accelerated_render(surface,quality,renddesc,cb);
+	return context.render(surface,quality,renddesc,cb, SOFTWARE);
 }

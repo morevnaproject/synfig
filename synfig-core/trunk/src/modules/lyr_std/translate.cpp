@@ -145,7 +145,7 @@ Translate::accelerated_render(Context context,Surface *surface,int quality, cons
 	desc.set_br(desc.get_br()-origin);
 
 	// Render the scene
-	if(!context.accelerated_render(surface,quality,desc,cb))
+	if(!context.render(surface,quality,desc,cb, SOFTWARE))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;

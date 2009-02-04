@@ -29,6 +29,8 @@
 
 #include "canvasbase.h"
 #include "rect.h"
+// For RenderMethod enum (maybe we can add it to RendDesc)
+#include "target.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -53,6 +55,13 @@ class Rect;
 **	\see Layer, Canvas */
 class Context : public CanvasBase::const_iterator
 {
+private:
+	/*!	Calls accelerated rendering (software) on the child layers */
+	//bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+
+	/*!	Calls OpenGL rendering on the child layers */
+	//bool opengl_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+	
 public:
 	Context() { }
 
@@ -64,8 +73,8 @@ public:
 	/*!	\todo write me */
 	Color get_color(const Point &pos)const;
 
-	/*!	\todo write me */
-	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+	/*!	Iterates over layers and calls the appropiate renderer */
+	bool render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, RenderMethod method) const;
 
 	/*!	\todo write me */
    	void set_time(Time time)const;

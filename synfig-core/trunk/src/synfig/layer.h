@@ -464,6 +464,17 @@ public:
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
+	//! Renders the Canvas to the given Surface using OpenGL
+	/*!	\param context		Context iterator referring to next Layer.
+	**	\param surface		Pointer to Surface to render to.
+	**	\param quality		The requested quality-level to render at.
+	**	\param renddesc		The associated RendDesc.
+	**	\param cb			Pointer to callback object. May be NULL if there is no callback.
+	**	\return \c true on success, \c false on failure
+	**	\see Handle::accelerated_render()
+	*/
+	virtual bool opengl_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param point		The point to check

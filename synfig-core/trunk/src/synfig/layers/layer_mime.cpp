@@ -124,7 +124,7 @@ bool
 Layer_Mime::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	// A Layer_Mime layer should do nothing at all.
-	return context.accelerated_render(surface,quality,renddesc,cb);
+	return context.render(surface,quality,renddesc,cb, SOFTWARE);
 }
 
 Layer::Vocab

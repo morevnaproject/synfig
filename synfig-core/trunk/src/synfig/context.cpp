@@ -164,7 +164,7 @@ Context::get_full_bounding_rect()const
 */
 
 bool
-Context::accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const
+Context::render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, RenderMethod method) const
 {
 #ifdef SYNFIG_PROFILE_LAYERS
 	String layer_name(curr_layer);
@@ -221,8 +221,20 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			!composite->reads_context())
 		{
 			Layer::Handle layer = *context;
+			// TODO: Ask if that's a bug (skipping while NOT empty??)
 			while (!context->empty()) context++; // skip the context
-			return layer->accelerated_render(context,surface,quality,renddesc, cb);
+			switch (method) {
+				case SOFTWARE:
+					return layer->accelerated_render(context,surface,quality,renddesc, cb);
+					break;
+				case OPENGL:
+					return layer->opengl_render(context,surface,quality,renddesc, cb);
+					break;
+				default:
+					synfig::info("Context::render(): Unknown rendering method, falling back to software");
+					return layer->accelerated_render(context,surface,quality,renddesc, cb);
+					break;
+			}
 		}
 
 		// Break out of the loop--we have found a good layer
@@ -233,7 +245,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	if (context->empty() || (straight_and_empty && composite->get_amount() == 1.0f))
 	{
 #ifdef SYNFIG_DEBUG_LAYERS
-		synfig::info("Context::accelerated_render(): Hit end of list");
+		synfig::info("Context::render(): Hit end of list");
 #endif	// SYNFIG_DEBUG_LAYERS
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
@@ -244,7 +256,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	}
 
 #ifdef SYNFIG_DEBUG_LAYERS
-	synfig::info("Context::accelerated_render(): Descending into %s",(*context)->get_name().c_str());
+	synfig::info("Context::render(): Descending into %s",(*context)->get_name().c_str());
 #endif	// SYNFIG_DEBUG_LAYERS
 
 	try {
@@ -265,7 +277,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	// using the appropriate 'amount'
 	if (straight_and_empty)
 	{
-		if ((ret = Context((context+1)).accelerated_render(surface,quality,renddesc,cb)))
+		if ((ret = Context((context+1)).render(surface,quality,renddesc,cb, method)))
 		{
 			Surface clearsurface;
 			clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
@@ -278,8 +290,20 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			clearsurface.blit_to(apen);
 		}
 	}
-	else
-		ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
+	else {
+		switch (method) {
+			case SOFTWARE:
+				ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
+				break;
+			case OPENGL:
+				ret = (*context)->opengl_render(context+1,surface,quality,renddesc, cb);
+				break;
+			default:
+				synfig::info("Context::render(): Unknown rendering method, falling back to software");
+				ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
+				break;
+		}
+	}
 
 #ifdef SYNFIG_PROFILE_LAYERS
 	//post work for the previous layer
@@ -299,17 +323,17 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	}
 	catch(std::bad_alloc)
 	{
-		synfig::error("Context::accelerated_render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
+		synfig::error("Context::render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
 #ifdef _DEBUG
 		return false;
 #else  // _DEBUG
 		++context;
-		return context.accelerated_render(surface, quality, renddesc, cb);
+		return context.render(surface, quality, renddesc, cb, method);
 #endif	// _DEBUG
 	}
 	catch(...)
 	{
-		synfig::error("Context::accelerated_render(): Layer \"%s\" threw an exception, rethrowing...",(*context)->get_name().c_str());
+		synfig::error("Context::render(): Layer \"%s\" threw an exception, rethrowing...",(*context)->get_name().c_str());
 		throw;
 	}
 }

@@ -528,6 +528,12 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 	//return render_threaded(context,target,desc,cb,2);
 }
 
+bool
+Layer::opengl_render(Context context,Surface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
+{
+	/* stub */
+}
+
 String
 Layer::get_name()const
 {

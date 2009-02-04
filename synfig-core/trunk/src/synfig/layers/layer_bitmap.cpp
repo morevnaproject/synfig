@@ -265,7 +265,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	if(!surface.is_valid())
 	{
 		// Render what is behind us
-		return context.accelerated_render(out_surface,quality,renddesc,cb);
+		return context.render(out_surface,quality,renddesc,cb, SOFTWARE);
 	}
 
 	SuperCallback subcb(cb,1,10000,10001+renddesc.get_h());
@@ -289,7 +289,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	else
 	{
 		// Render what is behind us
-		if(!context.accelerated_render(out_surface,quality,renddesc,&subcb))
+		if(!context.render(out_surface,quality,renddesc,&subcb, SOFTWARE))
 			return false;
 	}
 

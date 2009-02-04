@@ -528,7 +528,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 	// render the context onto a new surface
 	Surface source;
 	source.set_wh(src_w,src_h);
-	if(!context.accelerated_render(&source,quality,src_desc,&stageone))
+	if(!context.render(&source,quality,src_desc,&stageone, SOFTWARE))
 		return false;
 
 	float u,v;

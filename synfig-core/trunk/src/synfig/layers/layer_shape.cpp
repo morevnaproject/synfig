@@ -2510,7 +2510,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 				(int)(nrect.maxx - nrect.minx), (int)(nrect.maxy - nrect.miny));
 
 			Surface	optimizedbacksurf;
-			if(!context.accelerated_render(&optimizedbacksurf,quality,optdesc,&stageone))
+			if(!context.render(&optimizedbacksurf,quality,optdesc,&stageone, SOFTWARE))
 				return false;
 
 			//blit that onto the original surface so we can pretend that nothing ever happened
@@ -2519,7 +2519,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 		}
 	}else
 	{
-		if(!context.accelerated_render(surface,quality,renddesc,&stageone))
+		if(!context.render(surface,quality,renddesc,&stageone, SOFTWARE))
 			return false;
 	}
 

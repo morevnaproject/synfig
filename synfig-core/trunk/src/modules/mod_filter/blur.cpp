@@ -124,7 +124,7 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 {
 	// don't do anything at quality 10
 	if (quality == 10)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	// int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
@@ -205,7 +205,7 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 	}
 
 	//render the background onto the expanded surface
-	if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
+	if(!context.render(&worksurface,quality,workdesc,&stageone, SOFTWARE))
 		return false;
 
 	//blur the image

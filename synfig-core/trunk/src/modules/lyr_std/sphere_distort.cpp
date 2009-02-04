@@ -356,7 +356,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 				return true;
 			}
 			else
-				return context.accelerated_render(surface,quality,renddesc,cb);
+				return context.render(surface,quality,renddesc,cb, SOFTWARE);
 		}
 
 		//synfig::warning("Spherize: Bounding box accept");
@@ -467,7 +467,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 	}
 
 	//synfig::warning("Spherize: render background");
-	if(!context.accelerated_render(&background,quality,r,cb))
+	if(!context.render(&background,quality,r,cb, SOFTWARE))
 	{
 		synfig::warning("SphereDistort: Layer below failed");
 		return false;

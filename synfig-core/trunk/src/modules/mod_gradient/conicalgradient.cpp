@@ -229,7 +229,7 @@ ConicalGradient::accelerated_render(Context context,Surface *surface,int quality
 	}
 	else
 	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+		if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 			return false;
 		if(get_amount()==0)
 			return true;

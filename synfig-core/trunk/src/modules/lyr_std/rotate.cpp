@@ -168,7 +168,7 @@ bool
 Rotate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	if(amount.dist(Angle::deg(0))==Angle::deg(0))
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 	if(amount.dist(Angle::deg(180))==Angle::deg(0))
 	{
 		RendDesc desc(renddesc);
@@ -178,7 +178,7 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 		desc.set_tl(Point(-tmp[0],-tmp[1])+origin);
 		tmp=renddesc.get_br()-origin;
 		desc.set_br(Point(-tmp[0],-tmp[1])+origin);
-		return context.accelerated_render(surface,quality,desc,cb);
+		return context.render(surface,quality,desc,cb, SOFTWARE);
 	}
 
 	SuperCallback stageone(cb,0,9000,10000);
@@ -246,7 +246,7 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 	Surface source;
 	source.set_wh(desc.get_w(),desc.get_h());
 
-	if(!context.accelerated_render(&source,quality,desc,&stageone))
+	if(!context.render(&source,quality,desc,&stageone, SOFTWARE))
 		return false;
 
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());

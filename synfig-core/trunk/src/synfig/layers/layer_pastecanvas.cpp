@@ -359,12 +359,12 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if(depth==MAX_DEPTH)
 		// if we are at the extent of our depth,
 		// then we should just return whatever is under us.
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	depth_counter counter(depth);
 
 	if(!canvas || !get_amount())
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	SuperCallback stageone(cb,0,4500,10000);
 	SuperCallback stagetwo(cb,4500,9000,10000);
@@ -382,7 +382,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
 	}
-	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
+	else if (!context.render(surface,quality,renddesc,&stageone, SOFTWARE))
 		return false;
 
 	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
@@ -525,7 +525,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	// render the canvas to be pasted onto pastesurface
 	Surface pastesurface;
-	if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
+	if(!canvas->get_context().render(&pastesurface,quality,desc,&stagetwo, SOFTWARE))
 		return false;
 
 #ifdef SYNFIG_CLIP_PASTECANVAS

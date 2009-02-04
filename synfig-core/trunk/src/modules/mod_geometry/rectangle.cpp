@@ -300,7 +300,7 @@ bool
 Rectangle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	if(is_disabled())
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	const Point	tl(renddesc.get_tl());
 	const Point br(renddesc.get_br());
@@ -394,7 +394,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 			desc.set_subwindow(left,top,right-left,bottom-top);
 
 			// Render what is behind us
-			if(!context.accelerated_render(&subimage,quality,desc,cb))
+			if(!context.render(&subimage,quality,desc,cb, SOFTWARE))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
@@ -406,7 +406,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		}
 		else
 		{
-			if(!context.accelerated_render(surface,quality,renddesc,cb))
+			if(!context.render(surface,quality,renddesc,cb, SOFTWARE))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
@@ -502,7 +502,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	}
 
 	// Render what is behind us
-	if(!context.accelerated_render(surface,quality,renddesc,cb))
+	if(!context.render(surface,quality,renddesc,cb, SOFTWARE))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;

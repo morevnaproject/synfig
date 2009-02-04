@@ -416,7 +416,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 {
 	// trivial case
 	if(is_disabled() || (radius==0 && invert==false && !feather))
-		return context.accelerated_render(surface,quality, renddesc, cb);
+		return context.render(surface,quality, renddesc, cb, SOFTWARE);
 
 	// Another trivial case
 	if(invert && radius==0 && is_solid_color())
@@ -499,7 +499,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			}else
 			{
 				// Render what is behind us
-				if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+				if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 				{
 					if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 					return false;
@@ -514,7 +514,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		}else
 		{
 			// Render what is behind us
-			if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+			if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
@@ -531,7 +531,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		if(invert)
 		{
 			// Render what is behind us
-			if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+			if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
@@ -561,7 +561,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 	if(!invert)
 	{
 		// Render what is behind us
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+		if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 		{
 			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 			return false;
@@ -656,7 +656,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			desc.set_subwindow(left,top,right-left+1,bottom-top+1);
 
 			// Render what is behind us
-			if(!context.accelerated_render(&background,quality,desc,&supercb))
+			if(!context.render(&background,quality,desc,&supercb, SOFTWARE))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
@@ -673,7 +673,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			topf = /*0.5*ph +*/ tl[1];
 
 			// Render what is behind us
-			if(!context.accelerated_render(&background,quality,renddesc,&supercb))
+			if(!context.render(&background,quality,renddesc,&supercb, SOFTWARE))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;

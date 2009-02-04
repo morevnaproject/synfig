@@ -132,7 +132,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 {
 	// don't do anything at quality 10
 	if (quality == 10)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	if(cb && !cb->amount_complete(0,10000))
 		return false;
@@ -172,7 +172,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 	desc.set_br(tmp_surface_br);
 
 	// render the layers beneath us
-	if(!context.accelerated_render(&tmp_surface,quality,desc,cb))
+	if(!context.render(&tmp_surface,quality,desc,cb, SOFTWARE))
 		return false;
 
 	// copy the part of the layers beneath us that corresponds to this tile

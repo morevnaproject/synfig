@@ -98,7 +98,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 {
 	// don't bother supersampling if our quality is too low.
 	if(quality>=10)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	RendDesc desc(renddesc);
 
@@ -128,7 +128,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 		}
 	}
 	else
-		if(!context.accelerated_render(&tempsurface,quality,desc,cb))
+		if(!context.render(&tempsurface,quality,desc,cb, SOFTWARE))
 		{
 			//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 			return false;

@@ -170,7 +170,7 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 
 		}
 
-		if (samples == 1) return context.accelerated_render(surface,quality,renddesc,cb);
+		if (samples == 1) return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 		Surface tmp;
 		int i;
@@ -183,7 +183,7 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 		{
 			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
 			context.set_time(time_cur-(aperture*(samples-1-i)/(samples-1)));
-			if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb))
+			if(!context.render(&tmp,quality,renddesc,&subimagecb, SOFTWARE))
 				return false;
 			scale = 1.0/(samples-i);
 			divisor += scale;
@@ -196,7 +196,7 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 				(*surface)[y][x]=((*surface)[y][x]/divisor).demult_alpha();
 	}
 	else
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	return true;
 }

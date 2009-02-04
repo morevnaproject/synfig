@@ -66,7 +66,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	RendDesc renddesc(renddesc_);
 
 	if(!amount_)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+		return context.render(surface,quality,renddesc,cb, SOFTWARE);
 
 	CanvasBase image;
 
@@ -93,7 +93,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	image.push_back(0);	// Alpha black
 
 	// Render the backdrop
-	if(!context.accelerated_render(&surfacelayer->surface,quality,renddesc,&stageone))
+	if(!context.render(&surfacelayer->surface,quality,renddesc,&stageone, SOFTWARE))
 		return false;
 
 	if(quality<=4)surfacelayer->c=3;else

@@ -115,7 +115,7 @@ Target_Scanline::next_frame(Time& time)
 }
 
 bool
-synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
+synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, RenderMethod method)
 {
 	Context context;
 
@@ -147,7 +147,7 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
 				return false;
 		}
 	}
-	else // If quality is set otherwise, then we use the accelerated renderer
+	else // If quality is set otherwise, then we use the appropiate renderer
 	{
 		#if USE_PIXELRENDERING_LIMIT
 		if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
@@ -190,7 +190,7 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
 				if (cb)
 					sc = new SuperCallback(cb, i*rowheight, (i+1)*rowheight, totalheight);
 
-				if(!context.accelerated_render(&surface,quality,blockrd,sc))
+				if(!context.render(&surface,quality,blockrd,sc, method))
 				{
 					if(cb)cb->error(_("Accelerated Renderer Failure"));
 					return false;
@@ -239,10 +239,10 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
 		#endif
 			Surface surface;
 
-			if(!context.accelerated_render(&surface,quality,desc,cb))
+			if(!context.render(&surface,quality,desc,cb, method))
 			{
-				// For some reason, the accelerated renderer failed.
-				if(cb)cb->error(_("Accelerated Renderer Failure"));
+				// For some reason, the renderer failed.
+				if(cb)cb->error(_("Renderer Failure"));
 				return false;
 			}
 			else
@@ -276,6 +276,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		t=0,
 		time_start,
 		time_end;
+	RenderMethod method = get_render_method();
 
 	assert(canvas);
 	curr_frame_=0;
@@ -324,7 +325,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-			if (!render_frame_(quality, 0))
+			if (!render_frame_(quality, 0, method))
 				return false;
 		} while((i=next_frame(t)));
 	}
@@ -334,7 +335,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		if(!get_avoid_time_sync() || canvas->get_time()!=t)
 			canvas->set_time(t);
 
-		if (!render_frame_(quality, cb))
+		if (!render_frame_(quality, cb, method))
 			return false;
 	}
 

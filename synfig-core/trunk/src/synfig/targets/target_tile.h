@@ -113,7 +113,7 @@ public:
 
 private:
 
-	bool render_frame_(int quality, ProgressCallback *cb=0);
+	bool render_frame_(int quality, ProgressCallback *cb=0, RenderMethod method=SOFTWARE);
 
 }; // END of class Target_Tile
 

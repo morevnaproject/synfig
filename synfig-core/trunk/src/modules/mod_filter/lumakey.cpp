@@ -135,7 +135,7 @@ LumaKey::accelerated_render(Context context,Surface *surface,int quality, const 
 {
 	SuperCallback supercb(cb,0,9500,10000);
 
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+	if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 		return false;
 
 	int x,y;

@@ -484,7 +484,7 @@ Plant::set_version(const String &ver)
 bool
 Plant::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	bool ret(context.accelerated_render(surface,quality,renddesc,cb));
+	bool ret(context.render(surface,quality,renddesc,cb, SOFTWARE));
 	if(is_disabled() || !ret)
 		return ret;
 

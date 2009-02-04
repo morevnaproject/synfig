@@ -176,7 +176,7 @@ Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, 
 	desc.set_br(npos);
 
 	// Render the scene
-	return context.accelerated_render(surface,quality,desc,cb);
+	return context.render(surface,quality,desc,cb, SOFTWARE);
 }
 
 Rect

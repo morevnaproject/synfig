@@ -383,7 +383,7 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 
 	if(y_start >= h || x_start > w	|| x_end < 0 || y_end < 0)
 	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+		if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 		{
 			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 			return false;
@@ -398,7 +398,7 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 	Color 	clr = Color::black();
 	Real	amt;
 
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
+	if(!context.render(surface,quality,renddesc,&supercb, SOFTWARE))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;

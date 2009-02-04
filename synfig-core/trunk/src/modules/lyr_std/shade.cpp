@@ -245,7 +245,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 
 
 		//render the background onto the expanded surface
-		if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
+		if(!context.render(&worksurface,quality,workdesc,&stageone, SOFTWARE))
 			return false;
 
 		// Copy over the alpha
@@ -318,11 +318,11 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		//synfig::info("fw: %d, fh: %d",fw,fh);
 
 		//render the blur fodder
-		if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
+		if(!context.render(&worksurface,quality,workdesc,&stageone, SOFTWARE))
 			return false;
 
 		//render the background
-		if(!context.accelerated_render(surface,quality,renddesc,&stageone))
+		if(!context.render(surface,quality,renddesc,&stageone, SOFTWARE))
 			return false;
 
 		// Copy over the alpha

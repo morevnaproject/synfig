@@ -672,7 +672,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	Surface source;
 	source.set_wh(desc.get_w(),desc.get_h());
 
-	if(!context.accelerated_render(&source,quality,desc,&stageone))
+	if(!context.render(&source,quality,desc,&stageone, SOFTWARE))
 		return false;
 
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
