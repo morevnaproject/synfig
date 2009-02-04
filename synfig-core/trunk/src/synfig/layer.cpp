@@ -531,7 +531,8 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 bool
 Layer::opengl_render(Context context,Surface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	/* stub */
+	synfig::error("Layer \"%s\" doesn't have implemented OpenGL rendering", get_param("name").get(String()).c_str());
+	return false;
 }
 
 String
