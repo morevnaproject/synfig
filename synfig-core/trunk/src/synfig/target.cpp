@@ -33,6 +33,7 @@
 #include "canvas.h"
 #include "targets/target_null.h"
 #include "targets/target_null_tile.h"
+#include "renderers/renderer_opengl.h"
 
 using namespace synfig;
 using namespace etl;
@@ -40,6 +41,7 @@ using namespace std;
 
 synfig::Target::Book* synfig::Target::book_;
 synfig::Target::ExtBook* synfig::Target::ext_book_;
+synfig::Renderer_OpenGL* synfig::Target::renderer_opengl_;
 
 static synfig::Gamma* default_gamma_;
 
@@ -59,6 +61,8 @@ Target::subsys_init()
 	book()["null-tile"]=std::pair<synfig::Target::Factory,String>(Target_Null_Tile::create,"null-tile");
 	ext_book()["null-tile"]="null-tile";
 
+	renderer_opengl_ = new Renderer_OpenGL();
+
 	return true;
 }
 
@@ -68,6 +72,7 @@ Target::subsys_stop()
 	delete book_;
 	delete ext_book_;
 	delete default_gamma_;
+	delete renderer_opengl_;
 	return true;
 }
 
@@ -81,6 +86,12 @@ Target::ExtBook&
 Target::ext_book()
 {
 	return *ext_book_;
+}
+
+Renderer_OpenGL&
+Target::renderer_opengl()
+{
+	return *renderer_opengl_;
 }
 
 

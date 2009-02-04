@@ -69,6 +69,7 @@ class Surface;
 class RendDesc;
 class Canvas;
 class ProgressCallback;
+class Renderer_OpenGL;
 
 //! Available rendering methods
 enum RenderMethod {
@@ -122,12 +123,16 @@ public:
 	static Book& book();
 	//! Returns target book indexed by file extension
 	static ExtBook& ext_book();
+	//! Returns OpenGL renderer
+	static Renderer_OpenGL& renderer_opengl();
 
 private:
 	//! Target Book, indexed by the target's name
 	static Book* book_;
 	//! Map of target names indexed by associated file extension
 	static ExtBook* ext_book_;
+	//! OpenGL renderer
+	static Renderer_OpenGL* renderer_opengl_;
 	//! Current Target quality
 	int quality_;
 	//! Current Target gamma
