@@ -763,7 +763,7 @@ int extract_render_method(arg_list_t &arg_list,RenderMethod &render_method)
 			arg_list.erase(iter);
 			iter=next++;
 			int method = atoi(iter->c_str());
-			if ((method != 0) || (method != 1)) {
+			if ((method != 0) && (method != 1)) {
 				method = 0;
 				VERBOSE_OUT(1)<<strprintf(_("Unknown specified rendering method, using %s"), methods[method])<<endl;
 			} else {
