@@ -769,7 +769,7 @@ int extract_render_method(arg_list_t &arg_list,RenderMethod &render_method)
 			} else {
 				VERBOSE_OUT(1)<<strprintf(_("Rendering method set to %s"),methods[method])<<endl;
 			}
-			render_method = method ? SOFTWARE : OPENGL;
+			render_method = method ? OPENGL : SOFTWARE;
 			arg_list.erase(iter);
 		}
 		else if (flag_requires_value(*iter))
