@@ -118,16 +118,16 @@ public:
 
 	typedef std::map<String,String> ExtBook;
 
-	//! Target Book, indexed by the target's name
-	static Book* book_;
-
-	//! Map of target names indexed by associated file extension
-	static ExtBook* ext_book_;
-
+	//! Returns target book
 	static Book& book();
+	//! Returns target book indexed by file extension
 	static ExtBook& ext_book();
 
 private:
+	//! Target Book, indexed by the target's name
+	static Book* book_;
+	//! Map of target names indexed by associated file extension
+	static ExtBook* ext_book_;
 	//! Current Target quality
 	int quality_;
 	//! Current Target gamma
