@@ -51,6 +51,7 @@ private:
 	synfig::String filename;
 	synfig::Color *color_buffer;
 	unsigned char *buffer;
+	unsigned char *rgba_buffer;
 public:
 	ppm(const char *filename);
 	virtual ~ppm();
@@ -61,6 +62,8 @@ public:
 
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
+	virtual unsigned char* start_scanline_rgba(int scanline);
+	virtual bool end_scanline_rgba();
 };
 
 /* === E N D =============================================================== */
