@@ -50,8 +50,8 @@ public:
 	typedef etl::handle<ValueNode_BLineCalcWidth> Handle;
 	typedef etl::handle<const ValueNode_BLineCalcWidth> ConstHandle;
 
-	virtual ValueBase operator()(Time t, Real amount)const;
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t, Real amount)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_BLineCalcWidth();
 

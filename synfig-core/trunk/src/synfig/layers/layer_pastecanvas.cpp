@@ -91,7 +91,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 {
 	children_lock=false;
 	muck_with_time_=true;
-	curr_time=Time::begin();
+	curr_time=Synfig_Time::begin();
 }
 
 Layer_PasteCanvas::~Layer_PasteCanvas()
@@ -190,7 +190,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 #if 0
 	if (param=="time_offset" && value.same_type_as(time_offset))
 	{
-		if (time_offset != value.get(Time()))
+		if (time_offset != value.get(Synfig_Time()))
 		{
 			value.put(&time_offset);
 			// notify that the time_offset has changed so we can update the
@@ -301,7 +301,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 }
 
 void
-Layer_PasteCanvas::set_time(Context context, Time time)const
+Layer_PasteCanvas::set_time(Context context, Synfig_Time time)const
 {
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
 	curr_time=time;
@@ -385,7 +385,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	else if (!context.render(surface,quality,renddesc,&stageone, SOFTWARE))
 		return false;
 
-	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
+	if(muck_with_time_ && curr_time!=Synfig_Time::begin() && canvas->get_time()!=curr_time+time_offset)
 		canvas->set_time(curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());

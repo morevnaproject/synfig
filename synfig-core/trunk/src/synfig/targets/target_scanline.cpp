@@ -72,13 +72,13 @@ Target_Scanline::Target_Scanline():
 }
 
 int
-Target_Scanline::next_frame(Time& time)
+Target_Scanline::next_frame(Synfig_Time& time)
 {
 	int
 		total_frames(1),
 		frame_start(0),
 		frame_end(0);
-	Time
+	Synfig_Time
 		time_start(0),
 		time_end(0);
 
@@ -272,7 +272,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		quality=get_quality(),
 		frame_start,
 		frame_end;
-	Time
+	Synfig_Time
 		t=0,
 		time_start,
 		time_end;

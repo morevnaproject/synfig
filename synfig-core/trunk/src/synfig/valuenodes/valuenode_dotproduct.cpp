@@ -88,7 +88,7 @@ ValueNode_DotProduct::~ValueNode_DotProduct()
 }
 
 ValueBase
-ValueNode_DotProduct::operator()(Time t)const
+ValueNode_DotProduct::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

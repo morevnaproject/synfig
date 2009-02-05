@@ -57,7 +57,7 @@ ValueNode_TimeString::ValueNode_TimeString(const ValueBase &value):
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:
-		set_link("time",ValueNode_Const::create(Time(0)));
+		set_link("time",ValueNode_Const::create(Synfig_Time(0)));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
@@ -84,12 +84,12 @@ ValueNode_TimeString::~ValueNode_TimeString()
 }
 
 ValueBase
-ValueNode_TimeString::operator()(Time t)const
+ValueNode_TimeString::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Time time((*time_)(t).get(Time()));
+	Synfig_Time time((*time_)(t).get(Synfig_Time()));
 
 	switch (get_type())
 	{

@@ -50,7 +50,7 @@ public:
 	ValueNode_TimeLoop(const ValueBase::Type &x);
 	ValueNode_TimeLoop(const ValueNode::Handle &x);
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_TimeLoop();
 

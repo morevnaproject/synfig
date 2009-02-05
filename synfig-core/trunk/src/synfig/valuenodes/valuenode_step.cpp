@@ -54,8 +54,8 @@ using namespace synfig;
 ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	set_link("duration",     ValueNode_Const::create(Time(1)));
-	set_link("start_time",   ValueNode_Const::create(Time(0)));
+	set_link("duration",     ValueNode_Const::create(Synfig_Time(1)));
+	set_link("start_time",   ValueNode_Const::create(Synfig_Time(0)));
 	set_link("intersection", ValueNode_Const::create(Real(0.5)));
 
 	switch(get_type())
@@ -73,7 +73,7 @@ ValueNode_Step::ValueNode_Step(const ValueBase &value):
 		set_link("link",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("link",ValueNode_Const::create(value.get(Time())));
+		set_link("link",ValueNode_Const::create(value.get(Synfig_Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
@@ -103,13 +103,13 @@ ValueNode_Step::~ValueNode_Step()
 }
 
 ValueBase
-ValueNode_Step::operator()(Time t)const
+ValueNode_Step::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Time duration    ((*duration_    )(t).get(Time()));
-	Time start_time  ((*start_time_  )(t).get(Time()));
+	Synfig_Time duration    ((*duration_    )(t).get(Synfig_Time()));
+	Synfig_Time start_time  ((*start_time_  )(t).get(Synfig_Time()));
 	Real intersection((*intersection_)(t).get(Real()));
 
 	t = (floor((t - start_time) / duration) + intersection) * duration + start_time;
@@ -120,7 +120,7 @@ ValueNode_Step::operator()(Time t)const
 	case ValueBase::TYPE_COLOR:   return (*link_)(t).get( Color());
 	case ValueBase::TYPE_INTEGER: return (*link_)(t).get(   int());
 	case ValueBase::TYPE_REAL:    return (*link_)(t).get(  Real());
-	case ValueBase::TYPE_TIME:    return (*link_)(t).get(  Time());
+	case ValueBase::TYPE_TIME:    return (*link_)(t).get(  Synfig_Time());
 	case ValueBase::TYPE_VECTOR:  return (*link_)(t).get(Vector());
 	default:
 		assert(0);

@@ -48,7 +48,7 @@ public:
 
 	ValueNode_Reciprocal(const ValueBase &x);
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_Reciprocal();
 

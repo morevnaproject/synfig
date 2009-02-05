@@ -59,12 +59,12 @@ public:
 
 	const WaypointList &waypoint_list()const { return waypoint_list_; }
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueBase value)=0;
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueBase value)=0;
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node)=0;
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueNode::Handle value_node)=0;
 
 	/*! \note this does not add any waypoint to the ValueNode! */
-	Waypoint new_waypoint_at_time(const Time& t)const;
+	Waypoint new_waypoint_at_time(const Synfig_Time& t)const;
 
 	WaypointList::iterator add(const Waypoint &x);
 
@@ -73,18 +73,18 @@ public:
 	//either use find result (return bool and iterator) or
 	findresult 			find_uid(const UniqueID &x);
 	const_findresult 	find_uid(const UniqueID &x)const;
-	findresult			find_time(const Time &x);
-	const_findresult	find_time(const Time &x)const;
+	findresult			find_time(const Synfig_Time &x);
+	const_findresult	find_time(const Synfig_Time &x)const;
 
 	WaypointList::iterator find(const UniqueID &x);
 	WaypointList::const_iterator find(const UniqueID &x)const;
-	WaypointList::iterator find(const Time &x);
-	WaypointList::const_iterator find(const Time &x)const;
+	WaypointList::iterator find(const Synfig_Time &x);
+	WaypointList::const_iterator find(const Synfig_Time &x)const;
 
-	WaypointList::iterator find_next(const Time &x);
-	WaypointList::const_iterator find_next(const Time &x)const;
-	WaypointList::iterator find_prev(const Time &x);
-	WaypointList::const_iterator find_prev(const Time &x)const;
+	WaypointList::iterator find_next(const Synfig_Time &x);
+	WaypointList::const_iterator find_next(const Synfig_Time &x)const;
+	WaypointList::iterator find_prev(const Synfig_Time &x);
+	WaypointList::const_iterator find_prev(const Synfig_Time &x)const;
 
 	virtual ~ValueNode_Animated();
 
@@ -93,13 +93,13 @@ public:
 
 	static Handle create(ValueBase::Type type);
 
-	static Handle create(const ValueBase& value, const Time& time);
+	static Handle create(const ValueBase& value, const Synfig_Time& time);
 
-	static Handle create(ValueNode::Handle value_node, const Time& time);
+	static Handle create(ValueNode::Handle value_node, const Synfig_Time& time);
 
-	int find(const Time& begin,const Time& end,std::vector<Waypoint*>& list);
+	int find(const Synfig_Time& begin,const Synfig_Time& end,std::vector<Waypoint*>& list);
 
-	void insert_time(const Time& location, const Time& delta);
+	void insert_time(const Synfig_Time& location, const Synfig_Time& delta);
 
 protected:
 	ValueNode_Animated();

@@ -50,7 +50,7 @@ public:
 	typedef etl::handle<const ValueNode_Step> ConstHandle;
 
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_Step();
 

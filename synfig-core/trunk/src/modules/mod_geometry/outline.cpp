@@ -760,14 +760,14 @@ Outline::set_param(const String & param, const ValueBase &value)
 }
 
 void
-Outline::set_time(Context context, Time time)const
+Outline::set_time(Context context, Synfig_Time time)const
 {
 	const_cast<Outline*>(this)->sync();
 	context.set_time(time);
 }
 
 void
-Outline::set_time(Context context, Time time, Vector pos)const
+Outline::set_time(Context context, Synfig_Time time, Vector pos)const
 {
 	const_cast<Outline*>(this)->sync();
 	context.set_time(time,pos);

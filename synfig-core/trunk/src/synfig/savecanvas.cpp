@@ -104,7 +104,7 @@ xmlpp::Element* encode_real(xmlpp::Element* root,Real v)
 	return root;
 }
 
-xmlpp::Element* encode_time(xmlpp::Element* root,Time t, float /*fps*/=0)
+xmlpp::Element* encode_time(xmlpp::Element* root,Synfig_Time t, float /*fps*/=0)
 {
 	root->set_name("time");
  	//root->set_attribute("value",t.get_string(fps));
@@ -221,9 +221,9 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_real(root,data.get(Real()));
 	case ValueBase::TYPE_TIME:
 		if(canvas)
-			return encode_time(root,data.get(Time()),canvas->rend_desc().get_frame_rate());
+			return encode_time(root,data.get(Synfig_Time()),canvas->rend_desc().get_frame_rate());
 		else
-			return encode_time(root,data.get(Time()));
+			return encode_time(root,data.get(Synfig_Time()));
 	case ValueBase::TYPE_INTEGER:
 		return encode_integer(root,data.get(int()));
 	case ValueBase::TYPE_COLOR:

@@ -71,7 +71,7 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 		set_link("integer", ValueNode_Const::create(round_to_int(x.get(Real()))));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("integer", ValueNode_Const::create(round_to_int(x.get(Time()))));
+		set_link("integer", ValueNode_Const::create(round_to_int(x.get(Synfig_Time()))));
 		break;
 	default:
 		assert(0);
@@ -151,7 +151,7 @@ ValueNode_Integer::get_link_index_from_name(const String &name)const
 }
 
 ValueBase
-ValueNode_Integer::operator()(Time t)const
+ValueNode_Integer::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -167,7 +167,7 @@ ValueNode_Integer::operator()(Time t)const
 	case ValueBase::TYPE_REAL:
 		return Real(integer);
 	case ValueBase::TYPE_TIME:
-		return Time(integer);
+		return Synfig_Time(integer);
 	default:
 		assert(0);
 		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(get_type()));

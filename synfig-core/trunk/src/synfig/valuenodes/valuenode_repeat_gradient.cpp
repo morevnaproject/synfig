@@ -94,7 +94,7 @@ synfig::ValueNode_Repeat_Gradient::~ValueNode_Repeat_Gradient()
 }
 
 synfig::ValueBase
-synfig::ValueNode_Repeat_Gradient::operator()(Time t)const
+synfig::ValueNode_Repeat_Gradient::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

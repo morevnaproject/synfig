@@ -56,7 +56,7 @@ using namespace synfig;
 //! \writeme
 int
 synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
-						 const Time								&time,
+						 const Synfig_Time								&time,
 						 const etl::handle<Node>				&node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
@@ -141,7 +141,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 
 //! \writeme
 int
-synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)
+synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Synfig_Time& time, const etl::handle<Node>& node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 

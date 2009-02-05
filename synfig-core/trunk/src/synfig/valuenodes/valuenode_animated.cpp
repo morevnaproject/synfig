@@ -181,7 +181,7 @@ class _Hermite : public synfig::ValueNode_Animated
 {
 public:
 	typedef T value_type;
-	affine_combo<value_type,Time> affine_combo_func;
+	affine_combo<value_type,Synfig_Time> affine_combo_func;
 	subtractor<value_type>	subtract_func;
 	magnitude<value_type>	magnitude_func;
 	is_angle_type<value_type>	is_angle;
@@ -191,12 +191,12 @@ private:
 		is_angle_type<value_type>	is_angle;
 		subtractor<value_type>	subtract_func;
 
-		mutable hermite<Time,Time> first;
-		mutable hermite<value_type,Time> second;
+		mutable hermite<Synfig_Time,Synfig_Time> first;
+		mutable hermite<value_type,Synfig_Time> second;
 		WaypointList::iterator start;
 		WaypointList::iterator end;
 
-		value_type resolve(const Time &t)const
+		value_type resolve(const Synfig_Time &t)const
 		{
 			bool start_static(start->is_static());
 			bool end_static(end->is_static());
@@ -225,8 +225,8 @@ private:
 		PathSegment
 		/*
 		pair <
-			hermite<Time,Time>,
-			hermite<value_type,Time>
+			hermite<Synfig_Time,Synfig_Time>,
+			hermite<value_type,Synfig_Time>
 		>
 		*/
 	> curve_list_type;
@@ -234,7 +234,7 @@ private:
 	curve_list_type curve_list;
 
 	// Bounds of this curve
-	Time r,s;
+	Synfig_Time r,s;
 
 public:
 	ValueNode* clone(const synfig::GUID& deriv_guid)const
@@ -252,7 +252,7 @@ public:
 		set_type(ValueBase(value_type()).get_type());
 	}
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueBase value)
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueBase value)
 	{
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
@@ -277,7 +277,7 @@ public:
 		return ret;
 	}
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node)
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueNode::Handle value_node)
 	{
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
@@ -502,7 +502,7 @@ public:
 		}
 	}
 
-	virtual ValueBase operator()(Time t)const
+	virtual ValueBase operator()(Synfig_Time t)const
 	{
 		if(waypoint_list_.empty())
 			return value_type();	//! \todo Perhaps we should throw something here?
@@ -535,7 +535,7 @@ public:
 private:
 
 	// Bounds of this curve
-	Time r,s;
+	Synfig_Time r,s;
 
 public:
 	ValueNode* clone(const synfig::GUID& deriv_guid)const
@@ -553,7 +553,7 @@ public:
 		set_type(ValueBase(value_type()).get_type());
 	}
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueBase value)
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueBase value)
 	{
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
@@ -571,7 +571,7 @@ public:
 		return ret;
 	}
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node)
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueNode::Handle value_node)
 	{
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
@@ -602,7 +602,7 @@ public:
 
 	}
 
-	virtual ValueBase operator()(Time t)const
+	virtual ValueBase operator()(Synfig_Time t)const
 	{
 		if(waypoint_list_.size()==1)
 			return waypoint_list_.front().get_value(t);
@@ -633,7 +633,7 @@ public:
 private:
 
 	// Bounds of this curve
-	Time r,s;
+	Synfig_Time r,s;
 
 public:
 	ValueNode* clone(const synfig::GUID& deriv_guid)const
@@ -651,7 +651,7 @@ public:
 		set_type(ValueBase(value_type()).get_type());
 	}
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueBase value)
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueBase value)
 	{
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
@@ -670,7 +670,7 @@ public:
 		return ret;
 	}
 
-	virtual WaypointList::iterator new_waypoint(Time t, ValueNode::Handle value_node)
+	virtual WaypointList::iterator new_waypoint(Synfig_Time t, ValueNode::Handle value_node)
 	{
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
@@ -701,7 +701,7 @@ public:
 
 	}
 
-	virtual ValueBase operator()(Time t)const
+	virtual ValueBase operator()(Synfig_Time t)const
 	{
 		if(waypoint_list_.size()==1)
 			return waypoint_list_.front().get_value(t);
@@ -738,9 +738,9 @@ ValueNode_Animated::ValueNode_Animated()
 }
 
 int
-ValueNode_Animated::find(const Time& begin,const Time& end,std::vector<Waypoint*>& selected)
+ValueNode_Animated::find(const Synfig_Time& begin,const Synfig_Time& end,std::vector<Waypoint*>& selected)
 {
-	Time curr_time(begin);
+	Synfig_Time curr_time(begin);
 	int ret(0);
 
 	// try to grab first waypoint
@@ -773,7 +773,7 @@ ValueNode_Animated::find(const Time& begin,const Time& end,std::vector<Waypoint*
 
 /*
 void
-ValueNode_Animated::manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end)
+ValueNode_Animated::manipulate_time(const Synfig_Time& old_begin,const Synfig_Time& old_end,const Synfig_Time& new_begin,const Synfig_Time& new_end)
 {
 #define old_2_new(x)	(((x)-old_begin)/(old_end-old_begin)*(new_end-new_begin)+new_begin)
 	std::vector<Waypoint*> selected;
@@ -786,7 +786,7 @@ ValueNode_Animated::manipulate_time(const Time& old_begin,const Time& old_end,co
 		{
 			try
 			{
-				Time new_time(old_2_new((*iter)->get_time()));
+				Synfig_Time new_time(old_2_new((*iter)->get_time()));
 				if(new_time>=old_begin && new_time<old_end)
 					continue;
 				find(new_time);
@@ -814,7 +814,7 @@ ValueNode_Animated::manipulate_time(const Time& old_begin,const Time& old_end,co
 */
 
 Waypoint
-ValueNode_Animated::new_waypoint_at_time(const Time& time)const
+ValueNode_Animated::new_waypoint_at_time(const Synfig_Time& time)const
 {
 	Waypoint waypoint;
 	try
@@ -905,7 +905,7 @@ ValueNode_Animated::find(const UniqueID &x)const
 }
 
 ValueNode_Animated::WaypointList::iterator
-ValueNode_Animated::find(const Time &x)
+ValueNode_Animated::find(const Synfig_Time &x)
 {
 	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
 
@@ -916,7 +916,7 @@ ValueNode_Animated::find(const Time &x)
 }
 
 ValueNode_Animated::WaypointList::const_iterator
-ValueNode_Animated::find(const Time &x)const
+ValueNode_Animated::find(const Synfig_Time &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find(x);
 	/*
@@ -930,7 +930,7 @@ ValueNode_Animated::find(const Time &x)const
 }
 
 ValueNode_Animated::WaypointList::iterator
-ValueNode_Animated::find_next(const Time &x)
+ValueNode_Animated::find_next(const Synfig_Time &x)
 {
 	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
 
@@ -947,7 +947,7 @@ ValueNode_Animated::find_next(const Time &x)
 }
 
 ValueNode_Animated::WaypointList::const_iterator
-ValueNode_Animated::find_next(const Time &x)const
+ValueNode_Animated::find_next(const Synfig_Time &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find_next(x);
 	/*
@@ -955,10 +955,10 @@ ValueNode_Animated::find_next(const Time &x)const
 
 	if(iter!=waypoint_list().end())
 	{
-		if(iter->get_time()-Time::epsilon()>x)
+		if(iter->get_time()-Synfig_Time::epsilon()>x)
 			return iter;
 		++iter;
-		if(iter!=waypoint_list().end() && iter->get_time()-Time::epsilon()>x)
+		if(iter!=waypoint_list().end() && iter->get_time()-Synfig_Time::epsilon()>x)
 			return iter;
 	}
 
@@ -967,7 +967,7 @@ ValueNode_Animated::find_next(const Time &x)const
 }
 
 ValueNode_Animated::WaypointList::iterator
-ValueNode_Animated::find_prev(const Time &x)
+ValueNode_Animated::find_prev(const Synfig_Time &x)
 {
 	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
 
@@ -983,7 +983,7 @@ ValueNode_Animated::find_prev(const Time &x)
 }
 
 ValueNode_Animated::WaypointList::const_iterator
-ValueNode_Animated::find_prev(const Time &x)const
+ValueNode_Animated::find_prev(const Synfig_Time &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find_prev(x);
 	/*
@@ -991,9 +991,9 @@ ValueNode_Animated::find_prev(const Time &x)const
 
 	if(iter!=waypoint_list().end())
 	{
-		if(iter->get_time()+Time::epsilon()<x)
+		if(iter->get_time()+Synfig_Time::epsilon()<x)
 			return iter;
-		if(iter!=waypoint_list().begin() && (--iter)->get_time()+Time::epsilon()<x)
+		if(iter!=waypoint_list().begin() && (--iter)->get_time()+Synfig_Time::epsilon()<x)
 			return iter;
 	}
 	throw Exception::NotFound(strprintf("ValueNode_Animated::find_prev(): Can't find Waypoint after %s",x.get_string().c_str()));
@@ -1031,7 +1031,7 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 	switch(type)
 	{
 		case ValueBase::TYPE_TIME:
-			return ValueNode_Animated::Handle(new _Hermite<Time>);
+			return ValueNode_Animated::Handle(new _Hermite<Synfig_Time>);
 		case ValueBase::TYPE_REAL:
 			return ValueNode_Animated::Handle(new _Hermite<Vector::value_type>);
 		case ValueBase::TYPE_INTEGER:
@@ -1062,13 +1062,13 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 }
 
 ValueNode_Animated::Handle
-ValueNode_Animated::create(const ValueBase& value, const Time& time)
+ValueNode_Animated::create(const ValueBase& value, const Synfig_Time& time)
 {
 	return create(ValueNode::Handle(ValueNode_Const::create(value)),time);
 }
 
 ValueNode_Animated::Handle
-ValueNode_Animated::create(ValueNode::Handle value_node, const Time& time)
+ValueNode_Animated::create(ValueNode::Handle value_node, const Synfig_Time& time)
 {
 	ValueNode_Animated::Handle ret(create(value_node->get_type()));
 	ret->new_waypoint(time,value_node);
@@ -1110,9 +1110,9 @@ void ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
 }
 struct timecmp
  {
- 	Time t;
+ 	Synfig_Time t;
 
- 	timecmp(const Time &c) :t(c) {}
+ 	timecmp(const Synfig_Time &c) :t(c) {}
 
  	bool operator()(const Waypoint &rhs) const
  	{
@@ -1149,7 +1149,7 @@ struct timecmp
  }
 
  ValueNode_Animated::findresult
- ValueNode_Animated::find_time(const Time &x)
+ ValueNode_Animated::find_time(const Synfig_Time &x)
  {
  	findresult	f;
  	f.second = false;
@@ -1163,7 +1163,7 @@ struct timecmp
  }
 
 ValueNode_Animated::const_findresult
-ValueNode_Animated::find_time(const Time &x)const
+ValueNode_Animated::find_time(const Synfig_Time &x)const
 {
  	const_findresult	f;
  	f.second = false;
@@ -1177,7 +1177,7 @@ ValueNode_Animated::find_time(const Time &x)const
 }
 
 void
-ValueNode_Animated::insert_time(const Time& location, const Time& delta)
+ValueNode_Animated::insert_time(const Synfig_Time& location, const Synfig_Time& delta)
 {
 	if(!delta)
 		return;

@@ -62,7 +62,7 @@ namespace synfig {
 
 class Canvas;
 class Vector;
-class Time;
+class Synfig_Time;
 class Segment;
 class Gradient;
 class BLinePoint;
@@ -294,7 +294,7 @@ public:
 	// === GET TYPE MEMBERS ===================================================
 	static Type get_type(bool) { return TYPE_BOOL; }
 	static Type get_type(int) { return TYPE_INTEGER; }
-	static Type get_type(const Time&) { return TYPE_TIME; }
+	static Type get_type(const Synfig_Time&) { return TYPE_TIME; }
 	static Type get_type(const Real&) { return TYPE_REAL; }
 	static Type get_type(const float&) { return TYPE_REAL; }
 	static Type get_type(const Vector&) { return TYPE_VECTOR; }
@@ -325,7 +325,7 @@ public:
 	operator const list_type&()const { return get_list(); }
 	//operator const Color&()const { return get(Color()); }
 	operator const Real&()const { return get(Real()); }
-	//operator const Time&()const { return get(Time()); }
+	//operator const Synfig_Time&()const { return get(Synfig_Time()); }
 
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }

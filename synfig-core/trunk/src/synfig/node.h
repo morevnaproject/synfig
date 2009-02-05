@@ -52,11 +52,11 @@ namespace synfig {
 class TimePoint
 {
 	GUID guid;
-	Time time;
+	Synfig_Time time;
 	Interpolation before,after;
 public:
 
-	TimePoint(const Time& x=Time::begin()):
+	TimePoint(const Synfig_Time& x=Synfig_Time::begin()):
 		guid(0),
 		time(x),
 		before(INTERPOLATION_NIL),
@@ -69,31 +69,31 @@ public:
 #endif
 
 	const GUID& get_guid()const { return guid; }
-	const Time& get_time()const { return time; }
+	const Synfig_Time& get_time()const { return time; }
 	Interpolation get_before()const { return before; }
 	Interpolation get_after()const { return after; }
 
 	void set_guid(const GUID& x) { guid=x; }
-	void set_time(const Time& x) { time=x; }
+	void set_time(const Synfig_Time& x) { time=x; }
 	void set_before(Interpolation x) { before=x; }
 	void set_after(Interpolation x) { after=x; }
 
 	void absorb(const TimePoint& x);
 }; // END of class TimePoint
 
-inline TimePoint operator+(TimePoint lhs,const Time& rhs)
+inline TimePoint operator+(TimePoint lhs,const Synfig_Time& rhs)
 	{ lhs.set_time(lhs.get_time()+rhs); return lhs; }
 
-inline TimePoint operator-(TimePoint lhs,const Time& rhs)
+inline TimePoint operator-(TimePoint lhs,const Synfig_Time& rhs)
 	{ lhs.set_time(lhs.get_time()-rhs); return lhs; }
 
 inline bool operator<(const TimePoint& lhs,const TimePoint& rhs)
 	{ return lhs.get_time()<rhs.get_time(); }
 
-inline bool operator<(const TimePoint& lhs,const Time& rhs)
+inline bool operator<(const TimePoint& lhs,const Synfig_Time& rhs)
 	{ return lhs.get_time()<rhs; }
 
-inline bool operator<(const Time& lhs,const TimePoint& rhs)
+inline bool operator<(const Synfig_Time& lhs,const TimePoint& rhs)
 	{ return lhs<rhs.get_time(); }
 
 inline bool operator==(const TimePoint& lhs,const TimePoint& rhs)

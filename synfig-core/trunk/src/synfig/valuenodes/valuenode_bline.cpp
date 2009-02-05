@@ -404,7 +404,7 @@ ValueNode_BLine::create(const ValueBase &value)
 }
 
 ValueNode_BLine::ListEntry
-ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
+ValueNode_BLine::create_list_entry(int index, Synfig_Time time, Real origin)
 {
 	ValueNode_BLine::ListEntry ret;
 
@@ -448,7 +448,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 static int instance_count;
 
 ValueBase
-ValueNode_BLine::operator()(Time t)const
+ValueNode_BLine::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -524,21 +524,21 @@ ValueNode_BLine::operator()(Time t)const
 			BLinePoint blp_next_off; // the end of the dynamic group when fully off
 
 			int dist_from_begin(0), dist_from_end(0);
-			Time off_time, on_time;
+			Synfig_Time off_time, on_time;
 
 			if(!rising)	// if not rising, then we were fully on in the past, and will be fully off in the future
 			{
 				try{ on_time=iter->find_prev(t)->get_time(); }
-				catch(...) { on_time=Time::begin(); }
+				catch(...) { on_time=Synfig_Time::begin(); }
 				try{ off_time=iter->find_next(t)->get_time(); }
-				catch(...) { off_time=Time::end(); }
+				catch(...) { off_time=Synfig_Time::end(); }
 			}
 			else // otherwise we were fully off in the past, and will be fully on in the future
 			{
 				try{ off_time=iter->find_prev(t)->get_time(); }
-				catch(...) { off_time=Time::begin(); }
+				catch(...) { off_time=Synfig_Time::begin(); }
 				try{ on_time=iter->find_next(t)->get_time(); }
-				catch(...) { on_time=Time::end(); }
+				catch(...) { on_time=Synfig_Time::end(); }
 			}
 
 			blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);

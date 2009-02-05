@@ -59,7 +59,7 @@ Keyframe::Keyframe():
 {
 }
 
-Keyframe::Keyframe(const Time &time):
+Keyframe::Keyframe(const Synfig_Time &time):
 	time_(time)
 {
 }
@@ -129,7 +129,7 @@ KeyframeList::erase(const UniqueID &x)
 }
 
 KeyframeList::iterator
-KeyframeList::find(const Time &x)
+KeyframeList::find(const Synfig_Time &x)
 {
 	KeyframeList::iterator iter;
 	iter=binary_find(begin(),end(),x);
@@ -143,7 +143,7 @@ KeyframeList::find(const Time &x)
 }
 
 KeyframeList::iterator
-KeyframeList::find_next(const Time &x)
+KeyframeList::find_next(const Synfig_Time &x)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
@@ -168,15 +168,15 @@ KeyframeList::find_next(const Time &x)
 
 
 KeyframeList::iterator
-KeyframeList::find_prev(const Time &x)
+KeyframeList::find_prev(const Synfig_Time &x)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
 	if(iter!=end())
 	{
-		if(iter->get_time()+Time::epsilon()<x)
+		if(iter->get_time()+Synfig_Time::epsilon()<x)
 			return iter;
-		if(iter!=begin() && (--iter)->get_time()+Time::epsilon()<x)
+		if(iter!=begin() && (--iter)->get_time()+Synfig_Time::epsilon()<x)
 			return iter;
 	}
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
@@ -186,14 +186,14 @@ KeyframeList::find_prev(const Time &x)
 
 
 KeyframeList::const_iterator
-KeyframeList::find(const Time &x)const
+KeyframeList::find(const Synfig_Time &x)const
 {
 	return const_cast<KeyframeList*>(this)->find(x);
 }
 
 
 KeyframeList::const_iterator
-KeyframeList::find_next(const Time &x)const
+KeyframeList::find_next(const Synfig_Time &x)const
 {
 	return const_cast<KeyframeList*>(this)->find_next(x);
 
@@ -201,23 +201,23 @@ KeyframeList::find_next(const Time &x)const
 
 
 KeyframeList::const_iterator
-KeyframeList::find_prev(const Time &x)const
+KeyframeList::find_prev(const Synfig_Time &x)const
 {
 	return const_cast<KeyframeList*>(this)->find_prev(x);
 
 }
 
 void
-KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next)const
+KeyframeList::find_prev_next(const Synfig_Time& time, Synfig_Time &prev, Synfig_Time &next)const
 {
 	try { prev=find_prev(time)->get_time(); }
-	catch(...) { prev=Time::begin(); }
+	catch(...) { prev=Synfig_Time::begin(); }
 	try { next=find_next(time)->get_time(); }
-	catch(...) { next=Time::end(); }
+	catch(...) { next=Synfig_Time::end(); }
 }
 
 void
-KeyframeList::insert_time(const Time& location, const Time& delta)
+KeyframeList::insert_time(const Synfig_Time& location, const Synfig_Time& delta)
 {
 //	synfig::info("KeyframeList::insert_time(): loc=%s, delta=%s",location.get_string().c_str(),delta.get_string().c_str());
 	if(!delta)

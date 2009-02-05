@@ -77,9 +77,9 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 		set_link("link",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("min",ValueNode_Const::create(value.get(Time())));
-		set_link("max",ValueNode_Const::create(value.get(Time())));
-		set_link("link",ValueNode_Const::create(value.get(Time())));
+		set_link("min",ValueNode_Const::create(value.get(Synfig_Time())));
+		set_link("max",ValueNode_Const::create(value.get(Synfig_Time())));
+		set_link("link",ValueNode_Const::create(value.get(Synfig_Time())));
 		break;
 	default:
 		assert(0);
@@ -112,7 +112,7 @@ synfig::ValueNode_Range::~ValueNode_Range()
 }
 
 synfig::ValueBase
-synfig::ValueNode_Range::operator()(Time t)const
+synfig::ValueNode_Range::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -142,7 +142,7 @@ synfig::ValueNode_Range::operator()(Time t)const
 	case ValueBase::TYPE_REAL:
 		return std::max((*min_)(t).get(Real()), std::min((*max_)(t).get(Real()), (*link_)(t).get(Real())));
 	case ValueBase::TYPE_TIME:
-		return std::max((*min_)(t).get(Time()), std::min((*max_)(t).get(Time()), (*link_)(t).get(Time())));
+		return std::max((*min_)(t).get(Synfig_Time()), std::min((*max_)(t).get(Synfig_Time()), (*link_)(t).get(Synfig_Time())));
 	default:
 		assert(0);
 		break;

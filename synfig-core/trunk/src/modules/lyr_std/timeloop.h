@@ -44,12 +44,12 @@ class Layer_TimeLoop : public synfig::Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	synfig::Time	link_time;
-	synfig::Time	local_time;
-	synfig::Time	duration;
+	synfig::Synfig_Time	link_time;
+	synfig::Synfig_Time	local_time;
+	synfig::Synfig_Time	duration;
 
-	synfig::Time	start_time;
-	synfig::Time	end_time;
+	synfig::Synfig_Time	start_time;
+	synfig::Synfig_Time	end_time;
 	bool			old_version;
 	bool			only_for_positive_duration;
 	bool			symmetrical; // the 0.1 version of this layer behaved differently before 'start_time' was reached
@@ -69,7 +69,7 @@ public:
 	virtual void reset_version();
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 
-	virtual void set_time(synfig::Context context, synfig::Time time)const;
+	virtual void set_time(synfig::Context context, synfig::Synfig_Time time)const;
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 };
 

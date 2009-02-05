@@ -48,7 +48,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Waypoint::Waypoint(ValueBase value, Time time):
+Waypoint::Waypoint(ValueBase value, Synfig_Time time):
 	priority_(0),
 	before(INTERPOLATION_TCB),
 	after(INTERPOLATION_TCB),
@@ -63,7 +63,7 @@ Waypoint::Waypoint(ValueBase value, Time time):
 		after=before=INTERPOLATION_LINEAR;
 }
 
-Waypoint::Waypoint(etl::handle<ValueNode> value_node, Time time):
+Waypoint::Waypoint(etl::handle<ValueNode> value_node, Synfig_Time time):
 	priority_(0),
 	before(INTERPOLATION_TCB),
 	after(INTERPOLATION_TCB),
@@ -114,7 +114,7 @@ Waypoint::is_static()const
 }
 
 void
-Waypoint::set_time(const Time &x)
+Waypoint::set_time(const Synfig_Time &x)
 {
 	time=x;
 }
@@ -146,7 +146,7 @@ ValueBase
 Waypoint::get_value()const { return (*value_node)(0); }
 
 ValueBase
-Waypoint::get_value(const Time &t)const { return (*value_node)(t); }
+Waypoint::get_value(const Synfig_Time &t)const { return (*value_node)(t); }
 
 synfig::GUID
 Waypoint::get_guid()const

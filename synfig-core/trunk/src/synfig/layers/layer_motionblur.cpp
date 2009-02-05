@@ -86,14 +86,14 @@ Layer_MotionBlur::get_param(const String &param)const
 }
 
 void
-Layer_MotionBlur::set_time(Context context, Time time)const
+Layer_MotionBlur::set_time(Context context, Synfig_Time time)const
 {
 	context.set_time(time);
 	time_cur=time;
 }
 
 void
-Layer_MotionBlur::set_time(Context context, Time time, const Point &pos)const
+Layer_MotionBlur::set_time(Context context, Synfig_Time time, const Point &pos)const
 {
 	context.set_time(time,pos);
 	time_cur=time;
@@ -104,7 +104,7 @@ Layer_MotionBlur::get_color(Context context, const Point &pos)const
 {
 /*	if(aperture)
 	{
-		Time time(time_cur);
+		Synfig_Time time(time_cur);
 		time+=(Vector::value_type)( (signed)(RAND_MAX/2)-(signed)rand() )/(Vector::value_type)(RAND_MAX) *aperture -aperture*0.5;
 		context.set_time(time, pos);
 	}

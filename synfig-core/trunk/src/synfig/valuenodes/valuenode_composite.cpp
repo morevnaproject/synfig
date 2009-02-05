@@ -112,7 +112,7 @@ ValueNode_Composite::create_new()const
 }
 
 ValueBase
-synfig::ValueNode_Composite::operator()(Time t)const
+synfig::ValueNode_Composite::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

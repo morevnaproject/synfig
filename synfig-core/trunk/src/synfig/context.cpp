@@ -339,7 +339,7 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 }
 
 void
-Context::set_time(Time time)const
+Context::set_time(Synfig_Time time)const
 {
 	Context context(*this);
 	while(!(context)->empty())
@@ -384,7 +384,7 @@ Context::set_time(Time time)const
 }
 
 void
-Context::set_time(Time time,const Vector &/*pos*/)const
+Context::set_time(Synfig_Time time,const Vector &/*pos*/)const
 {
 	set_time(time);
 /*

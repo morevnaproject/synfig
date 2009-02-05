@@ -50,10 +50,10 @@ public:
 	ValueNode_Duplicate(const ValueBase::Type &x);
 	ValueNode_Duplicate(const ValueBase &x);
 
-	virtual ValueBase operator()(Time t)const;
-	void reset_index(Time t)const;
-	bool step(Time t)const;
-	int count_steps(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
+	void reset_index(Synfig_Time t)const;
+	bool step(Synfig_Time t)const;
+	int count_steps(Synfig_Time t)const;
 
 	virtual ~ValueNode_Duplicate();
 

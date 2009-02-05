@@ -88,7 +88,7 @@ ValueNode_BLineCalcTangent::~ValueNode_BLineCalcTangent()
 }
 
 ValueBase
-ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
+ValueNode_BLineCalcTangent::operator()(Synfig_Time t, Real amount)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -157,7 +157,7 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 }
 
 ValueBase
-ValueNode_BLineCalcTangent::operator()(Time t)const
+ValueNode_BLineCalcTangent::operator()(Synfig_Time t)const
 {
 	Real amount((*amount_)(t).get(Real()));
 	return (*this)(t, amount);

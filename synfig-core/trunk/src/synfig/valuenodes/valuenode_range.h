@@ -48,7 +48,7 @@ public:
 	typedef etl::handle<ValueNode_Range> Handle;
 	typedef etl::handle<const ValueNode_Range> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_Range();
 

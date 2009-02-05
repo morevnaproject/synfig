@@ -50,7 +50,7 @@ public:
 //	static Handle create(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_SegCalcVertex();
 

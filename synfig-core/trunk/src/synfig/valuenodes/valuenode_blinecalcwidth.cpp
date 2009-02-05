@@ -86,7 +86,7 @@ ValueNode_BLineCalcWidth::~ValueNode_BLineCalcWidth()
 }
 
 ValueBase
-ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
+ValueNode_BLineCalcWidth::operator()(Synfig_Time t, Real amount)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -128,7 +128,7 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 }
 
 ValueBase
-ValueNode_BLineCalcWidth::operator()(Time t)const
+ValueNode_BLineCalcWidth::operator()(Synfig_Time t)const
 {
 	Real amount((*amount_)(t).get(Real()));
 	return (*this)(t, amount);

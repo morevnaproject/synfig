@@ -84,7 +84,7 @@ ValueNode_Atan2::~ValueNode_Atan2()
 }
 
 ValueBase
-ValueNode_Atan2::operator()(Time t)const
+ValueNode_Atan2::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

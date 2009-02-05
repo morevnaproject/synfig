@@ -71,7 +71,7 @@ public:
 	**		in \a x or \a y should be disregarded. */
 	virtual int next_tile(int& x, int& y);
 
-	virtual int next_frame(Time& time);
+	virtual int next_frame(Synfig_Time& time);
 
 	//! Adds the tile at \a x , \a y contained in \a surface
 	virtual bool add_tile(const synfig::Surface &surface, int x, int y)=0;

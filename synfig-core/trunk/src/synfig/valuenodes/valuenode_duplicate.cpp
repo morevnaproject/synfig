@@ -146,14 +146,14 @@ ValueNode_Duplicate::get_link_index_from_name(const String &name)const
 }
 
 void
-ValueNode_Duplicate::reset_index(Time t)const
+ValueNode_Duplicate::reset_index(Synfig_Time t)const
 {
 	Real from = (*from_)(t).get(Real());
 	index = from;
 }
 
 bool
-ValueNode_Duplicate::step(Time t)const
+ValueNode_Duplicate::step(Synfig_Time t)const
 {
 	Real from = (*from_)(t).get(Real());
 	Real to   = (*to_  )(t).get(Real());
@@ -177,7 +177,7 @@ ValueNode_Duplicate::step(Time t)const
 }
 
 int
-ValueNode_Duplicate::count_steps(Time t)const
+ValueNode_Duplicate::count_steps(Synfig_Time t)const
 {
 	Real from = (*from_)(t).get(Real());
 	Real to   = (*to_  )(t).get(Real());
@@ -189,7 +189,7 @@ ValueNode_Duplicate::count_steps(Time t)const
 }
 
 ValueBase
-ValueNode_Duplicate::operator()(Time t __attribute__ ((unused)))const
+ValueNode_Duplicate::operator()(Synfig_Time t __attribute__ ((unused)))const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

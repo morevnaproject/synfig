@@ -55,7 +55,7 @@ public:
 	typedef etl::handle<ValueNode_Random> Handle;
 	typedef etl::handle<const ValueNode_Random> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_Random();
 

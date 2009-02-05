@@ -51,7 +51,7 @@ private:
 
 public:
 	//! Time of the activepoint
-	Time time;
+	Synfig_Time time;
 
 	//! Priority
 	int priority;
@@ -60,14 +60,14 @@ public:
 	bool state;
 
 	bool operator<(const Activepoint& rhs) { return time<rhs.time; }
-	bool operator<(const Time& rhs) { return time<rhs; }
+	bool operator<(const Synfig_Time& rhs) { return time<rhs; }
 
-	Activepoint(const Time &time, const bool &state, int p=0): time(time), priority(p),state(state) { }
+	Activepoint(const Synfig_Time &time, const bool &state, int p=0): time(time), priority(p),state(state) { }
 	//! \todo Should priority be initialized here, or elsewhere?  This avoids a valgrind warning for now.
 	Activepoint(): priority(0) { }
 
-	const Time& get_time()const { return time; }
-	void set_time(const Time& x) { time=x; }
+	const Synfig_Time& get_time()const { return time; }
+	void set_time(const Synfig_Time& x) { time=x; }
 
 	bool get_state()const { return state; }
 	void set_state(bool x) { state=x; }

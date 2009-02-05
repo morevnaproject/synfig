@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<const ValueNode_Join> ConstHandle;
 
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_Join();
 

@@ -59,7 +59,7 @@ public:
 	jpeg_mptr(const char *filename);
 	~jpeg_mptr();
 
-	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
+	virtual bool get_frame(synfig::Surface &surface,synfig::Synfig_Time time, synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */

@@ -60,9 +60,9 @@ private:
 
 	Real zoom;
 
-	Time time_offset;
+	Synfig_Time time_offset;
 
-	mutable Time curr_time;
+	mutable Synfig_Time curr_time;
 
 	bool muck_with_time_;
 
@@ -128,7 +128,7 @@ public:
 
 	Real get_zoom()const { return zoom; }
 
-	Time get_time_offset()const { return time_offset; }
+	Synfig_Time get_time_offset()const { return time_offset; }
 
 	Point get_origin()const { return origin; }
 
@@ -143,7 +143,7 @@ public:
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
-	virtual void set_time(Context context, Time time)const;
+	virtual void set_time(Context context, Synfig_Time time)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 

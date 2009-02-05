@@ -47,7 +47,7 @@ class Surface;
 class RendDesc;
 class ProgressCallback;
 class Layer;
-class Time;
+class Synfig_Time;
 class Rect;
 
 /*!	\class Context
@@ -77,10 +77,10 @@ public:
 	bool render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, RenderMethod method) const;
 
 	/*!	\todo write me */
-   	void set_time(Time time)const;
+   	void set_time(Synfig_Time time)const;
 
 	/*!	\writeme */
-   	void set_time(Time time,const Vector &pos)const;
+   	void set_time(Synfig_Time time,const Vector &pos)const;
 
 	Rect get_full_bounding_rect()const;
 

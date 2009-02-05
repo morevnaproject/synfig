@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<const ValueNode_AngleString> ConstHandle;
 
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_AngleString();
 

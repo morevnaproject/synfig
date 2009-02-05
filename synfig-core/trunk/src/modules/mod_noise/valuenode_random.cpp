@@ -81,7 +81,7 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 		set_link("link",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("link",ValueNode_Const::create(value.get(Time())));
+		set_link("link",ValueNode_Const::create(value.get(Synfig_Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
@@ -111,7 +111,7 @@ ValueNode_Random::~ValueNode_Random()
 }
 
 ValueBase
-ValueNode_Random::operator()(Time t)const
+ValueNode_Random::operator()(Synfig_Time t)const
 {
 	typedef const RandomNoise::SmoothType Smooth;
 
@@ -149,7 +149,7 @@ ValueNode_Random::operator()(Time t)const
 				random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
 
 	case ValueBase::TYPE_TIME:
-		return ((*link_)(t).get(  Time()) +
+		return ((*link_)(t).get(  Synfig_Time()) +
 				random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
 
 	case ValueBase::TYPE_VECTOR:

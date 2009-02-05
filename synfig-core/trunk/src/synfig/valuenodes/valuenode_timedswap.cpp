@@ -75,8 +75,8 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 		set_link("after",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("before",ValueNode_Const::create(value.get(Time())));
-		set_link("after",ValueNode_Const::create(value.get(Time())));
+		set_link("before",ValueNode_Const::create(value.get(Synfig_Time())));
+		set_link("after",ValueNode_Const::create(value.get(Synfig_Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("before",ValueNode_Const::create(value.get(Vector())));
@@ -86,8 +86,8 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 		throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
 
-	set_link("time",ValueNode_Const::create(Time(2)));
-	set_link("length",ValueNode_Const::create(Time(1)));
+	set_link("time",ValueNode_Const::create(Synfig_Time(2)));
+	set_link("length",ValueNode_Const::create(Synfig_Time(1)));
 
 	DCAST_HACK_ENABLE();
 }
@@ -110,13 +110,13 @@ synfig::ValueNode_TimedSwap::~ValueNode_TimedSwap()
 }
 
 synfig::ValueBase
-synfig::ValueNode_TimedSwap::operator()(Time t)const
+synfig::ValueNode_TimedSwap::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Time swptime=(*swap_time)(t).get(Time());
-	Time swplength=(*swap_length)(t).get(Time());
+	Synfig_Time swptime=(*swap_time)(t).get(Synfig_Time());
+	Synfig_Time swplength=(*swap_length)(t).get(Synfig_Time());
 
 	if(t>swptime)
 		return (*after)(t);
@@ -156,8 +156,8 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 			}
 		case ValueBase::TYPE_TIME:
 			{
-				Time a=(*after)(t).get(Time());
-				Time b=(*before)(t).get(Time());
+				Synfig_Time a=(*after)(t).get(Synfig_Time());
+				Synfig_Time b=(*before)(t).get(Synfig_Time());
 				return (b-a)*amount+a;
 			}
 		case ValueBase::TYPE_VECTOR:

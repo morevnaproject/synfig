@@ -668,21 +668,21 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 		{
 			arg_list.erase(iter);
 			iter=next++;
-			desc.set_time_start(Time(*iter,desc.get_frame_rate()));
+			desc.set_time_start(Synfig_Time(*iter,desc.get_frame_rate()));
 			arg_list.erase(iter);
 		}
 		else if(*iter=="--end-time")
 		{
 			arg_list.erase(iter);
 			iter=next++;
-			desc.set_time_end(Time(*iter,desc.get_frame_rate()));
+			desc.set_time_end(Synfig_Time(*iter,desc.get_frame_rate()));
 			arg_list.erase(iter);
 		}
 		else if(*iter=="--time")
 		{
 			arg_list.erase(iter);
 			iter=next++;
-			desc.set_time(Time(*iter,desc.get_frame_rate()));
+			desc.set_time(Synfig_Time(*iter,desc.get_frame_rate()));
 			VERBOSE_OUT(1)<<_("Rendering frame at ")<<desc.get_time_start().get_string(desc.get_frame_rate())<<endl;
 			arg_list.erase(iter);
 		}

@@ -232,7 +232,7 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 		return Keyframe();
 	}
 
-	Keyframe ret(Time(element->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate()));
+	Keyframe ret(Synfig_Time(element->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 
 	if(element->get_children().empty())
@@ -266,7 +266,7 @@ CanvasParser::parse_real(xmlpp::Element *element)
 	return atof(val.c_str());
 }
 
-Time
+synfig::Synfig_Time
 CanvasParser::parse_time(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="time");
@@ -282,7 +282,7 @@ CanvasParser::parse_time(xmlpp::Element *element,Canvas::Handle canvas)
 
 	string val=element->get_attribute("value")->get_value();
 
-	return Time(val,canvas->rend_desc().get_frame_rate());
+	return synfig::Synfig_Time(val,canvas->rend_desc().get_frame_rate());
 }
 
 int
@@ -922,7 +922,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			Time time(child->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate());
+			Synfig_Time time(child->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate());
 
 
 			ValueNode::Handle waypoint_value_node;
@@ -1459,7 +1459,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 					timing_info.push_back(
 						Activepoint(
-							Time(
+							Synfig_Time(
 								timecode,
 								fps
 							),
@@ -1499,7 +1499,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 					timing_info.push_back(
 						Activepoint(
-							Time(
+							Synfig_Time(
 								timecode,
 								fps
 							),
@@ -1937,13 +1937,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 		canvas->rend_desc().set_frame_rate(atof(element->get_attribute("fps")->get_value().c_str()));
 
 	if(element->get_attribute("start-time"))
-		canvas->rend_desc().set_time_start(Time(element->get_attribute("start-time")->get_value(),canvas->rend_desc().get_frame_rate()));
+		canvas->rend_desc().set_time_start(Synfig_Time(element->get_attribute("start-time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 	if(element->get_attribute("begin-time"))
-		canvas->rend_desc().set_time_start(Time(element->get_attribute("begin-time")->get_value(),canvas->rend_desc().get_frame_rate()));
+		canvas->rend_desc().set_time_start(Synfig_Time(element->get_attribute("begin-time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 	if(element->get_attribute("end-time"))
-		canvas->rend_desc().set_time_end(Time(element->get_attribute("end-time")->get_value(),canvas->rend_desc().get_frame_rate()));
+		canvas->rend_desc().set_time_end(Synfig_Time(element->get_attribute("end-time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 	if(element->get_attribute("antialias"))
 		canvas->rend_desc().set_antialias(atoi(element->get_attribute("antialias")->get_value().c_str()));

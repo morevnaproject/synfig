@@ -279,7 +279,7 @@ Canvas::set_description(const String &x)
 }
 
 void
-Canvas::set_time(Time t)const
+Canvas::set_time(Synfig_Time t)const
 {
 	if(is_dirty_ || !get_time().is_equal(t))
 	{
@@ -1054,7 +1054,7 @@ Canvas::get_meta_data_keys()const
 		  refer to "motion blur", they mean either of these two
 		  layers. */
 void
-synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
+synfig::optimize_layers(Synfig_Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
 {
 	Context iter;
 

@@ -83,7 +83,7 @@ NoiseDistort::color_func(const Point &point, float /*supersample*/,Context conte
 	float y(point[1]/size[1]*(1<<detail));
 
 	int i;
-	Time time;
+	Synfig_Time time;
 	time=speed*curr_time;
 	RandomNoise::SmoothType temp_smooth(smooth);
 	RandomNoise::SmoothType smooth((!speed && temp_smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : temp_smooth);
@@ -128,14 +128,14 @@ NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*
 }
 
 void
-NoiseDistort::set_time(synfig::Context context, synfig::Time t)const
+NoiseDistort::set_time(synfig::Context context, synfig::Synfig_Time t)const
 {
 	curr_time=t;
 	context.set_time(t);
 }
 
 void
-NoiseDistort::set_time(synfig::Context context, synfig::Time t, const synfig::Point &point)const
+NoiseDistort::set_time(synfig::Context context, synfig::Synfig_Time t, const synfig::Point &point)const
 {
 	curr_time=t;
 	context.set_time(t,point);

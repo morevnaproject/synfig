@@ -152,7 +152,7 @@ ValueNode_Switch::get_link_index_from_name(const String &name)const
 }
 
 ValueBase
-ValueNode_Switch::operator()(Time t)const
+ValueNode_Switch::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

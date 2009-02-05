@@ -201,7 +201,7 @@ Layer_TimeLoop::reset_version()
 	else
 		end_time_value_node = ValueNode_Const::create(end_time);
 
-	duration_value_node = ValueNode_Subtract::create(Time(0));
+	duration_value_node = ValueNode_Subtract::create(Synfig_Time(0));
 	duration_value_node->set_link("lhs", end_time_value_node);
 	duration_value_node->set_link("rhs", start_time_value_node);
 
@@ -210,9 +210,9 @@ Layer_TimeLoop::reset_version()
 }
 
 void
-Layer_TimeLoop::set_time(Context context, Time t)const
+Layer_TimeLoop::set_time(Context context, Synfig_Time t)const
 {
-	Time time = t;
+	Synfig_Time time = t;
 
 	if (!only_for_positive_duration || duration > 0)
 	{

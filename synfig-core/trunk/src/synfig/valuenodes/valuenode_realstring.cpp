@@ -87,7 +87,7 @@ ValueNode_RealString::~ValueNode_RealString()
 }
 
 ValueBase
-ValueNode_RealString::operator()(Time t)const
+ValueNode_RealString::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

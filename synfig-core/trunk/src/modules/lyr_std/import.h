@@ -46,7 +46,7 @@ private:
 	synfig::String filename;
 	synfig::String abs_filename;
 	synfig::Importer::Handle importer;
-	synfig::Time time_offset;
+	synfig::Synfig_Time time_offset;
 
 protected:
 	Import();
@@ -62,9 +62,9 @@ public:
 
 	virtual void on_canvas_set();
 
-	virtual void set_time(synfig::Context context, synfig::Time time)const;
+	virtual void set_time(synfig::Context context, synfig::Synfig_Time time)const;
 
-	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
+	virtual void set_time(synfig::Context context, synfig::Synfig_Time time, const synfig::Point &point)const;
 };
 
 /* === E N D =============================================================== */

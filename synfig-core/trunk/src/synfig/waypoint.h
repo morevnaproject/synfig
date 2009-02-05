@@ -167,7 +167,7 @@ private:
 
 	etl::rhandle<ValueNode> value_node;
 
-	Time time;
+	Synfig_Time time;
 
 	// The following are for the INTERPOLATION_TCB type
 	Real tension;
@@ -186,8 +186,8 @@ private:
 
 public:
 
-	Waypoint(ValueBase value, Time time);
-	Waypoint(etl::handle<ValueNode> value_node, Time time);
+	Waypoint(ValueBase value, Synfig_Time time);
+	Waypoint(etl::handle<ValueNode> value_node, Synfig_Time time);
 
 	Waypoint();
 
@@ -206,7 +206,7 @@ public:
 	void set_after(Interpolation x) { after=x; }
 
 	ValueBase get_value()const;
-	ValueBase get_value(const Time &t)const;
+	ValueBase get_value(const Synfig_Time &t)const;
 	void set_value(const ValueBase &x);
 
 	const etl::rhandle<ValueNode> &get_value_node()const { return value_node; }
@@ -221,8 +221,8 @@ public:
 	const Real &get_bias()const { return bias; }
 	void set_bias(const Real &x) { bias=x; }
 
-	const Time &get_time()const { return time; }
-	void set_time(const Time &x);
+	const Synfig_Time &get_time()const { return time; }
+	void set_time(const Synfig_Time &x);
 
 	int get_priority()const { return priority_; }
 	void set_priority(int x) { priority_=x; }
@@ -238,14 +238,14 @@ public:
 	bool operator<(const Waypoint &rhs)const
 	{ return time<rhs.time; }
 
-	bool operator<(const Time &rhs)const
+	bool operator<(const Synfig_Time &rhs)const
 	{ return time.is_less_than(rhs); }
-	bool operator>(const Time &rhs)const
+	bool operator>(const Synfig_Time &rhs)const
 	{ return time.is_more_than(rhs); }
 
-	bool operator==(const Time &rhs)const
+	bool operator==(const Synfig_Time &rhs)const
 	{ return time.is_equal(rhs); }
-	bool operator!=(const Time &rhs)const
+	bool operator!=(const Synfig_Time &rhs)const
 	{ return !time.is_equal(rhs); }
 
 	bool operator==(const UniqueID &rhs)const

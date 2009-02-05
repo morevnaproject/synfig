@@ -237,14 +237,14 @@ Region::get_param_vocab()const
 }
 
 void
-Region::set_time(Context context, Time time)const
+Region::set_time(Context context, Synfig_Time time)const
 {
 	const_cast<Region*>(this)->sync();
 	context.set_time(time);
 }
 
 void
-Region::set_time(Context context, Time time, Vector pos)const
+Region::set_time(Context context, Synfig_Time time, Vector pos)const
 {
 	const_cast<Region*>(this)->sync();
 	context.set_time(time,pos);

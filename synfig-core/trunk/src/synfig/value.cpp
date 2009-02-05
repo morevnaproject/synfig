@@ -72,7 +72,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_INTEGER:		data=static_cast<void*>(new int());					break;
 	case TYPE_ANGLE:		data=static_cast<void*>(new Angle());				break;
 	case TYPE_VECTOR:		data=static_cast<void*>(new Vector());				break;
-	case TYPE_TIME:			data=static_cast<void*>(new Time());				break;
+	case TYPE_TIME:			data=static_cast<void*>(new Synfig_Time());				break;
 	case TYPE_REAL:			data=static_cast<void*>(new Real());				break;
 	case TYPE_COLOR:		data=static_cast<void*>(new Color());				break;
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
@@ -109,7 +109,7 @@ ValueBase::get_string() const
 
 		// All types after this point are larger than 32 bits
 
-	case TYPE_TIME:			return strprintf("Time (%s)", get(Time()).get_string().c_str());
+	case TYPE_TIME:			return strprintf("Time (%s)", get(Synfig_Time()).get_string().c_str());
 	case TYPE_REAL:			return strprintf("Real (%f)", get(Real()));
 
 		// All types after this point are larger than 64 bits
@@ -229,7 +229,7 @@ ValueBase::clear()
 		case TYPE_BOOL:			delete static_cast<bool*>(data);		break;
 		case TYPE_INTEGER:		delete static_cast<int*>(data);			break;
 		case TYPE_ANGLE:		delete static_cast<Angle*>(data);		break;
-		case TYPE_TIME:			delete static_cast<Time*>(data);		break;
+		case TYPE_TIME:			delete static_cast<Synfig_Time*>(data);		break;
 		case TYPE_REAL:			delete static_cast<Real*>(data);		break;
 		case TYPE_VECTOR:		delete static_cast<Vector*>(data);		break;
 		case TYPE_COLOR:		delete static_cast<Color*>(data);		break;
@@ -349,7 +349,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 
 	switch(get_type())
 	{
-	case TYPE_TIME:			   return get(Time()).is_equal(rhs.get(Time()));
+	case TYPE_TIME:			   return get(Synfig_Time()).is_equal(rhs.get(Synfig_Time()));
 	case TYPE_REAL:			   return abs(get(Real())-rhs.get(Real()))<=0.00000000000001;
 	case TYPE_INTEGER:		   return get(int())==rhs.get(int());
 	case TYPE_BOOL:			   return get(bool())==rhs.get(bool());

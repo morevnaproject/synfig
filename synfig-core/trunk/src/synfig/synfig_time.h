@@ -38,18 +38,18 @@
 
 namespace synfig {
 
-/*!	\class Time
+/*!	\class Synfig_Time
 **	\todo writeme
-**	\see TimeFormat, time_to_string(), string_to_time()
+**	\see Synfig_TimeFormat, time_to_string(), string_to_time()
 */
-class Time
+class Synfig_Time
 {
 public:
 	typedef double value_type;
 
 	/*!	\enum Format
 	**	\todo writeme
-	**	\see Time, get_string() */
+	**	\see Synfig_Time, get_string() */
 	enum Format
 	{
 		FORMAT_NORMAL=0,		//!< Represents the default method of printing the time
@@ -67,38 +67,38 @@ private:
 	static value_type epsilon_() { return static_cast<value_type>(0.0005); }
 
 public:
-	Time() { }
+	Synfig_Time() { }
 
-	Time(const value_type &x):value_(x) { }
+	Synfig_Time(const value_type &x):value_(x) { }
 
-	Time(int x):value_(x) { }
+	Synfig_Time(int x):value_(x) { }
 
-	Time(int hour, int minute, float second):value_(static_cast<value_type>(second+hour*3600+minute*60)) { }
+	Synfig_Time(int hour, int minute, float second):value_(static_cast<value_type>(second+hour*3600+minute*60)) { }
 
-	//! Constructs Time from the given string.
+	//! Constructs Synfig_Time from the given string.
 	/*!	\note If the string references frames, then the
 	**	frame rate (\a fps) should be provided from the
 	**	correct source. (Which is most likely the RendDesc
 	**	of the current Canvas)
 	**	The frame count will be ignored if the
 	**	FPS is not given. */
-	Time(const String &string, float fps=0);
+	Synfig_Time(const String &string, float fps=0);
 
 	//! Marks the exclusive negative boundary of time
-	static const Time begin() { return static_cast<synfig::Time>(-32767.0f*512.0f); }
+	static const Synfig_Time begin() { return static_cast<synfig::Synfig_Time>(-32767.0f*512.0f); }
 
 	//! Marks the exclusive positive boundary of time
-	static const Time end() { return static_cast<synfig::Time>(32767.0f*512.0f); }
+	static const Synfig_Time end() { return static_cast<synfig::Synfig_Time>(32767.0f*512.0f); }
 
 	//! Marks zero time
-	static const Time zero() { return static_cast<synfig::Time>(0); }
+	static const Synfig_Time zero() { return static_cast<synfig::Synfig_Time>(0); }
 
 	//! The amount of allowable error in calculations
-	static const Time epsilon() { return static_cast<synfig::Time>(epsilon_()); }
+	static const Synfig_Time epsilon() { return static_cast<synfig::Synfig_Time>(epsilon_()); }
 
 	//! Returns a string describing the current time value
 	/*!	\see Format */
-	String get_string(float fps=0, Time::Format format=FORMAT_NORMAL)const;
+	String get_string(float fps=0, Synfig_Time::Format format=FORMAT_NORMAL)const;
 
 #ifdef _DEBUG
 	const char *c_str()const;
@@ -108,11 +108,11 @@ public:
 	bool is_valid()const;
 
 	//! Rounds time to the nearest frame for the given frame rate, \a fps
-	Time round(float fps)const;
+	Synfig_Time round(float fps)const;
 
-	bool is_equal(const Time& rhs)const { return (value_>rhs.value_)?value_-rhs.value_<=epsilon_():rhs.value_-value_<=epsilon_(); }
-	bool is_less_than(const Time& rhs)const { return rhs.value_-value_ > epsilon_(); }
-	bool is_more_than(const Time& rhs)const { return value_-rhs.value_ > epsilon_(); }
+	bool is_equal(const Synfig_Time& rhs)const { return (value_>rhs.value_)?value_-rhs.value_<=epsilon_():rhs.value_-value_<=epsilon_(); }
+	bool is_less_than(const Synfig_Time& rhs)const { return rhs.value_-value_ > epsilon_(); }
+	bool is_more_than(const Synfig_Time& rhs)const { return value_-rhs.value_ > epsilon_(); }
 
 	operator double()const { return value_; }
 
@@ -124,44 +124,44 @@ public:
 	template<typename U> bool operator!=(const U& rhs)const { return value_!=rhs; }
 
 #if 0
-	bool operator<(const Time& rhs)const { return value_<rhs.value_; }
-	bool operator>(const Time& rhs)const { return value_>rhs.value_; }
-	bool operator<=(const Time& rhs)const { return value_<=rhs.value_; }
-	bool operator>=(const Time& rhs)const { return value_>=rhs.value_; }
-	bool operator==(const Time& rhs)const { return value_==rhs.value_; }
-	bool operator!=(const Time& rhs)const { return value_!=rhs.value_; }
+	bool operator<(const Synfig_Time& rhs)const { return value_<rhs.value_; }
+	bool operator>(const Synfig_Time& rhs)const { return value_>rhs.value_; }
+	bool operator<=(const Synfig_Time& rhs)const { return value_<=rhs.value_; }
+	bool operator>=(const Synfig_Time& rhs)const { return value_>=rhs.value_; }
+	bool operator==(const Synfig_Time& rhs)const { return value_==rhs.value_; }
+	bool operator!=(const Synfig_Time& rhs)const { return value_!=rhs.value_; }
 #else
-	bool operator<(const Time& rhs)const { return is_less_than(rhs); }
-	bool operator>(const Time& rhs)const { return is_more_than(rhs); }
-	bool operator<=(const Time& rhs)const { return is_less_than(rhs)||is_equal(rhs); }
-	bool operator>=(const Time& rhs)const { return is_more_than(rhs)||is_equal(rhs); }
-	bool operator==(const Time& rhs)const { return is_equal(rhs); }
-	bool operator!=(const Time& rhs)const { return !is_equal(rhs); }
+	bool operator<(const Synfig_Time& rhs)const { return is_less_than(rhs); }
+	bool operator>(const Synfig_Time& rhs)const { return is_more_than(rhs); }
+	bool operator<=(const Synfig_Time& rhs)const { return is_less_than(rhs)||is_equal(rhs); }
+	bool operator>=(const Synfig_Time& rhs)const { return is_more_than(rhs)||is_equal(rhs); }
+	bool operator==(const Synfig_Time& rhs)const { return is_equal(rhs); }
+	bool operator!=(const Synfig_Time& rhs)const { return !is_equal(rhs); }
 #endif
 
-	template<typename U> const Time& operator+=(const U &rhs) { value_+=static_cast<value_type>(rhs); return *this; }
-	template<typename U> const Time& operator-=(const U &rhs) { value_-=static_cast<value_type>(rhs); return *this; }
-	template<typename U> const Time& operator*=(const U &rhs) { value_*=static_cast<value_type>(rhs); return *this; }
-	template<typename U> const Time& operator/=(const U &rhs) { value_/=static_cast<value_type>(rhs); return *this; }
+	template<typename U> const Synfig_Time& operator+=(const U &rhs) { value_+=static_cast<value_type>(rhs); return *this; }
+	template<typename U> const Synfig_Time& operator-=(const U &rhs) { value_-=static_cast<value_type>(rhs); return *this; }
+	template<typename U> const Synfig_Time& operator*=(const U &rhs) { value_*=static_cast<value_type>(rhs); return *this; }
+	template<typename U> const Synfig_Time& operator/=(const U &rhs) { value_/=static_cast<value_type>(rhs); return *this; }
 
-	template<typename U> Time operator+(const U &rhs)const { return value_+static_cast<value_type>(rhs); }
-	template<typename U> Time operator-(const U &rhs)const { return value_-static_cast<value_type>(rhs); }
-	template<typename U> Time operator*(const U &rhs)const { return value_*static_cast<value_type>(rhs); }
-	template<typename U> Time operator/(const U &rhs)const { return value_/static_cast<value_type>(rhs); }
+	template<typename U> Synfig_Time operator+(const U &rhs)const { return value_+static_cast<value_type>(rhs); }
+	template<typename U> Synfig_Time operator-(const U &rhs)const { return value_-static_cast<value_type>(rhs); }
+	template<typename U> Synfig_Time operator*(const U &rhs)const { return value_*static_cast<value_type>(rhs); }
+	template<typename U> Synfig_Time operator/(const U &rhs)const { return value_/static_cast<value_type>(rhs); }
 
-	Time operator-()const { return -value_; }
-}; // END of class Time
+	Synfig_Time operator-()const { return -value_; }
+}; // END of class Synfig_Time
 
-//! This operator allows the combining of Time::Format flags using the '|' operator
-/*!	\see Time::Format, Time::get_string() */
-inline Time::Format operator|(Time::Format lhs, Time::Format rhs)
-{ return static_cast<Time::Format>((int)lhs|(int)rhs); }
+//! This operator allows the combining of Synfig_Time::Format flags using the '|' operator
+/*!	\see Synfig_Time::Format, Synfig_Time::get_string() */
+inline Synfig_Time::Format operator|(Synfig_Time::Format lhs, Synfig_Time::Format rhs)
+{ return static_cast<Synfig_Time::Format>((int)lhs|(int)rhs); }
 
-//! This operator is for checking Time::Format flags.
+//! This operator is for checking Synfig_Time::Format flags.
 /*! Don't think of it as "less then or equal to", but think of it
 **	like an arrow. Is \a rhs inside of \a lhs ?
-**	\see Time::Format, Time::get_string() */
-inline bool operator<=(Time::Format lhs, Time::Format rhs)
+**	\see Synfig_Time::Format, Synfig_Time::get_string() */
+inline bool operator<=(Synfig_Time::Format lhs, Synfig_Time::Format rhs)
 { return (static_cast<int>(lhs) & static_cast<int>(rhs))==static_cast<int>(rhs); }
 
 }; // END of namespace synfig

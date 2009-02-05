@@ -59,9 +59,9 @@ ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
 	set_link("link", x);
-	set_link("link_time",  ValueNode_Const::create(Time(0)));
-	set_link("local_time", ValueNode_Const::create(Time(0)));
-	set_link("duration",   ValueNode_Const::create(Time(1)));
+	set_link("link_time",  ValueNode_Const::create(Synfig_Time(0)));
+	set_link("local_time", ValueNode_Const::create(Synfig_Time(0)));
+	set_link("duration",   ValueNode_Const::create(Synfig_Time(1)));
 }
 
 ValueNode_TimeLoop*
@@ -151,14 +151,14 @@ ValueNode_TimeLoop::get_link_index_from_name(const String &name)const
 }
 
 ValueBase
-ValueNode_TimeLoop::operator()(Time t)const
+ValueNode_TimeLoop::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Time link_time  = (*link_time_) (t).get(Time());
-	Time local_time = (*local_time_)(t).get(Time());
-	Time duration   = (*duration_)  (t).get(Time());
+	Synfig_Time link_time  = (*link_time_) (t).get(Synfig_Time());
+	Synfig_Time local_time = (*local_time_)(t).get(Synfig_Time());
+	Synfig_Time duration   = (*duration_)  (t).get(Synfig_Time());
 
  	if (duration == 0)
 		t = link_time;

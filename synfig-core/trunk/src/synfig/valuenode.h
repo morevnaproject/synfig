@@ -197,7 +197,7 @@ public:
 public:
 
 	//! Returns the value of the ValueNode at time \a t
-	virtual ValueBase operator()(Time /*t*/)const
+	virtual ValueBase operator()(Synfig_Time /*t*/)const
 		{ return ValueBase(); }
 
 	//! \internal Sets the id of the ValueNode
@@ -272,7 +272,7 @@ private:
 
 public:
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual String get_name()const;
 

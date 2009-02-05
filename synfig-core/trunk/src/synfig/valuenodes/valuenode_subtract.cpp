@@ -86,8 +86,8 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 		set_link("rhs",ValueNode_Const::create(Real(0)));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("lhs",ValueNode_Const::create(value.get(Time())));
-		set_link("rhs",ValueNode_Const::create(Time(0)));
+		set_link("lhs",ValueNode_Const::create(value.get(Synfig_Time())));
+		set_link("rhs",ValueNode_Const::create(Synfig_Time(0)));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("lhs",ValueNode_Const::create(value.get(Vector())));
@@ -123,7 +123,7 @@ synfig::ValueNode_Subtract::~ValueNode_Subtract()
 }
 
 synfig::ValueBase
-synfig::ValueNode_Subtract::operator()(Time t)const
+synfig::ValueNode_Subtract::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -143,7 +143,7 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 	case ValueBase::TYPE_REAL:
 		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_TIME:
-		return ((*ref_a)(t).get(Time())-(*ref_b)(t).get(Time()))*(*scalar)(t).get(Real());
+		return ((*ref_a)(t).get(Synfig_Time())-(*ref_b)(t).get(Synfig_Time()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_VECTOR:
 		return ((*ref_a)(t).get(Vector())-(*ref_b)(t).get(Vector()))*(*scalar)(t).get(Real());
 	default:

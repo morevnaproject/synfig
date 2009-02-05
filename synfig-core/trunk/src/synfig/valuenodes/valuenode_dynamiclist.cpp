@@ -67,7 +67,7 @@ ValueNode_DynamicList::ListEntry::ListEntry(const ValueNode::Handle &value_node)
 {
 }
 
-ValueNode_DynamicList::ListEntry::ListEntry(const ValueNode::Handle &value_node,Time begin, Time end):
+ValueNode_DynamicList::ListEntry::ListEntry(const ValueNode::Handle &value_node,Synfig_Time begin, Synfig_Time end):
 	value_node(value_node)
 {
 	add(begin,false);
@@ -76,7 +76,7 @@ ValueNode_DynamicList::ListEntry::ListEntry(const ValueNode::Handle &value_node,
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
-ValueNode_DynamicList::ListEntry::add(Time time, bool status, int priority)
+ValueNode_DynamicList::ListEntry::add(Synfig_Time time, bool status, int priority)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
 
@@ -134,7 +134,7 @@ ValueNode_DynamicList::reindex()
 }
 
 ValueNode_DynamicList::ListEntry
-ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
+ValueNode_DynamicList::create_list_entry(int index, Synfig_Time time, Real origin)
 {
 	ValueNode_DynamicList::ListEntry ret;
 
@@ -191,7 +191,7 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 	}
 	case ValueBase::TYPE_TIME:
 	{
-		Time a(prev.get(Time())), b(next.get(Time()));
+		Synfig_Time a(prev.get(Synfig_Time())), b(next.get(Synfig_Time()));
 		ret.value_node=ValueNode_Const::create((b-a)*origin+a);
 		break;
 	}
@@ -223,7 +223,7 @@ ValueNode_DynamicList::ListEntry::erase(const UniqueID& x)
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
-ValueNode_DynamicList::ListEntry::find(const Time& x)
+ValueNode_DynamicList::ListEntry::find(const Synfig_Time& x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
@@ -237,7 +237,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& x)
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
-ValueNode_DynamicList::ListEntry::find(const Time& x)const
+ValueNode_DynamicList::ListEntry::find(const Synfig_Time& x)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
@@ -251,7 +251,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& x)const
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
-ValueNode_DynamicList::ListEntry::find_next(const Time& x)
+ValueNode_DynamicList::ListEntry::find_next(const Synfig_Time& x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
@@ -265,7 +265,7 @@ ValueNode_DynamicList::ListEntry::find_next(const Time& x)
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
-ValueNode_DynamicList::ListEntry::find_next(const Time& x)const
+ValueNode_DynamicList::ListEntry::find_next(const Synfig_Time& x)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
@@ -279,7 +279,7 @@ ValueNode_DynamicList::ListEntry::find_next(const Time& x)const
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
-ValueNode_DynamicList::ListEntry::find_prev(const Time& x)
+ValueNode_DynamicList::ListEntry::find_prev(const Synfig_Time& x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
@@ -297,7 +297,7 @@ ValueNode_DynamicList::ListEntry::find_prev(const Time& x)
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
-ValueNode_DynamicList::ListEntry::find_prev(const Time& x)const
+ValueNode_DynamicList::ListEntry::find_prev(const Synfig_Time& x)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
@@ -315,9 +315,9 @@ ValueNode_DynamicList::ListEntry::find_prev(const Time& x)const
 }
 
 int
-ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::vector<Activepoint*>& selected)
+ValueNode_DynamicList::ListEntry::find(const Synfig_Time& begin,const Synfig_Time& end,std::vector<Activepoint*>& selected)
 {
-	Time curr_time(begin);
+	Synfig_Time curr_time(begin);
 	int ret(0);
 
 	// try to grab first waypoint
@@ -349,7 +349,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::ve
 }
 
 float
-ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)const
+ValueNode_DynamicList::ListEntry::amount_at_time(const Synfig_Time &t,bool *rising)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
@@ -386,7 +386,7 @@ ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)cons
 }
 
 Activepoint
-ValueNode_DynamicList::ListEntry::new_activepoint_at_time(const Time& time)const
+ValueNode_DynamicList::ListEntry::new_activepoint_at_time(const Synfig_Time& time)const
 {
 	Activepoint activepoint;
 
@@ -397,7 +397,7 @@ ValueNode_DynamicList::ListEntry::new_activepoint_at_time(const Time& time)const
 }
 
 bool
-ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
+ValueNode_DynamicList::ListEntry::status_at_time(const Synfig_Time &t)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
@@ -593,7 +593,7 @@ ValueNode_DynamicList::create_from(const ValueBase &value)
 }
 
 ValueBase
-ValueNode_DynamicList::operator()(Time t)const
+ValueNode_DynamicList::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -742,7 +742,7 @@ ValueNode_DynamicList::create_new()const
 }
 
 int
-ValueNode_DynamicList::find_next_valid_entry(int orig_item, Time t)const
+ValueNode_DynamicList::find_next_valid_entry(int orig_item, Synfig_Time t)const
 {
 	int curr_item;
 
@@ -760,7 +760,7 @@ ValueNode_DynamicList::find_next_valid_entry(int orig_item, Time t)const
 }
 
 int
-ValueNode_DynamicList::find_prev_valid_entry(int orig_item, Time t)const
+ValueNode_DynamicList::find_prev_valid_entry(int orig_item, Synfig_Time t)const
 {
 	int curr_item;
 
@@ -814,9 +814,9 @@ void ValueNode_DynamicList::get_times_vfunc(Node::time_set &set) const
 //new find functions that don't throw
 struct timecmp
 {
-	Time t;
+	Synfig_Time t;
 
-	timecmp(const Time &c) :t(c) {}
+	timecmp(const Synfig_Time &c) :t(c) {}
 
 	bool operator()(const Activepoint &rhs) const
 	{
@@ -854,7 +854,7 @@ ValueNode_DynamicList::ListEntry::const_findresult ValueNode_DynamicList::ListEn
 	return f;
 }
 
-ValueNode_DynamicList::ListEntry::findresult ValueNode_DynamicList::ListEntry::find_time(const Time& x)
+ValueNode_DynamicList::ListEntry::findresult ValueNode_DynamicList::ListEntry::find_time(const Synfig_Time& x)
 {
 	findresult f;
 	f.second = false;
@@ -869,7 +869,7 @@ ValueNode_DynamicList::ListEntry::findresult ValueNode_DynamicList::ListEntry::f
 	return f;
 }
 
-ValueNode_DynamicList::ListEntry::const_findresult ValueNode_DynamicList::ListEntry::find_time(const Time& x)const
+ValueNode_DynamicList::ListEntry::const_findresult ValueNode_DynamicList::ListEntry::find_time(const Synfig_Time& x)const
 {
 	const_findresult f;
 	f.second = false;
@@ -885,7 +885,7 @@ ValueNode_DynamicList::ListEntry::const_findresult ValueNode_DynamicList::ListEn
 }
 
 void
-ValueNode_DynamicList::insert_time(const Time& location, const Time& delta)
+ValueNode_DynamicList::insert_time(const Synfig_Time& location, const Synfig_Time& delta)
 {
 	if(!delta)
 		return;

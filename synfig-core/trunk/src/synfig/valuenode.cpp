@@ -545,7 +545,7 @@ PlaceholderValueNode::create(ValueBase::Type type)
 }
 
 ValueBase
-PlaceholderValueNode::operator()(Time /*t*/)const
+PlaceholderValueNode::operator()(Synfig_Time /*t*/)const
 {
 	assert(0);
 	return ValueBase();

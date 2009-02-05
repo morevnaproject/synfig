@@ -130,7 +130,7 @@ public:
 
 	typedef std::list<Handle> Children;
 
-	friend void synfig::optimize_layers(Time, Context, Canvas::Handle, bool seen_motion_blur);
+	friend void synfig::optimize_layers(Synfig_Time, Context, Canvas::Handle, bool seen_motion_blur);
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -192,7 +192,7 @@ private:
     RendDesc desc_;
 
 	//! Contains the value of the last call to set_time()
-	Time cur_time_;
+	Synfig_Time cur_time_;
 
 	//! \writeme
 	mutable std::map<String,Handle> externals_;
@@ -415,10 +415,10 @@ public:
 	//Color get_color(const Point &pos)const;
 
 	//! Sets the time for all the layers in the canvas
-	void set_time(Time t)const;
+	void set_time(Synfig_Time t)const;
 
 	//! \writeme
-	Time get_time()const { return cur_time_; }
+	Synfig_Time get_time()const { return cur_time_; }
 
 	//! Returns the number of layers in the canvas
 	int size()const;
@@ -562,7 +562,7 @@ protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class Canvas
 
-void optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur=false);
+void optimize_layers(Synfig_Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur=false);
 
 
 }; // END of namespace synfig

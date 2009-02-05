@@ -62,8 +62,8 @@ public:
 	png_mptr(const char *filename);
 	~png_mptr();
 
-	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
-	virtual bool get_frame(synfig::Surface &surface,synfig::Time time,
+	virtual bool get_frame(synfig::Surface &surface,synfig::Synfig_Time time, synfig::ProgressCallback *callback);
+	virtual bool get_frame(synfig::Surface &surface,synfig::Synfig_Time time,
 						   bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
 						   synfig::ProgressCallback *callback);
 };

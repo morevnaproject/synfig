@@ -115,36 +115,36 @@ public:
 		int get_index()const { return index; }
 
 
-		bool status_at_time(const Time &x)const;
+		bool status_at_time(const Synfig_Time &x)const;
 
-		float amount_at_time(const Time &x, bool *rising=0)const;
+		float amount_at_time(const Synfig_Time &x, bool *rising=0)const;
 
-		ActivepointList::iterator add(Time time, bool status, int priority=0);
+		ActivepointList::iterator add(Synfig_Time time, bool status, int priority=0);
 		ActivepointList::iterator add(const Activepoint &x);
 
 		findresult find_uid(const UniqueID& x);
 		const_findresult find_uid(const UniqueID& x)const;
 
-		findresult find_time(const Time& x);
-		const_findresult find_time(const Time& x)const;
+		findresult find_time(const Synfig_Time& x);
+		const_findresult find_time(const Synfig_Time& x)const;
 
 		ActivepointList::iterator find(const UniqueID& x);
 		ActivepointList::const_iterator find(const UniqueID& x)const;
-		ActivepointList::iterator find(const Time& x);
-		ActivepointList::const_iterator find(const Time& x)const;
-		ActivepointList::iterator find_prev(const Time& x);
-		ActivepointList::const_iterator find_prev(const Time& x)const;
-		ActivepointList::iterator find_next(const Time& x);
-		ActivepointList::const_iterator find_next(const Time& x)const;
+		ActivepointList::iterator find(const Synfig_Time& x);
+		ActivepointList::const_iterator find(const Synfig_Time& x)const;
+		ActivepointList::iterator find_prev(const Synfig_Time& x);
+		ActivepointList::const_iterator find_prev(const Synfig_Time& x)const;
+		ActivepointList::iterator find_next(const Synfig_Time& x);
+		ActivepointList::const_iterator find_next(const Synfig_Time& x)const;
 
-		Activepoint new_activepoint_at_time(const Time& x)const;
+		Activepoint new_activepoint_at_time(const Synfig_Time& x)const;
 
-		ActivepointList::iterator add(Time time)
+		ActivepointList::iterator add(Synfig_Time time)
 			{ return add(time, status_at_time(time)); }
 
 		void erase(const UniqueID& x);
 
-		int find(const Time& begin,const Time& end,std::vector<Activepoint*>& list);
+		int find(const Synfig_Time& begin,const Synfig_Time& end,std::vector<Activepoint*>& list);
 
 		const synfig::Node::time_set	&get_times() const;
 
@@ -152,7 +152,7 @@ public:
 
 		ListEntry();
 		ListEntry(const ValueNode::Handle &value_node);
-		ListEntry(const ValueNode::Handle &value_node,Time begin, Time end);
+		ListEntry(const ValueNode::Handle &value_node,Synfig_Time begin, Synfig_Time end);
 	}; // END of struct ValueNode_DynamicList::ListEntry
 
 	typedef etl::handle<ValueNode_DynamicList> Handle;
@@ -176,8 +176,8 @@ public:
 	void erase(const ValueNode::Handle &value_node);
 	void reindex();
 
-	int find_next_valid_entry(int x, Time t)const;
-	int find_prev_valid_entry(int x, Time t)const;
+	int find_next_valid_entry(int x, Synfig_Time t)const;
+	int find_prev_valid_entry(int x, Synfig_Time t)const;
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
@@ -185,7 +185,7 @@ public:
 
 	virtual String link_name(int i)const;
 
- 	virtual ValueBase operator()(Time t)const;
+ 	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_DynamicList();
 
@@ -212,12 +212,12 @@ public:
 		return ret;
 	}
 
-	void insert_time(const Time& location, const Time& delta);
-	//void manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end);
+	void insert_time(const Synfig_Time& location, const Synfig_Time& delta);
+	//void manipulate_time(const Synfig_Time& old_begin,const Synfig_Time& old_end,const Synfig_Time& new_begin,const Synfig_Time& new_end);
 
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
 
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
+	virtual ListEntry create_list_entry(int index, Synfig_Time time=0, Real origin=0.5);
 
 protected:
 

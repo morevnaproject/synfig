@@ -51,7 +51,7 @@ public:
 	virtual int link_count()const;
 	virtual String link_name(int i)const;
 	virtual String link_local_name(int i)const;
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 
 	virtual String get_name()const;

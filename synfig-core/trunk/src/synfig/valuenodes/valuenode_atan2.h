@@ -49,7 +49,7 @@ public:
 	typedef etl::handle<const ValueNode_Atan2> ConstHandle;
 
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_Atan2();
 

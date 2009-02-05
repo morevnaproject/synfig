@@ -80,7 +80,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Time::Time(const String &str_, float fps):
+Synfig_Time::Synfig_Time(const String &str_, float fps):
 	value_(0)
 {
 	String str(str_);
@@ -171,9 +171,9 @@ Time::Time(const String &str_, float fps):
 }
 
 String
-Time::get_string(float fps, Time::Format format)const
+Synfig_Time::get_string(float fps, Synfig_Time::Format format)const
 {
-	Time time(*this);
+	Synfig_Time time(*this);
 
 	if(time<=begin())
 		return "SOT";	// Start Of Time
@@ -293,8 +293,8 @@ Time::get_string(float fps, Time::Format format)const
 	return ret;
 }
 
-Time
-Time::round(float fps)const
+Synfig_Time
+Synfig_Time::round(float fps)const
 {
 	assert(fps>0);
 
@@ -310,7 +310,7 @@ Time::round(float fps)const
 
 #ifdef _DEBUG
 const char *
-Time::c_str()const
+Synfig_Time::c_str()const
 {
 	return get_string().c_str();
 }
@@ -318,7 +318,7 @@ Time::c_str()const
 
 //! \writeme
 bool
-Time::is_valid()const
+Synfig_Time::is_valid()const
 {
 	return !isnan(value_);
 }

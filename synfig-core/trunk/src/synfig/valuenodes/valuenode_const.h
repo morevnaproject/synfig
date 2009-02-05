@@ -49,7 +49,7 @@ private:
 
 public:
 
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 	virtual ~ValueNode_Const();
 
 	const ValueBase &get_value()const;

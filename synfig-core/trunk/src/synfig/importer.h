@@ -108,8 +108,8 @@ public:
 	**	\return \c true on success, \c false on error
 	**	\see ProgressCallback, Surface
 	*/
-	virtual bool get_frame(Surface &surface,Time time, ProgressCallback *callback=NULL)=0;
-	virtual bool get_frame(Surface &surface,Time time,
+	virtual bool get_frame(Surface &surface,Synfig_Time time, ProgressCallback *callback=NULL)=0;
+	virtual bool get_frame(Surface &surface,Synfig_Time time,
 						   bool &trimmed __attribute__ ((unused)),
 						   unsigned int &width __attribute__ ((unused)), unsigned int &height __attribute__ ((unused)),
 						   unsigned int &top __attribute__ ((unused)), unsigned int &left __attribute__ ((unused)),

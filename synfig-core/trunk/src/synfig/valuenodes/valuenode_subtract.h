@@ -53,7 +53,7 @@ public:
 	LinkableValueNode* create_new()const;
 	static ValueNode_Subtract* create(const ValueBase &value=ValueBase());
 	virtual ~ValueNode_Subtract();
-	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Synfig_Time t)const;
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual int link_count()const;

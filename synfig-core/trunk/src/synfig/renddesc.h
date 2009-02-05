@@ -88,7 +88,7 @@ private:
 	bool clamp;
 
 	float frame_rate;
-	Time time_begin, time_end;
+	Synfig_Time time_begin, time_end;
 
 public:
 
@@ -189,19 +189,19 @@ public:
 	RendDesc &set_frame_end(int x);
 
 	//!	Return the starting time of the animation
-	const Time get_time_start()const;
+	const Synfig_Time get_time_start()const;
 
 	//!	Set the time that the animation will start
-	RendDesc &set_time_start(Time x);
+	RendDesc &set_time_start(Synfig_Time x);
 
 	//! Return the end time of the animation
-	const Time get_time_end()const;
+	const Synfig_Time get_time_end()const;
 
 	//!	Set the time that the animation will end
-	RendDesc &set_time_end(Time x);
+	RendDesc &set_time_end(Synfig_Time x);
 
 	//!	Setup for one frame at the given time
-	RendDesc &set_time(Time x);
+	RendDesc &set_time(Synfig_Time x);
 
 	//!	Setup for one frame
 	RendDesc &set_frame(int x);

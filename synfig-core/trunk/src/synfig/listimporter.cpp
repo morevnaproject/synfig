@@ -150,7 +150,7 @@ ListImporter::~ListImporter()
 }
 
 bool
-ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
+ListImporter::get_frame(Surface &surface,Synfig_Time time, ProgressCallback *cb)
 {
 	int frame=round_to_int(time*fps);
 

@@ -53,7 +53,7 @@ public:
 	static const char Name[];
 	static const char Ext[];
 
-	virtual bool GetFrame(synfig::Time time, synfig::Surface &, synfig::ProgressCallback *);
+	virtual bool GetFrame(synfig::Synfig_Time time, synfig::Surface &, synfig::ProgressCallback *);
 
 	static synfig::Importer *New(const char *filename);
 };

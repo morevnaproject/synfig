@@ -74,8 +74,8 @@ ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
 		set_link("offset",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("slope",ValueNode_Const::create(Time(0)));
-		set_link("offset",ValueNode_Const::create(value.get(Time())));
+		set_link("slope",ValueNode_Const::create(Synfig_Time(0)));
+		set_link("offset",ValueNode_Const::create(value.get(Synfig_Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("slope",ValueNode_Const::create(Vector(0,0)));
@@ -106,7 +106,7 @@ ValueNode_Linear::~ValueNode_Linear()
 }
 
 ValueBase
-ValueNode_Linear::operator()(Time t)const
+ValueNode_Linear::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -122,7 +122,7 @@ ValueNode_Linear::operator()(Time t)const
 	case ValueBase::TYPE_REAL:
 		return (*m_)(t).get(  Real())*t+(*b_)(t).get(  Real());
 	case ValueBase::TYPE_TIME:
-		return (*m_)(t).get(  Time())*t+(*b_)(t).get(  Time());
+		return (*m_)(t).get(  Synfig_Time())*t+(*b_)(t).get(  Synfig_Time());
 	case ValueBase::TYPE_VECTOR:
 		return (*m_)(t).get(Vector())*t+(*b_)(t).get(Vector());
 	default:

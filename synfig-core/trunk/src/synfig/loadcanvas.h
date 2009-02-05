@@ -151,7 +151,7 @@ private:
 	// ValueBase Parsing Functions
 
 	Real parse_real(xmlpp::Element *node);
-	Time parse_time(xmlpp::Element *node,Canvas::Handle canvas);
+	Synfig_Time parse_time(xmlpp::Element *node,Canvas::Handle canvas);
 	int parse_integer(xmlpp::Element *node);
 	Vector parse_vector(xmlpp::Element *node);
 	Color parse_color(xmlpp::Element *node);

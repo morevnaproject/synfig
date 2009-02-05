@@ -70,7 +70,7 @@ public:
 
 
 
- 	virtual ValueBase operator()(Time t)const;
+ 	virtual ValueBase operator()(Synfig_Time t)const;
 
 	virtual ~ValueNode_BLine();
 
@@ -79,7 +79,7 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
+	virtual ListEntry create_list_entry(int index, Synfig_Time time=0, Real origin=0.5);
 
 protected:
 

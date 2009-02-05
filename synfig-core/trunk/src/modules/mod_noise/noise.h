@@ -61,7 +61,7 @@ private:
 	synfig::Vector displacement;
 
 	//void sync();
-	mutable synfig::Time curr_time;
+	mutable synfig::Synfig_Time curr_time;
 
 	bool super_sample;
 
@@ -77,8 +77,8 @@ public:
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-	virtual void set_time(synfig::Context context, synfig::Time time)const;
-	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
+	virtual void set_time(synfig::Context context, synfig::Synfig_Time time)const;
+	virtual void set_time(synfig::Context context, synfig::Synfig_Time time, const synfig::Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
 };

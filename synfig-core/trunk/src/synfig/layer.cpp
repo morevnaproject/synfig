@@ -138,7 +138,7 @@ Layer::subsys_stop()
 Layer::Layer():
 	active_(true),
 	z_depth_(0.0f),
-	dirty_time_(Time::end())
+	dirty_time_(Synfig_Time::end())
 {
 	_LayerCounter::counter++;
 }
@@ -287,7 +287,7 @@ Layer::disconnect_dynamic_param(const String& param)
 void
 Layer::on_changed()
 {
-	dirty_time_=Time::end();
+	dirty_time_=Synfig_Time::end();
 	Node::on_changed();
 }
 
@@ -309,7 +309,7 @@ Layer::get_transform()const
 }
 
 float
-Layer::get_z_depth(const synfig::Time& t)const
+Layer::get_z_depth(const synfig::Synfig_Time& t)const
 {
 	if(!dynamic_param_list().count("z_depth"))
 		return z_depth_;
@@ -475,14 +475,14 @@ Layer::reset_version()
 
 
 void
-Layer::set_time(Context context, Time time)const
+Layer::set_time(Context context, Synfig_Time time)const
 {
 	context.set_time(time);
 	dirty_time_=time;
 }
 
 void
-Layer::set_time(Context context, Time time, const Point &pos)const
+Layer::set_time(Context context, Synfig_Time time, const Point &pos)const
 {
 	context.set_time(time,pos);
 	dirty_time_=time;

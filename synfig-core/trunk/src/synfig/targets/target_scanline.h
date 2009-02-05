@@ -62,7 +62,7 @@ public:
 	*/
 	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
 
-	virtual int next_frame(Time& time);
+	virtual int next_frame(Synfig_Time& time);
 
 	//! Marks the end of a frame
 	/*! \see start_frame() */

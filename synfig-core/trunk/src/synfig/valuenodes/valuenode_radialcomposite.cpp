@@ -94,7 +94,7 @@ ValueNode_RadialComposite::create_new()const
 }
 
 ValueBase
-synfig::ValueNode_RadialComposite::operator()(Time t)const
+synfig::ValueNode_RadialComposite::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

@@ -47,7 +47,7 @@ class Keyframe :  public UniqueID
 {
 public:
 
-	Time time_;
+	Synfig_Time time_;
 	String desc_;
 	GUID guid_;
 
@@ -55,13 +55,13 @@ public:
 
 	Keyframe();
 
-	Keyframe(const Time &time);
+	Keyframe(const Synfig_Time &time);
 
 	~Keyframe();
 
-	void set_time(Time x) { time_=x; }
+	void set_time(Synfig_Time x) { time_=x; }
 
-	Time get_time()const { return time_; }
+	Synfig_Time get_time()const { return time_; }
 
 	void set_description(String x) { desc_=x; }
 
@@ -76,13 +76,13 @@ public:
 	using UniqueID::operator=;
 
 	bool operator<(const Keyframe &rhs)const { return time_<rhs.time_; }
-	bool operator<(const Time &rhs)const { return time_<rhs; }
+	bool operator<(const Synfig_Time &rhs)const { return time_<rhs; }
 
 //	bool operator==(const Keyframe &rhs)const { return id_==rhs.id_; }
-	bool operator==(const Time &rhs)const { return time_==rhs; }
+	bool operator==(const Synfig_Time &rhs)const { return time_==rhs; }
 
 //	bool operator!=(const Keyframe &rhs)const { return id_!=rhs.id_; }
-	bool operator!=(const Time &rhs)const { return time_!=rhs; }
+	bool operator!=(const Synfig_Time &rhs)const { return time_!=rhs; }
 }; // END of class Keyframe
 
 class KeyframeList : public std::vector<Keyframe>
@@ -99,21 +99,21 @@ public:
 	const_iterator find(const UniqueID &x)const;
 
 	//! Finds the keyframe at an exact point in time
-	iterator find(const Time &x);
+	iterator find(const Synfig_Time &x);
 
 	//! Finds the keyframe after that point in time
-	iterator find_next(const Time &x);
+	iterator find_next(const Synfig_Time &x);
 
 	//! Finds the keyframe before that point in time
-	iterator find_prev(const Time &x);
+	iterator find_prev(const Synfig_Time &x);
 
-	const_iterator find(const Time &x)const;
-	const_iterator find_next(const Time &x)const;
-	const_iterator find_prev(const Time &x)const;
+	const_iterator find(const Synfig_Time &x)const;
+	const_iterator find_next(const Synfig_Time &x)const;
+	const_iterator find_prev(const Synfig_Time &x)const;
 
-	void find_prev_next(const Time& time, Time &prev, Time &next)const;
+	void find_prev_next(const Synfig_Time& time, Synfig_Time &prev, Synfig_Time &next)const;
 
-	void insert_time(const Time& location, const Time& delta);
+	void insert_time(const Synfig_Time& location, const Synfig_Time& delta);
 
 	void dump()const;
 	void sync();

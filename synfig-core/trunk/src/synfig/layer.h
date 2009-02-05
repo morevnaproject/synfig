@@ -136,7 +136,7 @@ class ParamDesc;
 class ParamVocab;
 class ValueNode;
 class ValueBase;
-class Time;
+class Synfig_Time;
 class Surface;
 class RendDesc;
 class ProgressCallback;
@@ -235,7 +235,7 @@ private:
 	float z_depth_;
 
 	//! \writeme
-	mutable Time dirty_time_;
+	mutable Synfig_Time dirty_time_;
 
 	//! Contains the name of the group that this layer belongs to
 	String group_;
@@ -351,7 +351,7 @@ public:
 	float get_z_depth()const { return z_depth_; }
 
 	//! \writeme
-	float get_z_depth(const synfig::Time& t)const;
+	float get_z_depth(const synfig::Synfig_Time& t)const;
 
 	//! \writeme
 	void set_z_depth(float x) { z_depth_=x; }
@@ -436,7 +436,7 @@ public:
 	**	\param time			writeme
 	**	\see Handle::set_time()
 	*/
-	virtual void set_time(Context context, Time time)const;
+	virtual void set_time(Context context, Synfig_Time time)const;
 
 	//! Sets the \a time for the selected Layer and those under it for a specific \a point
 	/*!	\param context		Context iterator referring to next Layer.
@@ -444,7 +444,7 @@ public:
 	**	\param point		writeme
 	**	\see Handle::set_time()
 	**	\todo \a point should be of the type <tt>const Point \&</tt> */
-	virtual void set_time(Context context, Time time, const Point &point)const;
+	virtual void set_time(Context context, Synfig_Time time, const Point &point)const;
 
 	//! Gets the color of the Canvas at \a pos
 	/*!	\param context		Context iterator referring to next Layer.

@@ -260,7 +260,7 @@ RendDesc::get_frame_start()const
 RendDesc &
 RendDesc::set_frame_start(int x)
 {
-	return set_time_start(Time(x)/frame_rate);
+	return set_time_start(Synfig_Time(x)/frame_rate);
 }
 
 int
@@ -272,18 +272,18 @@ RendDesc::get_frame_end()const
 RendDesc &
 RendDesc::set_frame_end(int x)
 {
-	return set_time_end(Time(x)/frame_rate);
+	return set_time_end(Synfig_Time(x)/frame_rate);
 }
 
 
-const Time
+const Synfig_Time
 RendDesc::get_time_start()const
 {
 	return time_begin;
 }
 
 RendDesc &
-RendDesc::set_time_start(Time x)
+RendDesc::set_time_start(Synfig_Time x)
 {
 	if(x>time_end)
 		time_begin=time_end=x;
@@ -293,14 +293,14 @@ RendDesc::set_time_start(Time x)
 }
 
 
-const Time
+const Synfig_Time
 RendDesc::get_time_end()const
 {
 	return time_end;
 }
 
 RendDesc &
-RendDesc::set_time_end(Time x)
+RendDesc::set_time_end(Synfig_Time x)
 {
 	if(x<time_begin)
 		time_end=time_begin=x;
@@ -310,7 +310,7 @@ RendDesc::set_time_end(Time x)
 }
 
 RendDesc &
-RendDesc::set_time(Time x)
+RendDesc::set_time(Synfig_Time x)
 {
 	time_end=time_begin=x;
 	return *this;
@@ -319,7 +319,7 @@ RendDesc::set_time(Time x)
 RendDesc &
 RendDesc::set_frame(int x)
 {
-	return set_time(Time(x)/frame_rate);
+	return set_time(Synfig_Time(x)/frame_rate);
 }
 
 const float &

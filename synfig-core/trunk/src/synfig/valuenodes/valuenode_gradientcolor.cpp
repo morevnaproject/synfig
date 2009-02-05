@@ -86,7 +86,7 @@ ValueNode_GradientColor::~ValueNode_GradientColor()
 }
 
 ValueBase
-ValueNode_GradientColor::operator()(Time t)const
+ValueNode_GradientColor::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

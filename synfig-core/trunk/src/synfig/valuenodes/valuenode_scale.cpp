@@ -77,7 +77,7 @@ ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 		set_link("link",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("link",ValueNode_Const::create(value.get(Time())));
+		set_link("link",ValueNode_Const::create(value.get(Synfig_Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
@@ -110,7 +110,7 @@ synfig::ValueNode_Scale::~ValueNode_Scale()
 }
 
 synfig::ValueBase
-synfig::ValueNode_Scale::operator()(Time t)const
+synfig::ValueNode_Scale::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
@@ -133,7 +133,7 @@ synfig::ValueNode_Scale::operator()(Time t)const
 	else if(get_type()==ValueBase::TYPE_REAL)
 		return (*value_node)(t).get(Real())*(*scalar)(t).get(Real());
 	else if(get_type()==ValueBase::TYPE_TIME)
-		return (*value_node)(t).get(Time())*(*scalar)(t).get(Time());
+		return (*value_node)(t).get(Synfig_Time())*(*scalar)(t).get(Synfig_Time());
 	else if(get_type()==ValueBase::TYPE_VECTOR)
 		return (*value_node)(t).get(Vector())*(*scalar)(t).get(Real());
 

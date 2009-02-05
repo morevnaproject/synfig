@@ -63,8 +63,8 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
-	virtual void set_time(Context context, Time time)const;
-	virtual void set_time(Context context, Time time, Vector pos)const;
+	virtual void set_time(Context context, Synfig_Time time)const;
+	virtual void set_time(Context context, Synfig_Time time, Vector pos)const;
 
 };
 

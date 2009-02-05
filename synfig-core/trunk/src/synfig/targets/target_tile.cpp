@@ -80,13 +80,13 @@ Target_Tile::Target_Tile():
 }
 
 int
-Target_Tile::next_frame(Time& time)
+Target_Tile::next_frame(Synfig_Time& time)
 {
 	int
 		total_frames(1),
 		frame_start(0),
 		frame_end(0);
-	Time
+	Synfig_Time
 		time_start(0),
 		time_end(0);
 
@@ -325,7 +325,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 		quality=get_quality(),
 		frame_start,
 		frame_end;
-	Time
+	Synfig_Time
 		t=0,
 		time_start,
 		time_end;

@@ -89,7 +89,7 @@ synfig::ValueNode_GradientRotate::~ValueNode_GradientRotate()
 }
 
 synfig::ValueBase
-synfig::ValueNode_GradientRotate::operator()(Time t)const
+synfig::ValueNode_GradientRotate::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

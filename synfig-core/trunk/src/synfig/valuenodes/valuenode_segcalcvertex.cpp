@@ -76,7 +76,7 @@ ValueNode_SegCalcVertex::~ValueNode_SegCalcVertex()
 }
 
 ValueBase
-ValueNode_SegCalcVertex::operator()(Time t)const
+ValueNode_SegCalcVertex::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);

@@ -84,7 +84,7 @@ ValueNode_Sine::~ValueNode_Sine()
 }
 
 ValueBase
-ValueNode_Sine::operator()(Time t)const
+ValueNode_Sine::operator()(Synfig_Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
