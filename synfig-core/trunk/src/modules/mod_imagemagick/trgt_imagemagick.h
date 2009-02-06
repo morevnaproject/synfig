@@ -52,7 +52,6 @@ private:
 	synfig::String filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
-	synfig::PixelFormat pf;
 public:
 	imagemagick_trgt(const char *filename);
 	virtual ~imagemagick_trgt();
@@ -63,6 +62,8 @@ public:
 	virtual void end_frame();
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
+	virtual unsigned char* start_scanline_rgba(int scanline);
+	virtual bool end_scanline_rgba();
 };
 
 /* === E N D =============================================================== */
