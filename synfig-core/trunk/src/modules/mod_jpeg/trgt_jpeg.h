@@ -58,7 +58,6 @@ private:
 	int imagecount;
 	synfig::String filename;
 	unsigned char *buffer;
-	unsigned char *rgba_buffer;
 	synfig::Color *color_buffer;
 public:
 	jpeg_trgt(const char *filename);

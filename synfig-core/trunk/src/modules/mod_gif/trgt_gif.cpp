@@ -73,6 +73,8 @@ gif::gif(const char *filename_):
 	loop_count(0x7fff),
 	local_palette(true)
 {
+	// FIXME: With PF_INDEX, we don't get colors, so for the moment we use 8 bits per channel
+	target_format_ = PF_RGB | PF_A | PF_8BITS;
 }
 
 gif::~gif()

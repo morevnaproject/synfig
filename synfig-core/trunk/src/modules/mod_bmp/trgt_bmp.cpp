@@ -117,6 +117,8 @@ bmp::bmp(const char *Filename)
 	multi_image=false;
 	buffer=0;
 	color_buffer=0;
+	// We specify an ALPHA to get 4 channels, even if one is discarded
+	target_format_ = PF_BGR | PF_A | PF_8BITS;
 	set_remove_alpha();
 
 }
@@ -133,6 +135,7 @@ bmp::~bmp()
 bool
 bmp::set_rend_desc(RendDesc *given_desc)
 {
+	// FIXME: Maybe we can use target_format_ for this, if PF_A doesn't interfere with channels() and convert_color_format() below
 	pf=PF_BGR;
 
     // Flip the image upside down,
@@ -276,6 +279,7 @@ bmp::end_scanline_rgba()
 	if(!file)
 		return false;
 
+	// TODO: Set Alpha channel to
 	if(!fwrite(buffer,1,rowspan,file))
 		return false;
 

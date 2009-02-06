@@ -71,6 +71,7 @@ yuv::yuv(const char *FILENAME):
 	buffer(NULL),
 	dithering(true)
 {
+	target_format_ = PF_RGB | PF_FLOAT;
 	// YUV420P doesn't have an alpha channel
 	set_remove_alpha();
 }
