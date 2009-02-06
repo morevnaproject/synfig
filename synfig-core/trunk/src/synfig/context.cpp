@@ -257,7 +257,7 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 				surface->clear();
 				break;
 			case OPENGL:
-				renderer_opengl.set_wh(renddesc.get_w(),renddesc.get_h());
+				renderer_opengl.set_wh(renddesc.get_w(),renddesc.get_h(), renddesc.get_tl(), renddesc.get_br());
 				// "set_wh" already clears buffers
 				//renderer_opengl_->clear();
 				break;
