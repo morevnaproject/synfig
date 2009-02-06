@@ -40,6 +40,8 @@
 #include "renddesc.h"
 #include "valuenode.h"
 
+#include "renderers/renderer_opengl.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -178,6 +180,8 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 	}
 #endif	// SYNFIG_PROFILE_LAYERS
 
+	Renderer_OpenGL &renderer_opengl = Target::renderer_opengl();
+
 	const Rect bbox(renddesc.get_rect());
 
 	// this is going to be set to true if this layer contributes
@@ -228,7 +232,7 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 					return layer->accelerated_render(context,surface,quality,renddesc, cb);
 					break;
 				case OPENGL:
-					return layer->opengl_render(context,surface,quality,renddesc, cb);
+					return layer->opengl_render(context,&renderer_opengl,quality,renddesc, cb);
 					break;
 				default:
 					synfig::info("Context::render(): Unknown rendering method, falling back to software");
@@ -296,7 +300,7 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 				ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
 				break;
 			case OPENGL:
-				ret = (*context)->opengl_render(context+1,surface,quality,renddesc, cb);
+				ret = (*context)->opengl_render(context+1,&renderer_opengl,quality,renddesc, cb);
 				break;
 			default:
 				synfig::info("Context::render(): Unknown rendering method, falling back to software");
