@@ -138,6 +138,7 @@ class ValueNode;
 class ValueBase;
 class Synfig_Time;
 class Surface;
+class Renderer_OpenGL;
 class RendDesc;
 class ProgressCallback;
 class Context;
@@ -473,7 +474,7 @@ public:
 	**	\return \c true on success, \c false on failure
 	**	\see Handle::accelerated_render()
 	*/
-	virtual bool opengl_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator referring to next Layer.
