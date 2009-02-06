@@ -205,6 +205,8 @@ Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 
+		checkErrors();
+
 		CHECK_FRAMEBUFFER_STATUS();
 	}
 }
@@ -303,7 +305,7 @@ Renderer_OpenGL::get_data(PixelFormat pf)
 
 	swap();
 	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
-	glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer);
+	glReadPixels(0, 0, _w, _h, format, type, _buffer);
 
 	checkErrors();
 

@@ -132,7 +132,7 @@ class Renderer_OpenGL
 
 		void set_wh(const GLuint w, const GLuint h);
 
-		void set_color(const GLfloat r, const GLfloat g, const GLfloat b, const GLfloat a) { glColor4f(r, g, b, a); }
+		inline void set_color(const GLfloat r, const GLfloat g, const GLfloat b, const GLfloat a) { glColor4f(r, g, b, a); }
 
 		void draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision = 0);
 		void draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2);
