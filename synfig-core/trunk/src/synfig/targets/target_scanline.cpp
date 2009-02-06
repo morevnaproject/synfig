@@ -37,6 +37,8 @@
 #include "../canvas.h"
 #include "../context.h"
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -247,12 +249,27 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, Render
 			}
 			else
 			{
-				// Put the surface we renderer
-				// onto the target.
-				if(!add_frame(&surface))
-				{
-					if(cb)cb->error(_("Unable to put surface on target"));
-					return false;
+				// If the method requires it, copy the generated image to the surface
+				switch (method) {
+					case SOFTWARE:
+						// Put the surface we renderer
+						// onto the target.
+						if(!add_frame(&surface))
+						{
+							if(cb)cb->error(_("Unable to put surface on target"));
+							return false;
+						}
+						break;
+					case OPENGL:
+						const unsigned char *data = (const unsigned char*)renderer_opengl().get_data(target_format_);
+						// Put the surface we renderer
+						// onto the target.
+						if(!add_frame(data, desc.get_w(), desc.get_h()))
+						{
+							if(cb)cb->error(_("Unable to put surface on target"));
+							return false;
+						}
+						break;
 				}
 			}
 		#if USE_PIXELRENDERING_LIMIT
