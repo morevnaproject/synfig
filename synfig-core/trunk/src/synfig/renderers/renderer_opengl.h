@@ -109,6 +109,8 @@ class Renderer_OpenGL
 		GLuint _vw, _vh;
 		//! Current scene top-left and bottom-right points
 		Point _tl, _br;
+		//! Current scene ratios
+		float _pw, _ph;
 		//! Buffers IDs
 		GLuint _fbuf[N_BUFFERS];
 		//! Textures ids

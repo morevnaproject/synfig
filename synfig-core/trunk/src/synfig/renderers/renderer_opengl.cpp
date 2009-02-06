@@ -52,7 +52,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _buffer(NULL), _write_tex(0), _read_tex(1)
+Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL), _write_tex(0), _read_tex(1)
 {
 	// Get a context (platform-dependant code)
 #ifdef linux
@@ -216,6 +216,10 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 
 		CHECK_FRAMEBUFFER_STATUS();
 	}
+
+	// Re-calculate ratios
+	_pw = (br[0] - tl[0]) / _vw;
+	_ph = (br[1] - tl[1]) / _vh;
 }
 
 // FIXME: This is the same code as in glPlayfield!
@@ -223,8 +227,9 @@ void
 Renderer_OpenGL::draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision)
 {
 	// From http://slabode.exofire.net/circle_draw.shtml
+	// TODO: Fix precision function to depend on viewport size relation (better than now)
 	if (precision <= 0)
-		precision = int(2.0f * M_PI / (acosf(1 - 0.25 / r)));
+		precision = int(2.0f * M_PI / (acosf(1 - 0.25 / ((r*r)/_pw))));	// We're using _pw, but _ph works as well
 	float theta = 2 * M_PI / float(precision);
 	float tangetial_factor = tanf(theta);//calculate the tangential factor
 
