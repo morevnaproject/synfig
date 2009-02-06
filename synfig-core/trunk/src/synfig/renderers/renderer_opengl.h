@@ -119,6 +119,7 @@ class Renderer_OpenGL
 
 	// Functions
 	private:
+		void checkErrors();
 		void transfer_data(unsigned char* buf, unsigned int tex_num);
 
 	public:

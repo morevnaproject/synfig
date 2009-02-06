@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_OpenGL::Renderer_OpenGL(): _buffer(NULL), _write_tex(0), _read_tex(1)
+Renderer_OpenGL::Renderer_OpenGL(): _w(0), _h(0), _buffer(NULL), _write_tex(0), _read_tex(1)
 {
 	// Get a context (platform-dependant code)
 #ifdef linux
@@ -128,6 +128,16 @@ Renderer_OpenGL::~Renderer_OpenGL()
 }
 
 void
+Renderer_OpenGL::checkErrors()
+{
+	GLint err = glGetError();
+	if (err != GL_NO_ERROR) {
+		synfig::error("Renderer_OpenGL: OpenGL Error (%d)", err);
+		throw;
+	}
+}
+
+void
 Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 {
 	glBindTexture(_tex_target, _tex[tex_num]);
@@ -138,7 +148,7 @@ Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 void
 Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 {
-	if ((w != _w) || (_h != h)) {
+	if ((w) && (h) && ((w != _w) || (_h != h))) {
 		_w = w;
 		_h = h;
 
@@ -165,6 +175,8 @@ Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 
 			glTexImage2D(_tex_target, MIPMAP_LEVEL, GL_RGBA32F_ARB,
 			_w, _h, 0, GL_RGBA, GL_FLOAT, NULL);
+
+			checkErrors();
 
 			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
 				GL_COLOR_ATTACHMENT0_EXT + j,
