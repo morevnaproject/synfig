@@ -128,7 +128,7 @@ Renderer_OpenGL::~Renderer_OpenGL()
 }
 
 void
-Renderer_OpenGL::transfer_data(surface_type *buf, unsigned int tex_num)
+Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 {
 	glBindTexture(_tex_target, _tex[tex_num]);
 	glTexSubImage2D(_tex_target, MIPMAP_LEVEL, 0, 0, _w, _h, GL_RGBA, GL_FLOAT, buf);
@@ -174,17 +174,15 @@ Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 		}
 
 		// Create a new buffer
-		if (_buffer)
-			delete _buffer;
-
-		_buffer = new surface_type[_w * _h];
+		delete [] _buffer;
+		_buffer = new unsigned char[_w * _h * sizeof(surface_type)];
 		if (!_buffer) {
-			synfig::error("Renderer_OpenGL: Cannot allocate %d bytes of memory", _w * _h);
+			synfig::error("Renderer_OpenGL: Cannot allocate %d bytes of memory", _w * _h * sizeof(surface_type));
 			throw;
 		}
 
 		// Initialize textures
-		memset(_buffer, 0, _w * _h);
+		memset(_buffer, 0, _w * _h * sizeof(surface_type));
 
 		transfer_data(_buffer, _write_tex);
 		transfer_data(_buffer, _read_tex);

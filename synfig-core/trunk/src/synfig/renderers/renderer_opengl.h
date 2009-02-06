@@ -80,6 +80,9 @@
 
 /* === T Y P E D E F S ===================================================== */
 
+//! Type of surface
+typedef float surface_type;
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
@@ -93,9 +96,6 @@ class Renderer_OpenGL
 		Window win;
 		GLXContext glc;
 #endif
-		//! Type of surface
-		typedef float surface_type;
-
 		//! Number of FBOs in GPU
 		static const int N_BUFFERS = 1;
 		//! Number of textures / color attachments per FBO
@@ -109,7 +109,7 @@ class Renderer_OpenGL
 		//! Textures ids
 		GLuint _tex[N_TEXTURES];
 		//! Texture buffer
-		surface_type *_buffer;
+		unsigned char* _buffer;
 		//! Texture target
 		GLuint _tex_target;
 		//! Maximum attachment points
@@ -119,7 +119,7 @@ class Renderer_OpenGL
 
 	// Functions
 	private:
-		void transfer_data(surface_type *buf, unsigned int tex_num);
+		void transfer_data(unsigned char* buf, unsigned int tex_num);
 
 	public:
 		Renderer_OpenGL();
