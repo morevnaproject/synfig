@@ -33,6 +33,7 @@
 #include "synfig/general.h"
 
 #include <string.h>
+#include <math.h>
 
 #endif
 
@@ -41,6 +42,7 @@
 using namespace std;
 //using namespace etl;
 using namespace synfig;
+//using namespace GLX;
 
 /* === M A C R O S ========================================================= */
 
@@ -199,6 +201,63 @@ Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 		transfer_data(_buffer, _write_tex);
 		transfer_data(_buffer, _read_tex);
 
+		glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
+
+		glPolygonMode(GL_FRONT, GL_FILL);
+
 		CHECK_FRAMEBUFFER_STATUS();
 	}
+}
+
+// FIXME: This is the same code as in glPlayfield!
+void
+Renderer_OpenGL::draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision)
+{
+	// From http://slabode.exofire.net/circle_draw.shtml
+	if (precision <= 0)
+		precision = int(2.0f * M_PI / (acosf(1 - 0.25 / r)));
+	float theta = 2 * M_PI / float(precision);
+	float tangetial_factor = tanf(theta);//calculate the tangential factor
+
+	float radial_factor = cosf(theta);//calculate the radial factor
+
+	float x = r;//we start at angle = 0
+
+	float y = 0;
+
+	// FIXME: USe a vertex array or buffer
+	glBegin(GL_POLYGON);
+	for(int j = 0; j < precision; j++)
+	{
+		glVertex2f(x + cx, y + cy);//output vertex
+
+		//calculate the tangential vector
+		//remember, the radial vector is (x, y)
+		//to get the tangential vector we flip those coordinates and negate one of them
+
+		float tx = -y;
+		float ty = x;
+
+		//add the tangential vector
+
+		x += tx * tangetial_factor;
+		y += ty * tangetial_factor;
+
+		//correct using the radial factor
+
+		x *= radial_factor;
+		y *= radial_factor;
+	}
+	glEnd();
+}
+
+void
+Renderer_OpenGL::draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2)
+{
+	glBegin(GL_QUADS);
+	glVertex2f(x1, y1);
+	glVertex2f(x2, y1);
+	glVertex2f(x2, y2);
+	glVertex2f(x1, y2);
+	glEnd();
 }
