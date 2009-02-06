@@ -35,6 +35,7 @@
 #endif
 
 #include "synfig/color.h"
+#include "synfig/vector.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -104,8 +105,10 @@ class Renderer_OpenGL
 		static const int N_TEXTURES = 2;
 		//! Mipmapping level
 		static const int MIPMAP_LEVEL = 0;
-		//! Current buffers width & height
-		GLuint _w, _h;
+		//! Current viewport width & height
+		GLuint _vw, _vh;
+		//! Current scene top-left and bottom-right points
+		Point _tl, _br;
 		//! Buffers IDs
 		GLuint _fbuf[N_BUFFERS];
 		//! Textures ids
@@ -130,7 +133,7 @@ class Renderer_OpenGL
 		Renderer_OpenGL();
 		~Renderer_OpenGL();
 
-		void set_wh(const GLuint w, const GLuint h);
+		void set_wh(const GLuint w, const GLuint h, const Point tl, const Point br);
 
 		inline void set_color(const GLfloat r, const GLfloat g, const GLfloat b, const GLfloat a) { glColor4f(r, g, b, a); }
 
@@ -145,4 +148,3 @@ class Renderer_OpenGL
 /* === E N D =============================================================== */
 
 #endif
-

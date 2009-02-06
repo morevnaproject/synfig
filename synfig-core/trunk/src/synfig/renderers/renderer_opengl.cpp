@@ -52,7 +52,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_OpenGL::Renderer_OpenGL(): _w(0), _h(0), _buffer(NULL), _write_tex(0), _read_tex(1)
+Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _buffer(NULL), _write_tex(0), _read_tex(1)
 {
 	// Get a context (platform-dependant code)
 #ifdef linux
@@ -113,7 +113,7 @@ Renderer_OpenGL::~Renderer_OpenGL()
 {
 	synfig::info("Renderer_OpenGL: Closing...");
 	if (_buffer)
-		delete _buffer;
+		delete [] _buffer;
 
 	// Delete our FBOs
 	glDeleteFramebuffersEXT(N_BUFFERS, _fbuf);
@@ -143,24 +143,31 @@ void
 Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 {
 	glBindTexture(_tex_target, _tex[tex_num]);
-	glTexSubImage2D(_tex_target, MIPMAP_LEVEL, 0, 0, _w, _h, GL_RGBA, GL_FLOAT, buf);
+	glTexSubImage2D(_tex_target, MIPMAP_LEVEL, 0, 0, _vw, _vh, GL_RGBA, GL_FLOAT, buf);
 }
 
 
 void
-Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
+Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const Point br)
 {
-	if ((w) && (h) && ((w != _w) || (_h != h))) {
-		_w = w;
-		_h = h;
+	if ((tl != _tl) || (br != _br)) {
+		_tl = tl;
+		_br = br;
 
 		// Initialize matrices
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluOrtho2D(0, _w, 0, _h);
+		// We use the coords inverted (bottom and top) because OpenGL uses lower-left coordinates
+		gluOrtho2D(_tl[0], _br[0], _tl[1], _br[1]);
+		glMatrixMode(GL_MODELVIEW);
+	}
+	if ((vw) && (vh) && ((vw != _vw) || (_vh != vh))) {
+		_vw = vw;
+		_vh = vh;
+
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glViewport(0, 0, _w, _h);
+		glViewport(0, 0, _vw, _vh);
 
 		// Create textures and bind them to our FBO
 		glGenTextures(N_TEXTURES, _tex);
@@ -176,7 +183,7 @@ Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 			glTexImage2D(_tex_target, MIPMAP_LEVEL, GL_RGBA32F_ARB,
-			_w, _h, 0, GL_RGBA, GL_FLOAT, NULL);
+			_vw, _vh, 0, GL_RGBA, GL_FLOAT, NULL);
 
 			checkErrors();
 
@@ -189,14 +196,14 @@ Renderer_OpenGL::set_wh(const GLuint w, const GLuint h)
 
 		// Create a new buffer
 		delete [] _buffer;
-		_buffer = new unsigned char[_w * _h * sizeof(surface_type)];
+		_buffer = new unsigned char[_vw * _vh * sizeof(surface_type)];
 		if (!_buffer) {
-			synfig::error("Renderer_OpenGL: Cannot allocate %d bytes of memory", _w * _h * sizeof(surface_type));
+			synfig::error("Renderer_OpenGL: Cannot allocate %d bytes of memory", _vw * _vh * sizeof(surface_type));
 			throw;
 		}
 
 		// Initialize textures
-		memset(_buffer, 0, _w * _h * sizeof(surface_type));
+		memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
 
 		transfer_data(_buffer, _write_tex);
 		transfer_data(_buffer, _read_tex);
@@ -305,7 +312,7 @@ Renderer_OpenGL::get_data(PixelFormat pf)
 
 	swap();
 	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
-	glReadPixels(0, 0, _w, _h, format, type, _buffer);
+	glReadPixels(0, 0, _vw, _vh, format, type, _buffer);
 
 	checkErrors();
 
