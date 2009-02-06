@@ -62,17 +62,27 @@ Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL
 		throw;
 	}
 	Window root = DefaultRootWindow(dpy);
-	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
+	// Check if multisampling it's supported
+	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24,
+	                GLX_SAMPLE_BUFFERS_ARB, 1, GLX_SAMPLES_ARB, 4,		// Multisampling
+	                None };
 	XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
+	_multisampling = vi != NULL;
 	if(vi == NULL) {
-		synfig::error("Renderer_OpenGL: Cannot choose X visual");
-		throw;
+		// Multisampling not supported, fall back to normal window
+		att[3] = None;
+		if (!(vi = glXChooseVisual(dpy, 0, att))) {
+			synfig::error("Renderer_OpenGL: Cannot choose X visual");
+			throw;
+		}
 	}
+	synfig::info("Renderer_OpenGL: Multisampling it's %s!", _multisampling ? "supported" : "unsupported");
 	XSetWindowAttributes swa;
 	swa.colormap = XCreateColormap(dpy, root, vi->visual, AllocNone);
 	win = XCreateWindow(dpy, root, 0, 0, 640, 480, 0, vi->depth, InputOutput, vi->visual, CWColormap, &swa);
 	// XMapWindow(dpy, win);
 	glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
+	XFree(vi);
 	glXMakeCurrent(dpy, win, glc);
 #endif
 
@@ -316,8 +326,10 @@ Renderer_OpenGL::get_data(PixelFormat pf)
 	}
 
 	swap();
+	glEnable(GL_MULTISAMPLE_ARB);
 	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
 	glReadPixels(0, 0, _vw, _vh, format, type, _buffer);
+	glDisable(GL_MULTISAMPLE_ARB);
 
 	checkErrors();
 

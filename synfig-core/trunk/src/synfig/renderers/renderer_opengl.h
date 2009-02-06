@@ -123,6 +123,8 @@ class Renderer_OpenGL
 		GLint _max_attachs;
 		//! Indicates the next read and write texture
 		unsigned int _write_tex, _read_tex;
+		//! Stores if multisampling it's currently supported
+		bool _multisampling;
 
 	// Functions
 	private:
