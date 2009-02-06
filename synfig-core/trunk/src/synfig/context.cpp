@@ -245,14 +245,28 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 		break;
 	}
 
-	// If this layer isn't defined, return alpha
+	// If this layer isn't defined, because we've reached the bottom layer, return alpha
 	if (context->empty() || (straight_and_empty && composite->get_amount() == 1.0f))
 	{
 #ifdef SYNFIG_DEBUG_LAYERS
 		synfig::info("Context::render(): Hit end of list");
 #endif	// SYNFIG_DEBUG_LAYERS
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-		surface->clear();
+		switch (method) {
+			case SOFTWARE:
+				surface->set_wh(renddesc.get_w(),renddesc.get_h());
+				surface->clear();
+				break;
+			case OPENGL:
+				renderer_opengl.set_wh(renddesc.get_w(),renddesc.get_h());
+				// "set_wh" already clears buffers
+				//renderer_opengl_->clear();
+				break;
+			default:
+				synfig::info("Context::render(): Unknown rendering method, falling back to software");
+				surface->set_wh(renddesc.get_w(),renddesc.get_h());
+				surface->clear();
+				break;
+		}
 #ifdef SYNFIG_PROFILE_LAYERS
 		profile_timer.reset();
 #endif	// SYNFIG_PROFILE_LAYERS
@@ -283,15 +297,29 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 	{
 		if ((ret = Context((context+1)).render(surface,quality,renddesc,cb, method)))
 		{
-			Surface clearsurface;
-			clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
-			clearsurface.clear();
 
-			Surface::alpha_pen apen(surface->begin());
-			apen.set_alpha(composite->get_amount());
-			apen.set_blend_method(composite->get_blend_method());
+			switch (method) {
+				case SOFTWARE:
+				{
+					Surface clearsurface;
+					clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
+					clearsurface.clear();
 
-			clearsurface.blit_to(apen);
+					Surface::alpha_pen apen(surface->begin());
+					apen.set_alpha(composite->get_amount());
+					apen.set_blend_method(composite->get_blend_method());
+
+					clearsurface.blit_to(apen);
+					break;
+				}
+				case OPENGL:
+					// FIXME //
+					break;
+				default:
+					synfig::info("Context::render(): Unknown rendering method, falling back to software");
+					// FIXME //
+					break;
+			}
 		}
 	}
 	else {
