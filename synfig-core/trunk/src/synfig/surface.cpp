@@ -70,10 +70,16 @@ public:
 	virtual Color * start_scanline(int scanline);
 
 	virtual bool end_scanline();
+
+	virtual unsigned char* start_scanline_rgba(int scanline);
+
+	virtual bool end_scanline_rgba();
 };
 
 target2surface::target2surface(Surface *surface):surface(surface)
 {
+	// FIXME: Empty target_format_ (no bit definition), so it will fail rendering with OpenGL
+	target_format_ = PF_RGB;
 }
 
 target2surface::~target2surface()
@@ -115,6 +121,18 @@ bool
 target2surface::end_scanline()
 {
 	return true;
+}
+
+unsigned char*
+target2surface::start_scanline_rgba(int scanline)
+{
+	return NULL;
+}
+
+bool
+target2surface::end_scanline_rgba()
+{
+	return false;
 }
 
 /* === P R O C E D U R E S ================================================= */
