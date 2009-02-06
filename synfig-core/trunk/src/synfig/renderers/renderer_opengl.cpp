@@ -134,7 +134,7 @@ Renderer_OpenGL::checkErrors()
 {
 	GLint err = glGetError();
 	if (err != GL_NO_ERROR) {
-		synfig::error("Renderer_OpenGL: OpenGL Error (%d)", err);
+		synfig::error("Renderer_OpenGL: OpenGL Error (%s)", gluErrorString(err));
 		throw;
 	}
 }
