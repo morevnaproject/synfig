@@ -261,3 +261,51 @@ Renderer_OpenGL::draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloa
 	glVertex2f(x1, y2);
 	glEnd();
 }
+
+const unsigned char*
+Renderer_OpenGL::get_data(PixelFormat pf)
+{
+	GLenum format, type;
+
+	// Get selected format
+	if (pf & PF_GRAY)
+		if (pf & PF_A)
+			format = GL_LUMINANCE_ALPHA;
+		else
+			format = GL_LUMINANCE;
+	else if (pf & PF_A) {
+		if (pf & PF_BGR)
+			format = GL_BGRA;
+		else
+			format = GL_RGBA;
+	}
+	else {
+		if (pf & PF_BGR)
+			format = GL_BGR;
+		else
+			format = GL_RGB;
+	}
+
+	// Get selected type
+	// TODO: Add (check and support for) half and index types
+	if (pf & PF_8BITS)
+		type = GL_UNSIGNED_BYTE;
+	else if (pf & PF_16BITS)
+		type = GL_UNSIGNED_SHORT;
+	else if (pf & PF_32BITS)
+		type = GL_UNSIGNED_INT;
+	else if (pf & PF_FLOAT)
+		type = GL_FLOAT;
+	else {
+		synfig::error("Undefined pixel format size");
+		throw;
+	}
+
+	swap();
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
+	glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer);
+
+	checkErrors();
+
+	return _buffer;
+}

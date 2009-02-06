@@ -34,6 +34,8 @@
 #include <GL/glx.h>
 #endif
 
+#include "synfig/color.h"
+
 /* === M A C R O S ========================================================= */
 
 #define CHECK_FRAMEBUFFER_STATUS()                                    \
@@ -122,6 +124,8 @@ class Renderer_OpenGL
 		void checkErrors();
 		void transfer_data(unsigned char* buf, unsigned int tex_num);
 
+		inline void swap() { _read_tex = !_read_tex; _write_tex = !_write_tex; }
+
 	public:
 		Renderer_OpenGL();
 		~Renderer_OpenGL();
@@ -132,6 +136,8 @@ class Renderer_OpenGL
 
 		void draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision = 0);
 		void draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2);
+
+		const unsigned char* get_data(PixelFormat pf);
 };	// END of class Renderer_OpenGL
 
 };	// END of namespace synfig
