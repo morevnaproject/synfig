@@ -41,7 +41,7 @@ using namespace std;
 
 synfig::Target::Book* synfig::Target::book_;
 synfig::Target::ExtBook* synfig::Target::ext_book_;
-synfig::Renderer_OpenGL* synfig::Target::renderer_opengl_;
+synfig::Renderer_OpenGL* synfig::Target::renderer_opengl_ = NULL;
 
 static synfig::Gamma* default_gamma_;
 
