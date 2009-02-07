@@ -160,7 +160,10 @@ Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 void
 Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const Point br)
 {
+	bool changed = false;
 	if ((tl != _tl) || (br != _br)) {
+		changed = true;
+
 		_tl = tl;
 		_br = br;
 
@@ -172,6 +175,8 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 		glMatrixMode(GL_MODELVIEW);
 	}
 	if ((vw) && (vh) && ((vw != _vw) || (_vh != vh))) {
+		changed = true;
+
 		_vw = vw;
 		_vh = vh;
 
@@ -226,10 +231,11 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 
 		CHECK_FRAMEBUFFER_STATUS();
 	}
-
-	// Re-calculate ratios
-	_pw = (br[0] - tl[0]) / _vw;
-	_ph = (br[1] - tl[1]) / _vh;
+	if (changed) {
+		// Re-calculate ratios
+		_pw = (br[0] - tl[0]) / _vw;
+		_ph = (br[1] - tl[1]) / _vh;
+	}
 }
 
 // FIXME: This is the same code as in glPlayfield!
