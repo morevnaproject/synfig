@@ -292,6 +292,17 @@ Renderer_OpenGL::draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloa
 	glEnd();
 }
 
+void
+Renderer_OpenGL::fill()
+{
+	glBegin(GL_QUADS);
+	glVertex2f(_tl[0], _tl[1]);
+	glVertex2f(_br[0], _tl[1]);
+	glVertex2f(_br[0], _br[1]);
+	glVertex2f(_tl[0], _br[1]);
+	glEnd();
+}
+
 const unsigned char*
 Renderer_OpenGL::get_data(PixelFormat pf)
 {

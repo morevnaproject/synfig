@@ -140,9 +140,11 @@ class Renderer_OpenGL
 		void set_wh(const GLuint w, const GLuint h, const Point tl, const Point br);
 
 		inline void set_color(const GLfloat r, const GLfloat g, const GLfloat b, const GLfloat a) { glColor4f(r, g, b, a); }
+		inline void set_color(synfig::Color color) { glColor4f(color.get_r(), color.get_g(), color.get_b(), color.get_a()); }
 
 		void draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision = 0);
 		void draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2);
+		void fill();
 
 		const unsigned char* get_data(PixelFormat pf);
 };	// END of class Renderer_OpenGL
