@@ -107,6 +107,7 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
 	virtual synfig::Rect get_bounding_rect()const;

@@ -42,6 +42,8 @@
 
 #include <cmath>
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 using namespace synfig;
@@ -737,6 +739,110 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			}
 		}
     }
+
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+
+	return true;
+}
+
+bool
+Circle::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// trivial case
+	if(is_disabled() || (radius==0 && invert==false && !feather))
+		return context.render(NULL, quality, renddesc, cb, OPENGL);
+
+	// Another trivial case
+	if(invert && radius==0 && is_solid_color())
+	{
+		renderer_opengl->set_wh(renddesc.get_w(),renddesc.get_h(), renddesc.get_tl(), renddesc.get_br());
+		renderer_opengl->set_color(color);
+		renderer_opengl->fill();
+
+		if(cb && !cb->amount_complete(10000,10000))
+			return false;
+		return true;
+	}
+
+	// Window Boundaries
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+
+	const Real x_neg = tl[0] > br[0] ? -1 : 1;
+	const Real y_neg = tl[1] > br[1] ? -1 : 1;
+
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+
+	// Increasing the feather amount by the size of
+	// a pixel will create an anti-aliased appearance
+	// don't render feathering at all when quality is 10
+	const Real newfeather = (quality == 10) ? 0 : feather + (abs(ph)+abs(pw))/4.0;
+
+	//int u,v;
+	int left	= (int)floor( (origin[0]- x_neg*(radius+newfeather) - tl[0]) / pw );
+	int right	= (int)ceil( (origin[0] + x_neg*(radius+newfeather) - tl[0]) / pw );
+	int top	= (int)floor( (origin[1]- y_neg*(radius+newfeather) - tl[1]) / ph );
+	int bottom	= (int)ceil( (origin[1] + y_neg*(radius+newfeather) - tl[1]) / ph );
+
+	//clip the rectangle bounds
+	if(left < 0)
+		left = 0;
+	if(top < 0)
+		top = 0;
+	if(right >= w)
+		right = w-1;
+	if(bottom >= h)
+		bottom = h-1;
+
+	const Real inner_radius = radius-newfeather>0 ? radius-newfeather : 0;
+	const Real outer_radius = radius+newfeather;
+
+	const Real inner_radius_sqd = inner_radius*inner_radius;
+	const Real outer_radius_sqd = outer_radius*outer_radius;
+
+	const Real diff_radii_sqd = 4*newfeather*std::max(newfeather,radius);//4.0*radius*newfeather;
+	const Real double_feather = newfeather * 2.0;
+
+	//Compile the temporary cache for the falloff calculations
+	FALLOFF_FUNC *func = GetFalloffFunc();
+
+	const CircleDataCache cache =
+	{
+		inner_radius,outer_radius,
+		inner_radius_sqd,outer_radius_sqd,
+		diff_radii_sqd,double_feather
+	};
+
+	//info("Circle: Initialized everything");
+
+	//let the rendering begin
+	SuperCallback supercb(cb,0,9000,10000);
+
+	// Render what is behind us
+	if(!context.render(NULL, quality, renddesc, &supercb, OPENGL))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
+		return false;
+	}
+
+	if (invert) {
+		//fill the surface with the background color initially
+		renderer_opengl->set_wh(w, h, tl, br);
+		renderer_opengl->set_color(color);
+		renderer_opengl->fill();
+
+		renderer_opengl->set_color(0.0, 0.0, 0.0, 0.0);
+	}
+	else
+		renderer_opengl->set_color(color);
+
+	renderer_opengl->draw_circle(origin[0], origin[1], radius);
 
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))
