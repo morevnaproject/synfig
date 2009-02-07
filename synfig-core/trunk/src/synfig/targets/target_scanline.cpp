@@ -449,7 +449,6 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 				colordata[i]=Color::blend((*surface)[y][i],desc.get_bg_color(),1.0f);
 		}
 		else*/
-			// TODO: If target needs data in other way than RGBA, convert using another fragment shader (OpenGL)
 			memcpy(colordata, data + (width * y * chan_size), width * chan_size);
 
 		if(!end_scanline_rgba())
