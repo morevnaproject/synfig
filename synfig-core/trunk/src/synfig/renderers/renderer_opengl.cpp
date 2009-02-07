@@ -117,6 +117,8 @@ Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL
 	synfig::info("Renderer_OpenGL: FBOs up! (Texture target is %s, non_power_of_two %s)",
 			_tex_target == GL_TEXTURE_2D ? "GL_TEXTURE_2D" : "GL_TEXTURE_RECTANGLE_ARB",
 			GLEW_ARB_texture_non_power_of_two ? "supported" : "unsupported");
+
+	createShaders();
 }
 
 Renderer_OpenGL::~Renderer_OpenGL()
@@ -124,6 +126,24 @@ Renderer_OpenGL::~Renderer_OpenGL()
 	synfig::info("Renderer_OpenGL: Closing...");
 	if (_buffer)
 		delete [] _buffer;
+
+	// BLEND_END stores the last blend value (so, the total count)
+	const int NBLENDS = Color::BLEND_END;
+
+	for (int j = 0; j < NBLENDS; j++) {
+		glDetachShader(_vertex_shader[0], _program[j]);
+		glDeleteShader(_vertex_shader[0]);
+	}
+	delete [] _vertex_shader;
+
+	// Detach fragment shaders and delete programs
+	for (int j = 0; j < NBLENDS; j++) {
+		glDetachShader(_frag_shader[j], _program[j]);
+		glDeleteShader(_frag_shader[j]);
+		glDeleteProgram(_program[j]);
+	}
+	delete [] _vertex_shader;
+	delete [] _program;
 
 	// Delete our FBOs
 	glDeleteFramebuffersEXT(N_BUFFERS, _fbuf);
@@ -137,6 +157,118 @@ Renderer_OpenGL::~Renderer_OpenGL()
 	XDestroyWindow(dpy, win);
 	XCloseDisplay(dpy);
 #endif
+}
+
+void
+Renderer_OpenGL::checkShader(GLuint s)
+{
+	int len = 0, written = 0;
+	char *log;
+
+	glGetShaderiv(s, GL_INFO_LOG_LENGTH, &len);
+
+	if (len > 0)
+	{
+		log = new char[len];
+		glGetShaderInfoLog(s, len, &written, log);
+		synfig::error("Renderer_OpenGL: %s", log);
+		delete [] log;
+		throw;
+	}
+
+}
+
+void
+Renderer_OpenGL::checkProgram(GLuint p)
+{
+	int len = 0, written = 0;
+	char *log;
+
+	glGetProgramiv(p, GL_INFO_LOG_LENGTH, &len);
+
+	if (len > 0)
+	{
+		log = new char[len];
+		glGetProgramInfoLog(p, len, &written, log);
+		synfig::error("Renderer_OpenGL: %s", log);
+		delete [] log;
+		throw;
+	}
+
+}
+
+void
+Renderer_OpenGL::createShaders()
+{
+#define CREATE_FRAGMENT_SHADER(source, id) \
+	_frag_shader[id] = glCreateShader(GL_FRAGMENT_SHADER);	\
+	glShaderSource(_frag_shader[id], 1, source, NULL);	\
+	checkShader(_frag_shader[id]);	\
+	_program[id] = glCreateProgram();	\
+	glAttachShader(_program[id], _vertex_shader[0]);	\
+	glAttachShader(_program[id], _frag_shader[id]);	\
+	glLinkProgram(_program[id]);	\
+	checkProgram(_program[id]);
+
+	const int NBLENDS = Color::BLEND_END;
+
+	// Save space for program, vertex and fragment identifiers
+	_program       = new GLuint[NBLENDS];
+	_vertex_shader = new GLuint[1];
+	_frag_shader   = new GLuint[NBLENDS];
+
+	// Create minimal vertex shader
+	const char *vertex_program[] = { "void main() { gl_Position = ftransform(); }" };
+	_vertex_shader[0] = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(_vertex_shader[0], 1, vertex_program, NULL);
+	checkShader(_vertex_shader[0]);
+
+	// Create fragment shaders
+	const char *blend_composite[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_composite, Color::BLEND_COMPOSITE);
+	const char *blend_straight[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_straight, Color::BLEND_STRAIGHT);
+	const char *blend_onto[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_onto, Color::BLEND_ONTO);
+	const char *blend_straight_onto[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_straight_onto, Color::BLEND_STRAIGHT_ONTO);
+	const char *blend_behind[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_behind, Color::BLEND_BEHIND);
+	const char *blend_screen[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_screen, Color::BLEND_SCREEN);
+	const char *blend_overlay[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_overlay, Color::BLEND_OVERLAY);
+	const char *blend_hard_light[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_hard_light, Color::BLEND_HARD_LIGHT);
+	const char *blend_multiply[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_multiply, Color::BLEND_MULTIPLY);
+	const char *blend_divide[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_divide, Color::BLEND_DIVIDE);
+	const char *blend_add[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_add, Color::BLEND_ADD);
+	const char *blend_subtract[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_subtract, Color::BLEND_SUBTRACT);
+	const char *blend_difference[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_difference, Color::BLEND_DIFFERENCE);
+	const char *blend_brighten[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_brighten, Color::BLEND_BRIGHTEN);
+	const char *blend_darken[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_darken, Color::BLEND_DARKEN);
+	const char *blend_color[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_color, Color::BLEND_COLOR);
+	const char *blend_hue[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_hue, Color::BLEND_HUE);
+	const char *blend_saturation[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_saturation, Color::BLEND_SATURATION);
+	const char *blend_luminance[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_luminance, Color::BLEND_LUMINANCE);
+
+	const char *blend_alpha_brighten[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_alpha_brighten, Color::BLEND_ALPHA_BRIGHTEN);
+	const char *blend_alpha_darken[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_alpha_darken, Color::BLEND_ALPHA_DARKEN);
+	const char *blend_alpha_over[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	CREATE_FRAGMENT_SHADER(blend_alpha_over, Color::BLEND_ALPHA_OVER);
 }
 
 void
@@ -301,6 +433,24 @@ Renderer_OpenGL::fill()
 	glVertex2f(_br[0], _br[1]);
 	glVertex2f(_tl[0], _br[1]);
 	glEnd();
+}
+
+void
+Renderer_OpenGL::blend(synfig::Color::BlendMethod blend_method)
+{
+	// Change read / write textures
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
+
+	// Select the appropiate program
+	glUseProgram(_program[blend_method]);
+
+	// Render to do the copy
+	fill();
+
+	// Restore writting texture
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
 }
 
 const unsigned char*

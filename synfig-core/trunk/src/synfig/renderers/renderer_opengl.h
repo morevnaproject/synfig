@@ -126,8 +126,18 @@ class Renderer_OpenGL
 		//! Stores if multisampling it's currently supported
 		bool _multisampling;
 
+		// Shaders
+		//! Program ids
+		GLuint *_program;
+		//! Vertex shader ids
+		GLuint *_vertex_shader;
+		//! Fragment shader ids
+		GLuint *_frag_shader;
 	// Functions
 	private:
+		void checkShader(GLuint s);
+		void checkProgram(GLuint p);
+		void createShaders();
 		void checkErrors();
 		void transfer_data(unsigned char* buf, unsigned int tex_num);
 
@@ -145,6 +155,8 @@ class Renderer_OpenGL
 		void draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision = 0);
 		void draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2);
 		void fill();
+
+		void blend(synfig::Color::BlendMethod blend_method);
 
 		const unsigned char* get_data(PixelFormat pf);
 };	// END of class Renderer_OpenGL
