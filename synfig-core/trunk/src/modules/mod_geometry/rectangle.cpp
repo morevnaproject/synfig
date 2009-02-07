@@ -31,7 +31,7 @@
 #endif
 
 #include <synfig/synfig_string.h>
-#include <synfig/synfig_time.h>
+//#include <synfig/synfig_time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
@@ -42,6 +42,8 @@
 #include <ETL/misc>
 
 #include "rectangle.h"
+
+#include "synfig/renderers/renderer_opengl.h"
 
 #endif
 
@@ -549,6 +551,43 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		surface->fill(color,pen,right-left,1);
 	}
 
+
+	return true;
+}
+
+bool
+Rectangle::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(is_disabled())
+		return context.render(NULL,quality,renddesc,cb, OPENGL);
+
+	const Point tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+
+	// Render what is behind us
+	if(!context.render(NULL,quality,renddesc,cb, OPENGL))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
+		return false;
+	}
+
+	if(invert)
+	{
+		//fill the surface with the background color initially
+		renderer_opengl->set_wh(w, h, tl, br);
+		renderer_opengl->set_color(color);
+		renderer_opengl->fill();
+
+		renderer_opengl->set_color(0.0, 0.0, 0.0, 0.0);
+	}
+	else
+		renderer_opengl->set_color(color);
+
+	// not inverted
+	renderer_opengl->draw_rectangle(point1[0], point1[1], point2[0], point2[1]);
 
 	return true;
 }
