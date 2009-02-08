@@ -589,6 +589,9 @@ Rectangle::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int qu
 	// not inverted
 	renderer_opengl->draw_rectangle(point1[0], point1[1], point2[0], point2[1]);
 
+	// Do the blending
+	renderer_opengl->blend(get_blend_method());
+
 	return true;
 }
 

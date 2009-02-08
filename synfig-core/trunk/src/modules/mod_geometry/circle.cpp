@@ -844,6 +844,9 @@ Circle::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quali
 
 	renderer_opengl->draw_circle(origin[0], origin[1], radius);
 
+	// Do the blending
+	renderer_opengl->blend(get_blend_method());
+
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))
 		return false;
