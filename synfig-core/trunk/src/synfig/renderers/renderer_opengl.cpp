@@ -142,7 +142,7 @@ Renderer_OpenGL::~Renderer_OpenGL()
 		glDeleteShader(_frag_shader[j]);
 		glDeleteProgram(_program[j]);
 	}
-	delete [] _vertex_shader;
+	delete [] _frag_shader;
 	delete [] _program;
 
 	// Delete our FBOs
@@ -167,11 +167,12 @@ Renderer_OpenGL::checkShader(GLuint s)
 
 	glGetShaderiv(s, GL_INFO_LOG_LENGTH, &len);
 
-	if (len > 0)
+	// Undefined behaviour?? (Returns 1 on no-error (for NULL character count)
+	if (len > 1)
 	{
 		log = new char[len];
 		glGetShaderInfoLog(s, len, &written, log);
-		synfig::error("Renderer_OpenGL: %s", log);
+		synfig::error("Renderer_OpenGL::checkShader: %s", log);
 		delete [] log;
 		throw;
 	}
@@ -186,11 +187,12 @@ Renderer_OpenGL::checkProgram(GLuint p)
 
 	glGetProgramiv(p, GL_INFO_LOG_LENGTH, &len);
 
-	if (len > 0)
+	// Undefined behaviour?? (Returns 1 on no-error (for NULL character count)
+	if (len > 1)
 	{
 		log = new char[len];
 		glGetProgramInfoLog(p, len, &written, log);
-		synfig::error("Renderer_OpenGL: %s", log);
+		synfig::error("Renderer_OpenGL::checkProgram: %s", log);
 		delete [] log;
 		throw;
 	}
