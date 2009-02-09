@@ -570,21 +570,19 @@ Rectangle::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int qu
 	// Render what is behind us
 	if(!context.render(NULL,quality,renddesc,cb, OPENGL))
 	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
+		if(cb)cb->error(strprintf(__FILE__"%d: OpenGL Renderer Failure",__LINE__));
 		return false;
 	}
 
+	renderer_opengl->set_color(color);
 	if(invert)
 	{
 		//fill the surface with the background color initially
 		renderer_opengl->set_wh(w, h, tl, br);
-		renderer_opengl->set_color(color);
 		renderer_opengl->fill();
 
 		renderer_opengl->set_color(0.0, 0.0, 0.0, 0.0);
 	}
-	else
-		renderer_opengl->set_color(color);
 
 	// not inverted
 	renderer_opengl->draw_rectangle(point1[0], point1[1], point2[0], point2[1]);
