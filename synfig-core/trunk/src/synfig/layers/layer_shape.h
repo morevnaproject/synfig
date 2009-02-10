@@ -110,6 +110,7 @@ public:
 
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual Rect get_bounding_rect()const;
 
@@ -120,6 +121,8 @@ private:
 	bool render_polyspan(etl::surface<float> *surface,PolySpan &polyspan)const;
 	virtual bool render_shape(Surface *surface,bool useblend,int quality,const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool render_shape(etl::surface<float> *surface,int quality,const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 }; // END of Layer_Shape
 
 }; // END of namespace synfig

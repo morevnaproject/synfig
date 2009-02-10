@@ -48,6 +48,8 @@
 
 #include <deque>
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -2621,6 +2623,55 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 }
 
 bool
+Layer_Shape::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	const unsigned int w = renddesc.get_w();
+	const unsigned int h = renddesc.get_h();
+
+	const Real pw = abs(renddesc.get_pw());
+	const Real ph = abs(renddesc.get_ph());
+
+	//const Real OFFSET_EPSILON = 1e-8;
+	SuperCallback stageone(cb,1,10000,15001+renddesc.get_h());
+	SuperCallback stagetwo(cb,10000,10001+renddesc.get_h(),15001+renddesc.get_h());
+	SuperCallback stagethree(cb,10001+renddesc.get_h(),15001+renddesc.get_h(),15001+renddesc.get_h());
+
+	// Render what is behind us
+
+	//clip if it satisfies the invert solid thing
+	if(is_solid_color() && invert)
+	{
+
+	}else
+	{
+		if(!context.render(NULL,quality,renddesc,&stageone, OPENGL))
+			return false;
+	}
+
+	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
+
+	bool ret = true;
+
+	renderer_opengl->set_color(color);
+	renderer_opengl->begin_polygon();
+	renderer_opengl->begin_contour();
+
+	if(feather && quality != 10)
+	{
+
+	}else
+	{
+		//might take out to reduce code size
+		ret = render_shape_opengl(renderer_opengl,true,quality,renddesc,&stagetwo);
+	}
+
+	renderer_opengl->end_contour();
+	renderer_opengl->end_polygon();
+
+	return ret;
+}
+
+bool
 Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -3089,6 +3140,193 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 	span.sort_marks();
 
 	return render_polyspan(surface, span);
+}
+bool
+Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,int /*quality*/,
+							const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// If our amount is set to zero, no need to render anything
+	if(!get_amount())
+		return true;
+
+	//test new polygon renderer
+	// Build edge table
+	// Width and Height of a pixel
+	const int 	w = renddesc.get_w();
+	const int	h = renddesc.get_h();
+	const Real	pw = renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
+	const Real	ph = renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
+
+	const Point	tl = renddesc.get_tl();
+
+	Vector tangent (0,0);
+
+	//pointers for processing the bytestream
+	const char *current 	= &bytestream[0];
+	const char *end			= &bytestream[bytestream.size()];
+
+	int	operation 	= Primitive::NONE;
+	int number		= 0;
+	int curnum;
+
+	Primitive 	*curprim;
+	Point		*data;
+
+	Real x,y,x1,y1,x2,y2;
+
+	while(current < end)
+	{
+		//get the op code safely
+		curprim = (Primitive *)current;
+
+		//advance past indices
+		current += sizeof(Primitive);
+		if(current > end)
+		{
+			warning("Layer_Shape::accelerated_render - Error in the byte stream, not enough space for next declaration");
+			return false;
+		}
+
+		//get the relevant data
+		operation 	= curprim->operation;
+		number 		= curprim->number;
+
+		if(operation == Primitive::END)
+			break;
+
+		if(operation == Primitive::CLOSE)
+		{
+			/*if(span.notclosed())
+			{
+				tangent[0] = span.close_x - span.cur_x;
+				tangent[1] = span.close_y - span.cur_y;
+				span.close();
+			}*/
+			continue;
+		}
+
+		data = (Point*)current;
+		current += sizeof(Point)*number;
+
+		//check data positioning
+		if(current > end)
+		{
+			warning("Layer_Shape::accelerated_render - Error in the byte stream, in sufficient data space for declared number of points");
+			return false;
+		}
+
+		for(curnum=0; curnum < number;)
+		{
+			switch(operation)
+			{
+				// MOVE_TO and LINE_TO are the same cases
+				case Primitive::MOVE_TO:
+				case Primitive::LINE_TO:
+				{
+					synfig::info("L: %f, %f", data[curnum][0], data[curnum][1]);
+					renderer_opengl->add_contour_vertex(data[curnum][0], data[curnum][1]);
+					curnum++; //only advance one point
+
+					break;
+				}
+
+				case Primitive::CONIC_TO:
+				{
+					synfig::info("CO: %f, %f - %f, %f", data[curnum][0], data[curnum][1], data[curnum + 1][0], data[curnum + 1][1]);
+					/*x = data[curnum+1][0];
+					x = (x - tl[0] + origin[0])*pw;
+					y = data[curnum+1][1];
+					y = (y - tl[1] + origin[1])*ph;
+
+					x1 = data[curnum][0];
+					x1 = (x1 - tl[0] + origin[0])*pw;
+					y1 = data[curnum][1];
+					y1 = (y1 - tl[1] + origin[1])*ph;
+
+					tangent[0] = 2*(x - x1);
+					tangent[1] = 2*(y - y1);
+
+					span.conic_to(x1,y1,x,y);*/
+					curnum += 2;
+					break;
+				}
+
+				case Primitive::CONIC_TO_SMOOTH:
+				{
+					synfig::info("CO_S: %f, %f", data[curnum][0], data[curnum][1]);
+					/*x = data[curnum][0];
+					x = (x - tl[0] + origin[0])*pw;
+					y = data[curnum][1];
+					y = (y - tl[1] + origin[1])*ph;
+
+					x1 = span.cur_x + tangent[0]/2;
+					y1 = span.cur_y + tangent[1]/2;
+
+					tangent[0] = 2*(x - x1);
+					tangent[1] = 2*(y - y1);
+
+					span.conic_to(x1,y1,x,y);*/
+					curnum ++;
+
+					break;
+				}
+
+				case Primitive::CUBIC_TO:
+				{
+					synfig::info("CU: %f, %f - %f, %f - %f, %f", data[curnum][0], data[curnum][1], data[curnum + 1][0], data[curnum + 1][1], data[curnum + 2][0], data[curnum + 2][1]);
+					/*x = data[curnum+2][0];
+					x = (x - tl[0] + origin[0])*pw;
+					y = data[curnum+2][1];
+					y = (y - tl[1] + origin[1])*ph;
+
+					x2 = data[curnum+1][0];
+					x2 = (x2 - tl[0] + origin[0])*pw;
+					y2 = data[curnum+1][1];
+					y2 = (y2 - tl[1] + origin[1])*ph;
+
+					x1 = data[curnum][0];
+					x1 = (x1 - tl[0] + origin[0])*pw;
+					y1 = data[curnum][1];
+					y1 = (y1 - tl[1] + origin[1])*ph;
+
+					tangent[0] = 2*(x - x2);
+					tangent[1] = 2*(y - y2);
+
+					span.cubic_to(x1,y1,x2,y2,x,y);*/
+					curnum += 3;
+
+					break;
+				}
+
+				case Primitive::CUBIC_TO_SMOOTH:
+				{
+					synfig::info("CU_S: %f, %f - %f, %f", data[curnum][0], data[curnum][1], data[curnum + 1][0], data[curnum + 1][1]);
+					/*x = data[curnum+1][0];
+					x = (x - tl[0] + origin[0])*pw;
+					y = data[curnum+1][1];
+					y = (y - tl[1] + origin[1])*ph;
+
+					x2 = data[curnum][0];
+					x2 = (x2 - tl[0] + origin[0])*pw;
+					y2 = data[curnum][1];
+					y2 = (y2 - tl[1] + origin[1])*ph;
+
+					x1 = span.cur_x + tangent[0]/3.0;
+					y1 = span.cur_y + tangent[1]/3.0;
+
+					tangent[0] = 2*(x - x2);
+					tangent[1] = 2*(y - y2);
+
+					span.cubic_to(x1,y1,x2,y2,x,y);*/
+					curnum += 2;
+
+					break;
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 Rect
