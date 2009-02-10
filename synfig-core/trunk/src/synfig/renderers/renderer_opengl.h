@@ -153,7 +153,9 @@ class Renderer_OpenGL
 		//! Tessellation object
 		GLUtesselator *_tess;
 		//! Stores the points passed using set_contour_data()
-		std::vector<GLdouble> _points;
+		std::vector<GLdouble> _points[2];
+		//! Stores the current list being used (for invert behaviour to work)
+		unsigned int _curr_contour;
 	// Functions
 	private:
 		void checkShader(GLuint s);
@@ -184,7 +186,7 @@ class Renderer_OpenGL
 
 		// Tessellation
 		inline void set_winding_style(bool even_odd) { gluTessProperty(_tess, GLU_TESS_WINDING_RULE, even_odd ? GLU_TESS_WINDING_ODD : GLU_TESS_WINDING_NONZERO); }
-		inline void begin_polygon() { gluTessBeginPolygon(_tess, NULL); _points.clear(); }
+		inline void begin_polygon() { gluTessBeginPolygon(_tess, NULL); _points[0].clear(); _points[1].clear(); _curr_contour = 0; }
 		inline void end_polygon() { gluTessEndPolygon(_tess); }
 		inline void begin_contour() { gluTessBeginContour(_tess); }
 		void end_contour();

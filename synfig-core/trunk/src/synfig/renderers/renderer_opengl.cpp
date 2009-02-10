@@ -507,8 +507,10 @@ void
 Renderer_OpenGL::end_contour()
 {
 	// Use the data
-	for (unsigned int j = 0; j < _points.size(); j += 3)
-		gluTessVertex(_tess, reinterpret_cast<GLdouble*>(&_points[j]), reinterpret_cast<void*>(&_points[j]));
+	for (unsigned int j = 0; j < _points[_curr_contour].size(); j += 3)
+		gluTessVertex(_tess, reinterpret_cast<GLdouble*>(&_points[_curr_contour][j]), reinterpret_cast<void*>(&_points[_curr_contour][j]));
+
+	_curr_contour++;
 
 	// End the contour
 	gluTessEndContour(_tess);
@@ -523,9 +525,9 @@ Renderer_OpenGL::add_contour_vertex(const GLdouble x, const GLdouble y, const GL
 
 	// We don't use a direct pointer because Point is using float,
 	// and GLU tessellation object needs GLdouble
-	_points.push_back(x);
-	_points.push_back(y);
-	_points.push_back(z);
+	_points[_curr_contour].push_back(x);
+	_points[_curr_contour].push_back(y);
+	_points[_curr_contour].push_back(z);
 }
 
 const unsigned char*
