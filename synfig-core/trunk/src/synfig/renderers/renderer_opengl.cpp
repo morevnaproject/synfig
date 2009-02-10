@@ -324,6 +324,20 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 		glLoadIdentity();
 		glViewport(0, 0, _vw, _vh);
 
+		// Create a new buffer
+		if (_buffer)
+			delete [] _buffer;
+
+		// The 4 is because we've to allocate memory for the FOUR channels!!
+		_buffer = new unsigned char[_vw * _vh * sizeof(surface_type) * 4];
+		if (!_buffer) {
+			synfig::error("Renderer_OpenGL: Cannot allocate %d bytes of memory", _vw * _vh * sizeof(surface_type));
+			throw;
+		}
+
+		// Initialize textures
+		memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
+
 		// Create textures and bind them to our FBO
 		glGenTextures(N_TEXTURES, _tex);
 
@@ -342,26 +356,14 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 
 			checkErrors();
 
+			transfer_data(_buffer, j);
+
 			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
 				GL_COLOR_ATTACHMENT0_EXT + j,
 				_tex_target,
 				_tex[j],
 				MIPMAP_LEVEL);
 		}
-
-		// Create a new buffer
-		delete [] _buffer;
-		_buffer = new unsigned char[_vw * _vh * sizeof(surface_type)];
-		if (!_buffer) {
-			synfig::error("Renderer_OpenGL: Cannot allocate %d bytes of memory", _vw * _vh * sizeof(surface_type));
-			throw;
-		}
-
-		// Initialize textures
-		memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
-
-		transfer_data(_buffer, _write_tex);
-		transfer_data(_buffer, _read_tex);
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
 
