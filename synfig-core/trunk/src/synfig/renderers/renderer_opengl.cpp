@@ -472,6 +472,7 @@ Renderer_OpenGL::init_tessellation()
 	gluTessCallback(_tess, GLU_TESS_VERTEX, (GLvoid (*) ( )) &glVertex3dv);
 	gluTessCallback(_tess, GLU_TESS_BEGIN, (GLvoid (*) ( )) &glBegin);
 	gluTessCallback(_tess, GLU_TESS_END, (GLvoid (*) ( )) &glEnd);
+	gluTessCallback(_tess, GLU_TESS_COMBINE, (GLvoid (*) ( )) &Renderer_OpenGL::tess_combine_cb);
 	gluTessCallback(_tess, GLU_TESS_ERROR, (GLvoid (*) ( ))&Renderer_OpenGL::tess_error_cb);
 }
 
@@ -484,11 +485,29 @@ Renderer_OpenGL::tess_error_cb(const GLenum code)
 	synfig::error("Renderer_OpenGL: Tesellation error:\n%s)", str);
 }
 
+void CALLBACK
+Renderer_OpenGL::tess_combine_cb(GLdouble coords[3], void *vertex_data[4], GLfloat weight[4], void **outData)
+{
+	GLdouble *vertex = (GLdouble *) malloc(3 * sizeof(GLdouble));
+	int i;
+
+
+	vertex[0] = coords[0];
+	vertex[1] = coords[1];
+	vertex[2] = coords[2];
+	/*for (i = 3; i < 7; i++)
+		vertex[i] = weight[0] * vertex_data[0][i]
+				+ weight[1] * vertex_data[1][i]
+				+ weight[2] * vertex_data[2][i]
+				+ weight[3] * vertex_data[3][i];*/
+	*outData = vertex;
+}
+
 void
 Renderer_OpenGL::end_contour()
 {
 	// Use the data
-	for (int j = 0; j < _points.size(); j += 3)
+	for (unsigned int j = 0; j < _points.size(); j += 3)
 		gluTessVertex(_tess, reinterpret_cast<GLdouble*>(&_points[j]), reinterpret_cast<void*>(&_points[j]));
 
 	// End the contour

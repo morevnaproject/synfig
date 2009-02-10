@@ -163,6 +163,7 @@ class Renderer_OpenGL
 
 		void init_tessellation();
 		static void CALLBACK tess_error_cb(const GLenum code);
+		static void CALLBACK tess_combine_cb(GLdouble coords[3], void *vertex_data[4], GLfloat weight[4], void **outData);
 
 		void transfer_data(unsigned char* buf, unsigned int tex_num);
 
