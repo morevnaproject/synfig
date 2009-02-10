@@ -2653,6 +2653,7 @@ Layer_Shape::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int 
 	bool ret = true;
 
 	renderer_opengl->set_color(color);
+	renderer_opengl->set_winding_style(winding_style == WINDING_EVEN_ODD);
 	renderer_opengl->begin_polygon();
 	renderer_opengl->begin_contour();
 
