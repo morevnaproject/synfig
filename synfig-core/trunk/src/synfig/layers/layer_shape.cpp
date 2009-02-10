@@ -3197,12 +3197,6 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 
 		if(operation == Primitive::CLOSE)
 		{
-			/*if(span.notclosed())
-			{
-				tangent[0] = span.close_x - span.cur_x;
-				tangent[1] = span.close_y - span.cur_y;
-				span.close();
-			}*/
 			continue;
 		}
 
@@ -3226,7 +3220,6 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 				case Primitive::MOVE_TO:
 				case Primitive::LINE_TO:
 				{
-					synfig::info("L: %f, %f", data[curnum][0], data[curnum][1]);
 					renderer_opengl->add_contour_vertex(data[curnum][0], data[curnum][1]);
 					curnum++; //only advance one point
 
@@ -3235,40 +3228,15 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 
 				case Primitive::CONIC_TO:
 				{
-					synfig::info("CO: %f, %f - %f, %f", data[curnum][0], data[curnum][1], data[curnum + 1][0], data[curnum + 1][1]);
-					/*x = data[curnum+1][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+1][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + origin[0])*pw;
-					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + origin[1])*ph;
-
-					tangent[0] = 2*(x - x1);
-					tangent[1] = 2*(y - y1);
-
-					span.conic_to(x1,y1,x,y);*/
+					// Apparently unnused
 					curnum += 2;
+
 					break;
 				}
 
 				case Primitive::CONIC_TO_SMOOTH:
 				{
-					synfig::info("CO_S: %f, %f", data[curnum][0], data[curnum][1]);
-					/*x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x1 = span.cur_x + tangent[0]/2;
-					y1 = span.cur_y + tangent[1]/2;
-
-					tangent[0] = 2*(x - x1);
-					tangent[1] = 2*(y - y1);
-
-					span.conic_to(x1,y1,x,y);*/
+					// Apparently unnused
 					curnum ++;
 
 					break;
@@ -3276,26 +3244,7 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 
 				case Primitive::CUBIC_TO:
 				{
-					synfig::info("CU: %f, %f - %f, %f - %f, %f", data[curnum][0], data[curnum][1], data[curnum + 1][0], data[curnum + 1][1], data[curnum + 2][0], data[curnum + 2][1]);
-					/*x = data[curnum+2][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+2][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x2 = data[curnum+1][0];
-					x2 = (x2 - tl[0] + origin[0])*pw;
-					y2 = data[curnum+1][1];
-					y2 = (y2 - tl[1] + origin[1])*ph;
-
-					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + origin[0])*pw;
-					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + origin[1])*ph;
-
-					tangent[0] = 2*(x - x2);
-					tangent[1] = 2*(y - y2);
-
-					span.cubic_to(x1,y1,x2,y2,x,y);*/
+					// Apparently unnused
 					curnum += 3;
 
 					break;
@@ -3303,24 +3252,7 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 
 				case Primitive::CUBIC_TO_SMOOTH:
 				{
-					synfig::info("CU_S: %f, %f - %f, %f", data[curnum][0], data[curnum][1], data[curnum + 1][0], data[curnum + 1][1]);
-					/*x = data[curnum+1][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+1][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x2 = data[curnum][0];
-					x2 = (x2 - tl[0] + origin[0])*pw;
-					y2 = data[curnum][1];
-					y2 = (y2 - tl[1] + origin[1])*ph;
-
-					x1 = span.cur_x + tangent[0]/3.0;
-					y1 = span.cur_y + tangent[1]/3.0;
-
-					tangent[0] = 2*(x - x2);
-					tangent[1] = 2*(y - y2);
-
-					span.cubic_to(x1,y1,x2,y2,x,y);*/
+					// Apparently unnused
 					curnum += 2;
 
 					break;
