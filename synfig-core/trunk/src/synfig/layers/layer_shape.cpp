@@ -3217,6 +3217,8 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 
 		for(curnum=0; curnum < number;)
 		{
+			data[curnum][0] += origin[0];
+			data[curnum][1] += origin[1];
 			switch(operation)
 			{
 				// MOVE_TO and LINE_TO are the same cases
