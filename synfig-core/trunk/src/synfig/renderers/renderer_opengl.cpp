@@ -119,6 +119,8 @@ Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL
 			GLEW_ARB_texture_non_power_of_two ? "supported" : "unsupported");
 
 	createShaders();
+
+	init_tessellation();
 }
 
 Renderer_OpenGL::~Renderer_OpenGL()
@@ -126,6 +128,10 @@ Renderer_OpenGL::~Renderer_OpenGL()
 	synfig::info("Renderer_OpenGL: Closing...");
 	if (_buffer)
 		delete [] _buffer;
+
+	// Delete tessellation objects
+	gluDeleteTess(_tess);
+	_tess = NULL;
 
 	// BLEND_END stores the last blend value (so, the total count)
 	const int NBLENDS = Color::BLEND_END;
@@ -453,6 +459,52 @@ Renderer_OpenGL::blend(synfig::Color::BlendMethod blend_method)
 	// Restore writting texture
 	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
+
+void
+Renderer_OpenGL::init_tessellation()
+{
+	// Initialize tessellation object
+	_tess = gluNewTess();
+
+	// Callbacks
+	gluTessCallback(_tess, GLU_TESS_VERTEX, (GLvoid (*) ( )) &glVertex3dv);
+	gluTessCallback(_tess, GLU_TESS_BEGIN, (GLvoid (*) ( )) &glBegin);
+	gluTessCallback(_tess, GLU_TESS_END, (GLvoid (*) ( )) &glEnd);
+	gluTessCallback(_tess, GLU_TESS_ERROR, (GLvoid (*) ( ))&Renderer_OpenGL::tess_error_cb);
+}
+
+void CALLBACK
+Renderer_OpenGL::tess_error_cb(const GLenum code)
+{
+	const GLubyte *str;
+
+	str = gluErrorString(code);
+	synfig::error("Renderer_OpenGL: Tesellation error:\n%s)", str);
+}
+
+void
+Renderer_OpenGL::end_contour()
+{
+	// Use the data
+	for (int j = 0; j < _points.size(); j += 3)
+		gluTessVertex(_tess, reinterpret_cast<GLdouble*>(&_points[j]), reinterpret_cast<void*>(&_points[j]));
+
+	// End the contour
+	gluTessEndContour(_tess);
+}
+
+void
+Renderer_OpenGL::add_contour_vertex(const GLdouble x, const GLdouble y, const GLdouble z)
+{
+	// We've to store the data because it get used
+	// when doing gluTessEndPolygon
+	// and it does have to exist until then
+
+	// We don't use a direct pointer because Point is using float,
+	// and GLU tessellation object needs GLdouble
+	_points.push_back(x);
+	_points.push_back(y);
+	_points.push_back(z);
 }
 
 const unsigned char*

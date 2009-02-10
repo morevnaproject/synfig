@@ -30,6 +30,7 @@
 // glew.h HAS to be included BEFORE gl.h & glx.h
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <GL/glu.h>
 #ifdef linux
 #include <GL/glx.h>
 #endif
@@ -37,7 +38,21 @@
 #include "synfig/color.h"
 #include "synfig/vector.h"
 
+#include <vector>
+
 /* === M A C R O S ========================================================= */
+
+// From GLEW (This must't be a need!)
+#ifndef CALLBACK
+#define GLEW_CALLBACK_DEFINED
+#  if defined(__MINGW32__)
+#    define CALLBACK __attribute__ ((__stdcall__))
+#  elif (defined(_M_MRX000) || defined(_M_IX86) || defined(_M_ALPHA) || defined(_M_PPC)) && !defined(MIDL_PASS)
+#    define CALLBACK __stdcall
+#  else
+#    define CALLBACK
+#  endif
+#endif
 
 #define CHECK_FRAMEBUFFER_STATUS()                                    \
 {                                                                     \
@@ -133,12 +148,22 @@ class Renderer_OpenGL
 		GLuint *_vertex_shader;
 		//! Fragment shader ids
 		GLuint *_frag_shader;
+
+		// Tessellation
+		//! Tessellation object
+		GLUtesselator *_tess;
+		//! Stores the points passed using set_contour_data()
+		std::vector<GLdouble> _points;
 	// Functions
 	private:
 		void checkShader(GLuint s);
 		void checkProgram(GLuint p);
 		void createShaders();
 		void checkErrors();
+
+		void init_tessellation();
+		static void CALLBACK tess_error_cb(const GLenum code);
+
 		void transfer_data(unsigned char* buf, unsigned int tex_num);
 
 		inline void swap() { _read_tex = !_read_tex; _write_tex = !_write_tex; }
@@ -155,6 +180,14 @@ class Renderer_OpenGL
 		void draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision = 0);
 		void draw_rectangle(const GLfloat x1, const GLfloat y1, const GLfloat x2, const GLfloat y2);
 		void fill();
+
+		// Tessellation
+		inline void set_winding_style(GLenum style) { gluTessProperty(_tess, GLU_TESS_WINDING_RULE, style); }
+		inline void begin_polygon() { gluTessBeginPolygon(_tess, NULL); }
+		inline void end_polygon() { gluTessEndPolygon(_tess); }
+		inline void begin_contour() { gluTessBeginContour(_tess); }
+		void end_contour();
+		void add_contour_vertex(const GLdouble x, const GLdouble y, const GLdouble z = 0);
 
 		void blend(synfig::Color::BlendMethod blend_method);
 
