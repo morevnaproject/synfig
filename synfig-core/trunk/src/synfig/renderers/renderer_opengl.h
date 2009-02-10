@@ -184,7 +184,7 @@ class Renderer_OpenGL
 
 		// Tessellation
 		inline void set_winding_style(GLenum style) { gluTessProperty(_tess, GLU_TESS_WINDING_RULE, style); }
-		inline void begin_polygon() { gluTessBeginPolygon(_tess, NULL); }
+		inline void begin_polygon() { gluTessBeginPolygon(_tess, NULL); _points.clear(); }
 		inline void end_polygon() { gluTessEndPolygon(_tess); }
 		inline void begin_contour() { gluTessBeginContour(_tess); }
 		void end_contour();
