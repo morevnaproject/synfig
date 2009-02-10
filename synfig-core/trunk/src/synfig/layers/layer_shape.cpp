@@ -2625,6 +2625,8 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Shape::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	const Point tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
 	const unsigned int w = renddesc.get_w();
 	const unsigned int h = renddesc.get_h();
 
@@ -2638,24 +2640,29 @@ Layer_Shape::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int 
 
 	// Render what is behind us
 
-	//clip if it satisfies the invert solid thing
-	if(is_solid_color() && invert)
-	{
-
-	}else
-	{
-		if(!context.render(NULL,quality,renddesc,&stageone, OPENGL))
-			return false;
-	}
-
-	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
-
-	bool ret = true;
+	if(!context.render(NULL,quality,renddesc,&stageone, OPENGL))
+		return false;
 
 	renderer_opengl->set_color(color);
 	renderer_opengl->set_winding_style(winding_style == WINDING_EVEN_ODD);
 	renderer_opengl->begin_polygon();
 	renderer_opengl->begin_contour();
+
+	if (invert) {
+		// If inverted, draw a contour viewport-size...
+		renderer_opengl->add_contour_vertex(tl[0], tl[1]);
+		renderer_opengl->add_contour_vertex(br[0], tl[1]);
+		renderer_opengl->add_contour_vertex(br[0], br[1]);
+		renderer_opengl->add_contour_vertex(tl[0], br[1]);
+		// ...close that contour
+		renderer_opengl->end_contour();
+		// ...and start the real figure
+		renderer_opengl->begin_contour();
+	}
+
+	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
+
+	bool ret = true;
 
 	if(feather && quality != 10)
 	{
