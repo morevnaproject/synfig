@@ -154,6 +154,8 @@ class Renderer_OpenGL
 		GLfloat _rotation;
 		//! Stores the rotation origin
 		Point _rotation_origin;
+		//! Stores the accumulated translations (to be able to do post-translation)
+		Point _translation;
 
 		// Shaders
 		//! Program ids
@@ -200,6 +202,8 @@ class Renderer_OpenGL
 		// Transformation
 		void pre_rotate(const GLfloat angle, const Point origin);
 		void post_rotate(const GLfloat angle, const Point origin);
+		void pre_translate(const Point origin);
+		void post_translate(const Point origin);
 
 		inline void set_color(const GLfloat r, const GLfloat g, const GLfloat b, const GLfloat a) { glColor4f(r, g, b, a); }
 		inline void set_color(synfig::Color color) { glColor4f(color.get_r(), color.get_g(), color.get_b(), color.get_a()); }

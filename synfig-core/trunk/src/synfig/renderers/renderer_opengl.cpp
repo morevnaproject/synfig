@@ -448,6 +448,20 @@ Renderer_OpenGL::post_rotate(const GLfloat angle, const Point origin)
 	glRotatef(-angle, 0.0, 0.0, 1.0);
 }
 
+void
+Renderer_OpenGL::pre_translate(const Point origin)
+{
+	add_trans(TRANSLATE_TRANS);
+
+	_translation += origin;
+}
+
+void
+Renderer_OpenGL::post_translate(const Point origin)
+{
+	glTranslatef(-origin[0], -origin[1], 0.0);
+}
+
 // FIXME: This is the same code as in glPlayfield!
 void
 Renderer_OpenGL::draw_circle(const GLfloat cx, const GLfloat cy, const GLfloat r, int precision)
