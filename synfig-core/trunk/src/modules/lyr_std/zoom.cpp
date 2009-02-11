@@ -40,6 +40,8 @@
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -153,6 +155,23 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 
 	// Render the scene
 	return context.render(surface,quality,desc,cb, SOFTWARE);
+}
+
+bool
+Zoom::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// Accumulate scalations...
+	renderer_opengl->pre_zoom(exp(amount), center);
+
+	// Render the scene
+	if (!context.render(NULL,quality,renddesc,cb, OPENGL)) {
+		if(cb)cb->error(strprintf(__FILE__"%d: OpenGL Renderer Failure",__LINE__));
+		return false;
+	}
+
+	renderer_opengl->post_zoom(exp(amount), center);
+
+	return true;
 }
 
 synfig::Rect
