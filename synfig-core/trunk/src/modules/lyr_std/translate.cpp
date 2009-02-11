@@ -43,6 +43,8 @@
 #include <synfig/canvas.h>
 #include <synfig/transform.h>
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -150,6 +152,24 @@ Translate::accelerated_render(Context context,Surface *surface,int quality, cons
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
+
+	return true;
+}
+
+bool
+Translate::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// Accumulate translations...
+	renderer_opengl->pre_translate(origin);
+
+	// Render the scene
+	if(!context.render(NULL,quality,renddesc,cb, OPENGL))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: OpenGL Renderer Failure",__LINE__));
+		return false;
+	}
+
+	renderer_opengl->post_translate(origin);
 
 	return true;
 }
