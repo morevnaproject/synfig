@@ -52,7 +52,9 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL), _write_tex(0), _read_tex(1), _rotation(0)
+Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL),
+	_write_tex(0), _read_tex(1),
+	_rotation(0), _scale(0), _font(NULL)
 {
 	// Get a context (platform-dependant code)
 #ifdef linux
@@ -320,10 +322,10 @@ Renderer_OpenGL::apply_trans()
 		else if (*it == TRANSLATE_TRANS)
 			glTranslatef(_translation[0], _translation[1], 0.0);
 		else	// ZOOM_TRANS
-			glScalef(_scale[0], _scale[1], 0.0);
+			glScalef(_scale, _scale, 0.0);
 	}
-	_rotation = 0;
-	_rotation_origin = _scale_origin = _scale = _translation = Point(0, 0);
+	_rotation = _scale = 0;
+	_rotation_origin = _scale_origin = _translation = Point(0, 0);
 
 	_trans_list.clear();
 }
@@ -460,6 +462,23 @@ void
 Renderer_OpenGL::post_translate(const Point origin)
 {
 	glTranslatef(-origin[0], -origin[1], 0.0);
+}
+
+void
+Renderer_OpenGL::pre_zoom(const GLfloat zoom, const Point origin)
+{
+	add_trans(ZOOM_TRANS);
+
+	_scale += zoom;
+
+	// FIXME: Maybe we've to accumulate that too
+	_scale_origin = origin;
+}
+
+void
+Renderer_OpenGL::post_zoom(const GLfloat zoom, const Point origin)
+{
+	glScalef(zoom, zoom, 1.0);
 }
 
 // FIXME: This is the same code as in glPlayfield!
