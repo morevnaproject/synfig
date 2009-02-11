@@ -258,8 +258,7 @@ Context::render(Surface *surface,int quality, const RendDesc &renddesc, Progress
 				break;
 			case OPENGL:
 				renderer_opengl.set_wh(renddesc.get_w(),renddesc.get_h(), renddesc.get_tl(), renddesc.get_br());
-				// "set_wh" already clears buffers
-				//renderer_opengl_->clear();
+				renderer_opengl.reset();
 				break;
 			default:
 				synfig::info("Context::render(): Unknown rendering method, falling back to software");
