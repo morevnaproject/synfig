@@ -17,6 +17,11 @@ liblyr_freetype_la_LIBADD += @FONTCONFIG_LIBS@
 liblyr_freetype_la_CXXFLAGS += @FONTCONFIG_CFLAGS@
 else
 endif
+if WITH_FTGL
+liblyr_freetype_la_LIBADD += @FTGL_LIBS@
+liblyr_freetype_la_CXXFLAGS += @FTGL_CFLAGS@
+else
+endif
 else
 endif
 

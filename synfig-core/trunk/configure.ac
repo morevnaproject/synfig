@@ -319,6 +319,29 @@ if test $with_freetype = "no" ; then {
 } ; fi
 
 
+# FTGL CHECK--------------------
+
+AC_ARG_WITH(ftgl,[
+  --without-ftgl         disable support for ftgl (Default=auto)],[
+],[
+	with_ftgl="yes"
+])
+
+if test $with_ftgl != "no" ; then {
+	PKG_CHECK_MODULES(FTGL, ftgl,[
+		with_ftgl="yes"
+	],[
+		with_ftgl="no"
+	])
+} ; fi
+
+if test $with_ftgl = "no" ; then {
+	AM_CONDITIONAL(WITH_FTGL,false)
+} else {
+	AM_CONDITIONAL(WITH_FTGL,true)
+} ; fi
+
+
 # FONTCONFIG CHECK--------------------
 
 AC_ARG_WITH(fontconfig,[
@@ -711,6 +734,7 @@ MNG output target support --------> $TARGET_MNG
 JPEG output target support -------> $TARGET_JPEG
 ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
+FTGL -----------------------------> $with_ftgl
 fontconfig -----------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
 libswscale -----------------------> $with_libswscale
