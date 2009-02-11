@@ -52,7 +52,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL), _write_tex(0), _read_tex(1)
+Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL), _write_tex(0), _read_tex(1), _rotation(0)
 {
 	// Get a context (platform-dependant code)
 #ifdef linux
@@ -335,9 +335,6 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 			throw;
 		}
 
-		// Initialize textures
-		memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
-
 		// Create textures and bind them to our FBO
 		glGenTextures(N_TEXTURES, _tex);
 
@@ -355,8 +352,6 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 			_vw, _vh, 0, GL_RGBA, GL_FLOAT, NULL);
 
 			checkErrors();
-
-			transfer_data(_buffer, j);
 
 			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
 				GL_COLOR_ATTACHMENT0_EXT + j,
@@ -378,6 +373,37 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 		_pw = (br[0] - tl[0]) / _vw;
 		_ph = (br[1] - tl[1]) / _vh;
 	}
+}
+
+void
+Renderer_OpenGL::reset()
+{
+	// Clear buffers
+	memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
+
+	// Clear textures
+	for (int j = 0; j < N_TEXTURES; j++)
+		transfer_data(_buffer, j);
+
+	// Use the accumulated rotation
+	glLoadIdentity();
+	glRotatef(_rotation, 0.0, 0.0, 1.0);
+	_rotation = 0;
+}
+
+void
+Renderer_OpenGL::pre_rotate(const GLfloat angle, const Point origin)
+{
+	GLfloat ang = angle;
+	if (ang < 0)
+		ang += 360;
+	_rotation = fmod(_rotation + ang, 360);
+}
+
+void
+Renderer_OpenGL::post_rotate(const GLfloat angle, const Point origin)
+{
+	glRotatef(-angle, 0.0, 0.0, 1.0);
 }
 
 // FIXME: This is the same code as in glPlayfield!

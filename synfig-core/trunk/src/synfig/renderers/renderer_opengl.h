@@ -141,6 +141,10 @@ class Renderer_OpenGL
 		//! Stores if multisampling it's currently supported
 		bool _multisampling;
 
+		// Transformation
+		//! Stores the accumulated rotations (to be able to do post-rotation)
+		GLfloat _rotation;
+
 		// Shaders
 		//! Program ids
 		GLuint *_program;
@@ -176,6 +180,11 @@ class Renderer_OpenGL
 		~Renderer_OpenGL();
 
 		void set_wh(const GLuint w, const GLuint h, const Point tl, const Point br);
+		void reset();
+
+		// Transformation
+		void pre_rotate(const GLfloat angle, const Point origin);
+		void post_rotate(const GLfloat angle, const Point origin);
 
 		inline void set_color(const GLfloat r, const GLfloat g, const GLfloat b, const GLfloat a) { glColor4f(r, g, b, a); }
 		inline void set_color(synfig::Color color) { glColor4f(color.get_r(), color.get_g(), color.get_b(), color.get_a()); }
