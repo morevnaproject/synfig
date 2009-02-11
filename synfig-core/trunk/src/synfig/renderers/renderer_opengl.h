@@ -142,8 +142,18 @@ class Renderer_OpenGL
 		bool _multisampling;
 
 		// Transformation
+		//! Enumeration that holds the transformation types
+		enum Transformation {
+			ROTATE_TRANS = 1,
+			TRANSLATE_TRANS,
+			ZOOM_TRANS
+		};
+		//! Stores the orders of base transformations (first layer)
+		std::vector<Transformation> _trans_list;
 		//! Stores the accumulated rotations (to be able to do post-rotation)
 		GLfloat _rotation;
+		//! Stores the rotation origin
+		Point _rotation_origin;
 
 		// Shaders
 		//! Program ids
@@ -167,6 +177,11 @@ class Renderer_OpenGL
 		void createShaders();
 		void checkErrors();
 
+		// Transformation
+		void add_trans(Transformation trans);
+		void apply_trans();
+
+		// Tessellation
 		void init_tessellation();
 		static void CALLBACK tess_error_cb(const GLenum code);
 		static void CALLBACK tess_combine_cb(GLdouble coords[3], void *vertex_data[4], GLfloat weight[4], void **outData);

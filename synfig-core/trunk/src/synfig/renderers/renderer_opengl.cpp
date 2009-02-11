@@ -290,6 +290,45 @@ Renderer_OpenGL::checkErrors()
 }
 
 void
+Renderer_OpenGL::add_trans(Transformation trans)
+{
+	if (_trans_list.size() == 0) {
+		_trans_list.push_back(trans);
+		return;
+	}
+
+	if (_trans_list.back() != trans) {
+		std::vector<Transformation>::iterator it;
+		for (it = _trans_list.begin(); it != _trans_list.end(); ++it) {
+			if (*it == trans) {
+				_trans_list.erase(it);
+			}
+		}
+		_trans_list.push_back(trans);
+	}
+}
+
+void
+Renderer_OpenGL::apply_trans()
+{
+	glLoadIdentity();
+
+	std::vector<Transformation>::iterator it;
+	for (it = _trans_list.begin(); it != _trans_list.end(); it++) {
+		if (*it == ROTATE_TRANS)
+			glRotatef(_rotation, 0.0, 0.0, 1.0);
+		else if (*it == TRANSLATE_TRANS)
+			glTranslatef(_translation[0], _translation[1], 0.0);
+		else	// ZOOM_TRANS
+			glScalef(_scale[0], _scale[1], 0.0);
+	}
+	_rotation = 0;
+	_rotation_origin = _scale_origin = _scale = _translation = Point(0, 0);
+
+	_trans_list.clear();
+}
+
+void
 Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 {
 	glBindTexture(_tex_target, _tex[tex_num]);
@@ -386,18 +425,21 @@ Renderer_OpenGL::reset()
 		transfer_data(_buffer, j);
 
 	// Use the accumulated rotation
-	glLoadIdentity();
-	glRotatef(_rotation, 0.0, 0.0, 1.0);
-	_rotation = 0;
+	apply_trans();
 }
 
 void
 Renderer_OpenGL::pre_rotate(const GLfloat angle, const Point origin)
 {
+	add_trans(ROTATE_TRANS);
+
 	GLfloat ang = angle;
 	if (ang < 0)
 		ang += 360;
 	_rotation = fmod(_rotation + ang, 360);
+
+	// FIXME: Maybe we've to accumulate that too
+	_rotation_origin = origin;
 }
 
 void
