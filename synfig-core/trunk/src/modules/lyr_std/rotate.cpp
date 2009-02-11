@@ -44,6 +44,8 @@
 #include <synfig/transform.h>
 #include <ETL/misc>
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -322,6 +324,50 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 			}
 		}
 	}
+
+	if(cb && !cb->amount_complete(10000,10000)) return false;
+
+	return true;
+}
+
+bool
+Rotate::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(amount.dist(Angle::deg(0))==Angle::deg(0))
+		return context.render(NULL,quality,renddesc,cb, OPENGL);
+	/*if(amount.dist(Angle::deg(180))==Angle::deg(0))
+	{
+		RendDesc desc(renddesc);
+		desc.clear_flags();
+		Point tmp;
+		tmp=renddesc.get_tl()-origin;
+		desc.set_tl(Point(-tmp[0],-tmp[1])+origin);
+		tmp=renddesc.get_br()-origin;
+		desc.set_br(Point(-tmp[0],-tmp[1])+origin);
+		return context.render(NULL,quality,desc,cb, OPENGL);
+	}*/
+
+	SuperCallback stageone(cb,0,9000,10000);
+	//SuperCallback stagetwo(cb,9000,10000,10000);*/
+
+	if(cb && !cb->amount_complete(0,10000))
+		return false;
+
+	Point tl(renddesc.get_tl()-origin);
+	Point br(renddesc.get_br()-origin);
+
+	float angle = Angle::deg(amount).get();
+
+	// Accumulate...
+	renderer_opengl->pre_rotate(angle, origin);
+
+	// ...render all layers below us (apply the accumulated rotation)
+	// FIXME: Maybe we've to pass a calculated desc instead of renddesc
+	if(!context.render(NULL,quality,renddesc,&stageone, OPENGL))
+		return false;
+
+	// ...and do the rotation for next layers
+	renderer_opengl->post_rotate(angle, origin);
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 
