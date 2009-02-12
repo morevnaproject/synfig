@@ -29,6 +29,7 @@
 #include <cstdio>
 
 #include <vector>
+#include "synfig/color.h"
 #include <Magick++.h>
 
 /* === M A C R O S ========================================================= */
@@ -54,7 +55,7 @@ private:
 
 public:
 
-	magickpp_trgt(const char *filename) : filename(filename) { }
+	magickpp_trgt(const char *filename) : filename(filename) { target_format_ = synfig::PF_RGB | synfig::PF_A | synfig::PF_8BITS; }
 	virtual ~magickpp_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
@@ -65,6 +66,8 @@ public:
 
 	virtual synfig::Color* start_scanline(int scanline);
 	virtual bool end_scanline();
+	virtual unsigned char* start_scanline_rgba(int scanline);
+	virtual bool end_scanline_rgba();
 };
 
 /* === E N D =============================================================== */

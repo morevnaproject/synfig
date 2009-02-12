@@ -288,8 +288,35 @@ bool
 magickpp_trgt::end_scanline()
 {
 	convert_color_format(buffer_pointer, color_buffer,
-						 width, PF_RGB|PF_A, gamma());
+						 width, target_format_, gamma());
 
+	if (!transparent)
+		for (int i = 0; i < width; i++)
+			if (previous_buffer_pointer &&					// this isn't the first frame
+				buffer_pointer[i*4 + 3] < 128 &&			// our pixel is transparent
+				!(previous_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
+			{
+				transparent = true;
+				break;
+			}
+
+	buffer_pointer += 4 * width;
+
+	if (previous_buffer_pointer)
+		previous_buffer_pointer += 4 * width;
+
+	return true;
+}
+
+unsigned char*
+magickpp_trgt::start_scanline_rgba(int scanline __attribute__ ((unused)))
+{
+	return buffer_pointer;
+}
+
+bool
+magickpp_trgt::end_scanline_rgba(void)
+{
 	if (!transparent)
 		for (int i = 0; i < width; i++)
 			if (previous_buffer_pointer &&					// this isn't the first frame
