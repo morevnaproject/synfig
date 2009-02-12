@@ -96,8 +96,8 @@ Renderer_OpenGL::~Renderer_OpenGL()
 
 	for (int j = 0; j < NBLENDS; j++) {
 		glDetachShader(_vertex_shader[0], _program[j]);
-		glDeleteShader(_vertex_shader[0]);
 	}
+	glDeleteShader(_vertex_shader[0]);
 	delete [] _vertex_shader;
 
 	// Detach fragment shaders and delete programs
@@ -183,13 +183,26 @@ Renderer_OpenGL::createShaders()
 	_frag_shader   = new GLuint[NBLENDS];
 
 	// Create minimal vertex shader
-	const char *vertex_program[] = { "void main() { gl_Position = ftransform(); }" };
+	const char *vertex_program[] = { "varying vec2 TexCoord; void main() { gl_Position = ftransform(); TexCoord = gl_MultiTexCoord0.st; }" };
 	_vertex_shader[0] = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(_vertex_shader[0], 1, vertex_program, NULL);
 	checkShader(_vertex_shader[0]);
 
 	// Create fragment shaders
-	const char *blend_composite[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
+	// TODO: This one is for checking, remove it (this can be perfectly done with normal OpenGL alpha blending)
+	const char *blend_composite[] = { "varying vec2 TexCoord; uniform sampler2D source; uniform sampler2D dest;"
+		"void main() {"
+			"vec4 src = texture2D(source, TexCoord);"
+			"vec4 dst = texture2D(dest, TexCoord);"
+			"if (src.a == 0.0) gl_FragColor = dst;"
+			"else if ((dst.a == 0.0) || (src.a == 1.0)) gl_FragColor = src;"
+			"else {"
+				"float a = src.a + dst.a - src.a * dst.a;"
+				"gl_FragColor.a = a;"
+				"gl_FragColor.rgb = (src.a*src.rgb+dst.a*dst.rgb-src.a*dst.a*dst.rgb)/a;"
+			"}"
+		"}"
+	};
 	CREATE_FRAGMENT_SHADER(blend_composite, Color::BLEND_COMPOSITE);
 	const char *blend_straight[] = { "void main() { gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0); } " };
 	CREATE_FRAGMENT_SHADER(blend_straight, Color::BLEND_STRAIGHT);
@@ -547,19 +560,57 @@ Renderer_OpenGL::blend(synfig::Color::BlendMethod blend_method)
 	// Retrieve multisampled renderbuffer
 	glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, _fbuf[_fbo_multisampled]);
 	glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, _fbuf[_fbo_normal]);
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_result);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_write);
 	// Filter doesn't matter, because we're using the same size for both framebuffers
 	glBlitFramebufferEXT(0, 0, _vw, _vh, 0, 0, _vw, _vh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
+	// Copy current result to intermediate buffer
+	glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, _fbuf[_fbo_normal]);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_buffer);
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_result);
+	glBlitFramebufferEXT(0, 0, _vw, _vh, 0, 0, _vw, _vh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	// Draw result into the result texture
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_result);
+
 	// Select the appropiate program
 	glUseProgram(_program[blend_method]);
+	glActiveTexture(GL_TEXTURE0);
+	//glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _tex[_tex_write]);
+	// Get location of the texture sampler (TODO: Store location on an array)
+	GLuint source = glGetUniformLocation(_program[blend_method], "source");
+	glUniform1i(source, 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, _tex[_tex_buffer]);
+	// Get location of the texture sampler (TODO: Store location on an array)
+	GLuint dest = glGetUniformLocation(_program[blend_method], "dest");
+	glUniform1i(dest, 1);
 
 	// Render to do the copy
-	fill();
+	// Reset the modelview matrix to get rid of transformations
+	glPushMatrix();
+	glLoadIdentity();
+	glBegin(GL_QUADS);
+	{
+		glTexCoord2f(0, 0); glVertex2f(_tl[0], _tl[1]);
+		glTexCoord2f(1, 0); glVertex2f(_br[0], _tl[1]);
+		glTexCoord2f(1, 1); glVertex2f(_br[0], _br[1]);
+		glTexCoord2f(0, 1); glVertex2f(_tl[0], _br[1]);
+	}
+	glEnd();
+	glPopMatrix();
+
+	// Disable program
+	glUseProgram(0);
+	//glDisable(GL_TEXTURE_2D);
 
 	// Restore writting texture
-	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
+	glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, _fbuf[_fbo_multisampled]);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _rb_multisampled);
+	// Clear previous data
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
 
 void
 Renderer_OpenGL::init_tessellation()
