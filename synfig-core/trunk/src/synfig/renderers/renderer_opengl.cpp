@@ -30,6 +30,7 @@
 #endif
 
 #include "renderer_opengl.h"
+#include "renderer_opengl_config.h"
 #include "synfig/general.h"
 
 #include <string.h>
@@ -53,7 +54,6 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL),
-	_write_tex(0), _read_tex(1),
 	_rotation(0), _scale(0), _font(NULL)
 {
 	// Initialize GL and check capabilities
@@ -71,7 +71,6 @@ Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL
 
 	// Init our FBOs
 	glGenFramebuffersEXT(N_BUFFERS, _fbuf);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fbuf[0]);
 
 	// Clear IDs
 	memset(_tex, 0, sizeof(GLuint) * N_TEXTURES);
@@ -110,10 +109,15 @@ Renderer_OpenGL::~Renderer_OpenGL()
 	delete [] _frag_shader;
 	delete [] _program;
 
+	// Delete our textures
+	if (_tex[0] != 0)
+		glDeleteTextures(N_TEXTURES, _tex);
+	// Delete our renderbuffers
+	if (_rb[0] != 0)
+		glDeleteRenderbuffersEXT(N_RENDERBUFFERS, _rb);
+
 	// Delete our FBOs
 	glDeleteFramebuffersEXT(N_BUFFERS, _fbuf);
-	// Delete our textures
-	glDeleteTextures(N_TEXTURES, _tex);
 
 	config->closeGL();
 }
@@ -332,7 +336,7 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 			glDeleteTextures(N_TEXTURES, _tex);
 		// Create textures and bind them to our FBO
 		glGenTextures(N_TEXTURES, _tex);
-
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fbuf[_fbo_normal]);
 		for (unsigned int j = 0; j < N_TEXTURES; j++) {
 			glBindTexture(config->tex_target(), _tex[j]);
 
@@ -355,7 +359,42 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 				MIPMAP_LEVEL);
 		}
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
+		checkErrors();
+
+		CHECK_FRAMEBUFFER_STATUS();
+
+		// FIXME: If no multisampling, don't create renderbuffers
+		// If we already have any generated renderbuffers, delete them
+		if (_rb[0] != 0)
+			glDeleteRenderbuffersEXT(N_RENDERBUFFERS, _rb);
+
+		// Generate our renderbuffers
+		glGenRenderbuffersEXT(N_RENDERBUFFERS, _rb);
+
+		// Just one renderbuffer for the moment, multisampled if supported
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, _rb[_rb_multisampled]);
+		if (config->supported_fbo_coverage_ms())	// Coverage multisampling
+			glRenderbufferStorageMultisampleCoverageNV(
+				GL_RENDERBUFFER_EXT,
+				config->ms_coverage().color_samples,
+				config->ms_coverage().coverage_samples,
+				config->tex_internal_format(), _vw, _vh);
+		else if (config->supported_fbo_ms())	// Multisampling
+			glRenderbufferStorageMultisampleEXT(
+				GL_RENDERBUFFER_EXT,
+				config->ms_samples(),
+				config->tex_internal_format(), _vw, _vh);
+		else		// No multisampling
+			glRenderbufferStorageEXT(
+				GL_RENDERBUFFER_EXT,
+				config->tex_internal_format(), _vw, _vh);
+
+		// Attach it to the multisampled FBO
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fbuf[_fbo_multisampled]);
+		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, _rb[_rb_multisampled]);
+
+		// Default drawing location: FBO with multisampled renderbuffer
+		glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _rb_multisampled);
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 
@@ -377,6 +416,7 @@ Renderer_OpenGL::reset()
 	memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
 
 	// Clear textures
+	// TODO: I think it's enough to clear the result texture, because the others will be overwritten
 	for (unsigned int j = 0; j < N_TEXTURES; j++)
 		transfer_data(_buffer, j);
 
@@ -503,9 +543,13 @@ Renderer_OpenGL::fill()
 void
 Renderer_OpenGL::blend(synfig::Color::BlendMethod blend_method)
 {
-	// Change read / write textures
-	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _write_tex);
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
+	// FIXME: If no multisampling, don't blit renderbuffers, but draw directly
+	// Retrieve multisampled renderbuffer
+	glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, _fbuf[_fbo_multisampled]);
+	glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, _fbuf[_fbo_normal]);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_result);
+	// Filter doesn't matter, because we're using the same size for both framebuffers
+	glBlitFramebufferEXT(0, 0, _vw, _vh, 0, 0, _vw, _vh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	// Select the appropiate program
 	glUseProgram(_program[blend_method]);
@@ -624,11 +668,13 @@ Renderer_OpenGL::get_data(PixelFormat pf)
 		throw;
 	}
 
-	swap();
-	glEnable(GL_MULTISAMPLE_ARB);
-	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _read_tex);
+	// Change FBO to get result
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fbuf[_fbo_normal]);
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + _tex_result);
 	glReadPixels(0, 0, _vw, _vh, format, type, _buffer);
-	glDisable(GL_MULTISAMPLE_ARB);
+	// Return to the multisampled FBO
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fbuf[_fbo_multisampled]);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + _rb_multisampled);
 
 	checkErrors();
 

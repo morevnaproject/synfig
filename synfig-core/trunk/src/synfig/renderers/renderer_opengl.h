@@ -112,8 +112,16 @@ class Renderer_OpenGL
 		Renderer_OpenGL_Config *config;
 		//! Number of FBOs in GPU (one multisampled, one normal)
 		static const unsigned int N_BUFFERS = 2;
+		//! Array indexes of FBOs
+		static const unsigned int _fbo_multisampled = 0, _fbo_normal = 1;
 		//! Number of textures / color attachments (one for the result, one for the buffer, one for the multisample result)
 		static const unsigned int N_TEXTURES = 3;
+		//! Array indexes of textures
+		static const unsigned int _tex_write = 0, _tex_buffer = 1, _tex_result = 2;
+		//! Number of renderbuffers (one for the multisampling)
+		static const unsigned int N_RENDERBUFFERS = 1;
+		//! Array indexes of renderbuffers
+		static const unsigned int _rb_multisampled = 0;
 		//! Mipmapping level
 		static const unsigned int MIPMAP_LEVEL = 0;
 		//! Current viewport width & height
@@ -126,10 +134,10 @@ class Renderer_OpenGL
 		GLuint _fbuf[N_BUFFERS];
 		//! Textures IDs
 		GLuint _tex[N_TEXTURES];
+		//! Renderbuffers IDs
+		GLuint _rb[N_RENDERBUFFERS];
 		//! Texture buffer
 		unsigned char* _buffer;
-		//! Indicates the next read and write texture
-		unsigned int _write_tex, _read_tex;
 
 		// Transformation
 		//! Enumeration that holds the transformation types
@@ -183,8 +191,6 @@ class Renderer_OpenGL
 		static void CALLBACK tess_combine_cb(GLdouble coords[3], void *vertex_data[4], GLfloat weight[4], void **outData);
 
 		void transfer_data(unsigned char* buf, unsigned int tex_num);
-
-		inline void swap() { _read_tex = !_read_tex; _write_tex = !_write_tex; }
 
 	public:
 		Renderer_OpenGL();
