@@ -97,8 +97,8 @@ Renderer_OpenGL_Config::check_caps()
 	// Check framebuffer multisample support
 	_fbo_multisampling = GLEW_EXT_framebuffer_multisample;
 	if (_fbo_multisampling) {
-		_ms_samples = 1;
 		glGetIntegerv(GL_MAX_SAMPLES_EXT, &_ms_max_samples);
+		_ms_samples = _ms_max_samples;
 		if (_debug) synfig::info(__FILE__": Multisample supported, max. samples %d", _ms_max_samples);
 	}
 
@@ -110,7 +110,7 @@ Renderer_OpenGL_Config::check_caps()
 
 		_ms_coverage_comb.resize(_ms_max_coverage);
 		glGetIntegerv(GL_MULTISAMPLE_COVERAGE_MODES_NV, (GLint*)&_ms_coverage_comb[0]);
-		_ms_coverage = _ms_coverage_comb[0];
+		_ms_coverage = _ms_coverage_comb[_ms_max_coverage - 1];
 		if (_debug) {
 			std::vector<coverage_unit>::iterator it;
 			for (it = _ms_coverage_comb.begin(); it != _ms_coverage_comb.end(); ++it) {
