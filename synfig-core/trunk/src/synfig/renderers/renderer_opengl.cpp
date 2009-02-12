@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file renderer_opengl.cpp
 **	\brief OpenGL renderer
 **
 **	$Id$
@@ -56,52 +56,16 @@ Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL
 	_write_tex(0), _read_tex(1),
 	_rotation(0), _scale(0), _font(NULL)
 {
-	// Get a context (platform-dependant code)
-#ifdef linux
-	dpy = XOpenDisplay(NULL);
-	if(dpy == NULL) {
-		synfig::error("Renderer_OpenGL: Cannot open X display");
-		throw;
-	}
-	Window root = DefaultRootWindow(dpy);
-	// Check if multisampling it's supported
-	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24,
-	                GLX_SAMPLE_BUFFERS_ARB, 1, GLX_SAMPLES_ARB, 4,		// Multisampling
-	                None };
-	XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
-	_multisampling = vi != NULL;
-	if(vi == NULL) {
-		// Multisampling not supported, fall back to normal window
-		att[3] = None;
-		if (!(vi = glXChooseVisual(dpy, 0, att))) {
-			synfig::error("Renderer_OpenGL: Cannot choose X visual");
-			throw;
-		}
-	}
-	synfig::info("Renderer_OpenGL: Multisampling it's %s!", _multisampling ? "supported" : "unsupported");
-	XSetWindowAttributes swa;
-	swa.colormap = XCreateColormap(dpy, root, vi->visual, AllocNone);
-	win = XCreateWindow(dpy, root, 0, 0, 640, 480, 0, vi->depth, InputOutput, vi->visual, CWColormap, &swa);
-	// XMapWindow(dpy, win);
-	glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
-	XFree(vi);
-	glXMakeCurrent(dpy, win, glc);
+	// Initialize GL and check capabilities
+#ifdef _DEBUG
+	config = new Renderer_OpenGL_Config(true);
+#else
+	config = new Renderer_OpenGL_Config(false);
 #endif
+	config->initGL();
 
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-	{
-		synfig::error("Renderer_OpenGL: Failed to initialize GLEW");
-		throw;
-	}
-
-	// Pack and unpack pixels without padding
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-
-	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &_max_attachs);
-	if (_max_attachs < N_TEXTURES) {
-		synfig::error("Renderer_OpenGL: Only %d supported textures, can't render in OpenGL", _max_attachs);
+	if (config->fbo_max_attachs() < N_TEXTURES) {
+		synfig::error("Renderer_OpenGL: Only %d supported textures, can't render in OpenGL", config->fbo_max_attachs());
 		throw;
 	}
 
@@ -109,16 +73,9 @@ Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL
 	glGenFramebuffersEXT(N_BUFFERS, _fbuf);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fbuf[0]);
 
-	// Choose a texture format
-	_tex_target = GL_TEXTURE_2D;
-	// Use ARB_texture_rectangle only if ARB_texture_non_power_of_two isn't supported
-	// and ARB_texture_rectangle is supported
-	if ((!GLEW_ARB_texture_non_power_of_two) && (GLEW_ARB_texture_rectangle))
-		_tex_target = GL_TEXTURE_RECTANGLE_ARB;
-
-	synfig::info("Renderer_OpenGL: FBOs up! (Texture target is %s, non_power_of_two %s)",
-			_tex_target == GL_TEXTURE_2D ? "GL_TEXTURE_2D" : "GL_TEXTURE_RECTANGLE_ARB",
-			GLEW_ARB_texture_non_power_of_two ? "supported" : "unsupported");
+	// Clear IDs
+	memset(_tex, 0, sizeof(GLuint) * N_TEXTURES);
+	memset(_rb, 0, sizeof(GLuint) * N_RENDERBUFFERS);
 
 	createShaders();
 
@@ -158,13 +115,7 @@ Renderer_OpenGL::~Renderer_OpenGL()
 	// Delete our textures
 	glDeleteTextures(N_TEXTURES, _tex);
 
-	// Release context (platform dependant code)
-#ifdef linux
-	glXMakeCurrent(dpy, None, NULL);
-	glXDestroyContext(dpy, glc);
-	XDestroyWindow(dpy, win);
-	XCloseDisplay(dpy);
-#endif
+	config->closeGL();
 }
 
 void
@@ -333,8 +284,8 @@ Renderer_OpenGL::apply_trans()
 void
 Renderer_OpenGL::transfer_data(unsigned char* buf, unsigned int tex_num)
 {
-	glBindTexture(_tex_target, _tex[tex_num]);
-	glTexSubImage2D(_tex_target, MIPMAP_LEVEL, 0, 0, _vw, _vh, GL_RGBA, GL_FLOAT, buf);
+	glBindTexture(config->tex_target(), _tex[tex_num]);
+	glTexSubImage2D(config->tex_target(), MIPMAP_LEVEL, 0, 0, _vw, _vh, GL_RGBA, GL_FLOAT, buf);
 }
 
 
@@ -376,27 +327,30 @@ Renderer_OpenGL::set_wh(const GLuint vw, const GLuint vh, const Point tl, const 
 			throw;
 		}
 
+		// If we already have any generated textures, delete them
+		if (_tex[0] != 0)
+			glDeleteTextures(N_TEXTURES, _tex);
 		// Create textures and bind them to our FBO
 		glGenTextures(N_TEXTURES, _tex);
 
-		for (int j = 0; j < N_TEXTURES; j++) {
-			glBindTexture(_tex_target, _tex[j]);
+		for (unsigned int j = 0; j < N_TEXTURES; j++) {
+			glBindTexture(config->tex_target(), _tex[j]);
 
-			glTexParameteri(_tex_target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(_tex_target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(_tex_target, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(_tex_target, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			glTexParameteri(config->tex_target(), GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(config->tex_target(), GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(config->tex_target(), GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(config->tex_target(), GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-			glTexImage2D(_tex_target, MIPMAP_LEVEL, GL_RGBA32F_ARB,
+			glTexImage2D(config->tex_target(), MIPMAP_LEVEL, config->tex_internal_format(),
 			_vw, _vh, 0, GL_RGBA, GL_FLOAT, NULL);
 
 			checkErrors();
 
 			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
 				GL_COLOR_ATTACHMENT0_EXT + j,
-				_tex_target,
+				config->tex_target(),
 				_tex[j],
 				MIPMAP_LEVEL);
 		}
@@ -423,7 +377,7 @@ Renderer_OpenGL::reset()
 	memset(_buffer, 0, _vw * _vh * sizeof(surface_type));
 
 	// Clear textures
-	for (int j = 0; j < N_TEXTURES; j++)
+	for (unsigned int j = 0; j < N_TEXTURES; j++)
 		transfer_data(_buffer, j);
 
 	// Use the accumulated rotation

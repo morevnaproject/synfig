@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.h
+/*!	\file renderer_opengl.h
 **	\brief OpenGL renderer
 **
 **	$Id$
@@ -31,9 +31,6 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#ifdef linux
-#include <GL/glx.h>
-#endif
 
 #include "synfig/color.h"
 #include "synfig/vector.h"
@@ -103,23 +100,22 @@ typedef float surface_type;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+class Renderer_OpenGL_Config;
+
 namespace synfig {
 
 class Renderer_OpenGL
 {
 	// Variables
 	private:
-#ifdef linux
-		Display *dpy;
-		Window win;
-		GLXContext glc;
-#endif
-		//! Number of FBOs in GPU
-		static const int N_BUFFERS = 1;
-		//! Number of textures / color attachments per FBO
-		static const int N_TEXTURES = 2;
+		//! Configuration object
+		Renderer_OpenGL_Config *config;
+		//! Number of FBOs in GPU (one multisampled, one normal)
+		static const unsigned int N_BUFFERS = 2;
+		//! Number of textures / color attachments (one for the result, one for the buffer, one for the multisample result)
+		static const unsigned int N_TEXTURES = 3;
 		//! Mipmapping level
-		static const int MIPMAP_LEVEL = 0;
+		static const unsigned int MIPMAP_LEVEL = 0;
 		//! Current viewport width & height
 		GLuint _vw, _vh;
 		//! Current scene top-left and bottom-right points
@@ -128,18 +124,12 @@ class Renderer_OpenGL
 		float _pw, _ph;
 		//! Buffers IDs
 		GLuint _fbuf[N_BUFFERS];
-		//! Textures ids
+		//! Textures IDs
 		GLuint _tex[N_TEXTURES];
 		//! Texture buffer
 		unsigned char* _buffer;
-		//! Texture target
-		GLuint _tex_target;
-		//! Maximum attachment points
-		GLint _max_attachs;
 		//! Indicates the next read and write texture
 		unsigned int _write_tex, _read_tex;
-		//! Stores if multisampling it's currently supported
-		bool _multisampling;
 
 		// Transformation
 		//! Enumeration that holds the transformation types
