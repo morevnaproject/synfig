@@ -40,6 +40,8 @@
 #include "../value.h"
 #include "../valuenode.h"
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -160,6 +162,43 @@ Layer_SolidColor::accelerated_render(Context context,Surface *surface,int qualit
 	for(y=0;y<renddesc.get_h();y++,apen.inc_y(),apen.dec_x(x))
 		for(x=0;x<renddesc.get_w();x++,apen.inc_x())
 			apen.put_value();
+
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+
+	return true;
+}
+
+bool
+Layer_SolidColor::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+	{
+		// Mark our progress as starting
+		if(cb && !cb->amount_complete(0,1000))
+			return false;
+
+		renderer_opengl->set_color(color);
+		renderer_opengl->fill();
+
+		// Mark our progress as finished
+		if(cb && !cb->amount_complete(1000,1000))
+			return false;
+
+		return true;
+	}
+
+	SuperCallback supercb(cb,0,9500,10000);
+
+	if(!context.render(NULL,quality,renddesc,&supercb, OPENGL))
+		return false;
+
+	renderer_opengl->set_color(color);
+	// TODO: Check if that works as intended
+	renderer_opengl->fill();
+	//apen.set_alpha(get_amount());
+	renderer_opengl->blend(get_blend_method());
 
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))

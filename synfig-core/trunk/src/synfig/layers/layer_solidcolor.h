@@ -58,6 +58,8 @@ public:
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
+	virtual bool opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 	virtual Vocab get_param_vocab()const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
