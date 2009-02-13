@@ -2676,6 +2676,8 @@ Layer_Shape::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int 
 	renderer_opengl->end_contour();
 	renderer_opengl->end_polygon();
 
+	renderer_opengl->blend(get_blend_method());
+
 	return ret;
 }
 
