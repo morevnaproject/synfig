@@ -1117,15 +1117,12 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 
 	renderer_opengl->set_color(color);
 	renderer_opengl->set_winding_style(true);
+	renderer_opengl->begin_polygon();
 
 	if(invert)
 	{
-		/*src_=*surface;
-		Surface::alpha_pen pen(surface->begin(),get_amount(),get_blend_method());
-
-		surface->fill(color,pen,src_.get_w(),src_.get_h());
-
-		src_surface=&src_;*/
+		renderer_opengl->fill();
+		renderer_opengl->set_color(0.0, 0.0, 0.0, 0.0);
 	}
 
 	{
@@ -1154,7 +1151,6 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 
 				vec = (FT_OutlineGlyph)image;
 
-				renderer_opengl->begin_polygon();
 				synfig::info("Points: %d, %f, %f", vec->outline.n_points);
 				for (int j = 0; j < vec->outline.n_contours; j++) {
 					renderer_opengl->begin_contour();
@@ -1169,7 +1165,6 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 					}
 					renderer_opengl->end_contour();
 				}
-				renderer_opengl->end_polygon();
 
 				synfig::info("End of glyph");
 
@@ -1178,6 +1173,7 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 			//iter->clear_and_free();
 		}
 	}
+	renderer_opengl->end_polygon();
 
 	renderer_opengl->blend(get_blend_method());
 
