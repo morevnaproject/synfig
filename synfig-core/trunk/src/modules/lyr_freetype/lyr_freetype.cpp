@@ -1121,6 +1121,8 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 
 	if(invert)
 	{
+		// This could also work by doing another contour full viewport-size
+		// and without the need for blending to work
 		renderer_opengl->fill();
 		renderer_opengl->set_color(0.0, 0.0, 0.0, 0.0);
 	}
@@ -1151,23 +1153,43 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 
 				vec = (FT_OutlineGlyph)image;
 
-				synfig::info("Points: %d, %f, %f", vec->outline.n_points);
 				for (int j = 0; j < vec->outline.n_contours; j++) {
 					renderer_opengl->begin_contour();
 					int startPoint = j > 0 ? vec->outline.contours[j - 1] + 1 : 0;
 					for (int k = startPoint; k <= vec->outline.contours[j]; k++) {
-						synfig::info("Point nº %d (%d, %d) bit %d", k, vec->outline.points[k].x, vec->outline.points[k].y,
-								  vec->outline.tags[k]);
-						synfig::info("Point nº %d (%f, %f)", k, ((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw + renddesc.get_tl()[0], ((float)(vec->outline.points[k].y + pen.y) / CHAR_RESOLUTION) / ph,
-								  vec->outline.tags[k]);
-						if (vec->outline.tags[k])
-							renderer_opengl->add_contour_vertex(((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(pen.y - vec->outline.points[k].y) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
+						// TODO: Check also for blines
+						if (vec->outline.tags[k] & 0x01)
+							renderer_opengl->add_contour_vertex(((float)(pen.x + vec->outline.points[k].x) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(pen.y - vec->outline.points[k].y) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
+						else {
+							Point p1;
+							// If the last point is the first of the contour, store it
+							if (k + 1 == vec->outline.contours[j])
+								p1 = Point(vec->outline.points[startPoint].x, vec->outline.points[startPoint].y);
+							else
+								p1 = Point(vec->outline.points[k + 2].x, vec->outline.points[k + 2].y);
+
+							Point p0(vec->outline.points[k - 1].x, vec->outline.points[k - 1].y);
+							Point c0(vec->outline.points[k].x, vec->outline.points[k].y);
+							Point c1(vec->outline.points[k + 1].x, vec->outline.points[k + 1].y);
+
+							bezier_base<synfig::Vector, float> curve(p0, c0, c1, p1);
+							Point p, dp;
+
+							// Steps based on curve length
+							int steps = ((p1 - p0).mag() / ((fabs(pw) + fabs(ph)) / 2)) / 2;
+							for (int l = 1; l < steps; l++) {
+								curve.evaluate((1.0/steps) * l, p, dp);
+								renderer_opengl->add_contour_vertex(((float)(pen.x + p[0]) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(pen.y - p[1]) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
+							}
+
+							if (k + 1 != vec->outline.contours[j])
+								renderer_opengl->add_contour_vertex(((float)(pen.x + p1[0]) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(pen.y - p1[1]) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
+
+							k += 2;
+						}
 					}
 					renderer_opengl->end_contour();
 				}
-
-				synfig::info("End of glyph");
-
 				FT_Done_Glyph( image );
 			}
 			//iter->clear_and_free();
