@@ -54,7 +54,7 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 Renderer_OpenGL::Renderer_OpenGL(): _vw(0), _vh(0), _pw(0), _ph(0), _buffer(NULL),
-	_rotation(0), _scale(0), _font(NULL)
+	_rotation(0), _scale(0)
 {
 	// Initialize GL and check capabilities
 #ifdef _DEBUG
@@ -660,10 +660,9 @@ void
 Renderer_OpenGL::end_contour()
 {
 	// Use the data
-	for (unsigned int j = 0; j < _points[_curr_contour].size(); j += 3)
-		gluTessVertex(_tess, reinterpret_cast<GLdouble*>(&_points[_curr_contour][j]), reinterpret_cast<void*>(&_points[_curr_contour][j]));
-
-	_curr_contour++;
+	vector<GLdouble> &vec = _points.back();
+	for (unsigned int j = 0; j < vec.size(); j += 3)
+		gluTessVertex(_tess, reinterpret_cast<GLdouble*>(&vec[j]), reinterpret_cast<void*>(&vec[j]));
 
 	// End the contour
 	gluTessEndContour(_tess);
@@ -678,9 +677,10 @@ Renderer_OpenGL::add_contour_vertex(const GLdouble x, const GLdouble y, const GL
 
 	// We don't use a direct pointer because Point is using float,
 	// and GLU tessellation object needs GLdouble
-	_points[_curr_contour].push_back(x);
-	_points[_curr_contour].push_back(y);
-	_points[_curr_contour].push_back(z);
+	vector<GLdouble> &vec = _points.back();
+	vec.push_back(x);
+	vec.push_back(y);
+	vec.push_back(z);
 }
 
 const unsigned char*
