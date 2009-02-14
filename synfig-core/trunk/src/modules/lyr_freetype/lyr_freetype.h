@@ -123,6 +123,8 @@ private:
 	synfig::Real compress;
 	synfig::Real vcompress;
 
+	synfig::String _font_file;
+
 	int style;
 	int weight;
 	bool use_kerning;
@@ -146,6 +148,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;
 
