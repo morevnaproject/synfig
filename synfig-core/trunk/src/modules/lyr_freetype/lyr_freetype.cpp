@@ -943,38 +943,39 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 		text=basename(get_canvas()->get_file_name());
 	}
 
+	// Width and Height of a pixel
 	Vector::value_type pw=renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
 	Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
 
-    // Calculate character width and height
-	float w=abs(size[0]);
-	float h=abs(size[1]);
+	// Calculate character width and height
+	int w=abs(round_to_int(size[0]*pw));
+	int h=abs(round_to_int(size[1]*ph));
 
-	float bx=0;
-	float by=0;
+	int bx=0;
+	int by=0;
 
 	// If the font is the size of a pixel, don't bother rendering any text
-	/*if(w<=1 || h<=1)
+	if(w<=1 || h<=1)
 	{
 		if(cb)cb->warning(string("Layer_Freetype:")+_("Text too small, no text will be rendered."));
 		return true;
-	}*/
+	}
 
 	synfig::RecMutex::Lock lock(freetype_mutex);
 
 #define CHAR_RESOLUTION		(64)
 	error = FT_Set_Char_Size(
-		face,						// handle to face object
+		face,					// handle to face object
 		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points
 		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points
-		round_to_int(abs(size[0]*CHAR_RESOLUTION)),						// horizontal device resolution
-		round_to_int(abs(size[1]*CHAR_RESOLUTION)) );						// vertical device resolution
+		round_to_int(abs(size[0]*pw*CHAR_RESOLUTION)),			// horizontal device resolution
+		round_to_int(abs(size[1]*ph*CHAR_RESOLUTION)) );			// vertical device resolution
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
-	const float xerror(abs(size[0])/(float)face->size->metrics.x_ppem/1.13f/0.996);
-	const float yerror(abs(size[1])/(float)face->size->metrics.y_ppem/1.13f/0.996);
-	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
+	const float xerror(abs(size[0]*pw)/(float)face->size->metrics.x_ppem/1.13f/0.996);
+	const float yerror(abs(size[1]*ph)/(float)face->size->metrics.y_ppem/1.13f/0.996);
+
 	const float compress(Layer_Freetype::compress*xerror);
 	const float vcompress(Layer_Freetype::vcompress*yerror);
 
@@ -991,7 +992,7 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 	std::list<TextLine> lines;
 
 	/*
- --	** -- CREATE GLYPHS -------------------------------------------------------
+	--	** -- CREATE GLYPHS -------------------------------------------------------
 	*/
 
 	mbstate_t ps;
@@ -1023,15 +1024,15 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 			if(converted == (size_t)(-1))
 			{
 				synfig::warning("Layer_Freetype: multibyte: %s",
-								_("Invalid multibyte sequence - is the locale set?\n"));
-				continue;
+						     _("Invalid multibyte sequence - is the locale set?\n"));
+						     continue;
 			}
 
 			if(converted == (size_t)(-2))
 			{
 				synfig::warning("Layer_Freetype: multibyte: %s",
-								_("Can't parse multibyte character.\n"));
-				continue;
+						     _("Can't parse multibyte character.\n"));
+						     continue;
 			}
 
 			glyph_index = FT_Get_Char_Index( face, wc );
@@ -1040,7 +1041,7 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 				iter += converted - 1;
 		}
 
-        // retrieve kerning distance and move pen position
+		// retrieve kerning distance and move pen position
 		if ( FT_HAS_KERNING(face) && use_kerning && previous && glyph_index )
 		{
 			FT_Vector  delta;
@@ -1060,50 +1061,43 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 				bx += delta.x;
 				by += delta.y;
 			}
-        }
+		}
 
 		Glyph curr_glyph;
 
-        // store current pen position
-        curr_glyph.pos.x = bx;
-        curr_glyph.pos.y = by;
+		// store current pen position
+		curr_glyph.pos.x = bx;
+		curr_glyph.pos.y = by;
 
-        // load glyph image into the slot. DO NOT RENDER IT !!
-        if(grid_fit)
+		// load glyph image into the slot. DO NOT RENDER IT !!
+		if(grid_fit)
 			error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);
 		else
 			error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT|FT_LOAD_NO_HINTING );
-        if (error) continue;  // ignore errors, jump to next glyph
+		if (error) continue;  // ignore errors, jump to next glyph
 
-        // extract glyph image and store it in our table
-        error = FT_Get_Glyph( face->glyph, &curr_glyph.glyph );
-        if (error) continue;  // ignore errors, jump to next glyph
+		// extract glyph image and store it in our table
+		error = FT_Get_Glyph( face->glyph, &curr_glyph.glyph );
+		if (error) continue;  // ignore errors, jump to next glyph
 
-        // record current glyph index
-        previous = glyph_index;
+		// record current glyph index
+		previous = glyph_index;
 
 		// Update the line width
 		lines.front().width=bx+slot->advance.x;
 
 		// increment pen position
 		if(multiplier>1)
-			bx += fmod((slot->advance.x*multiplier*compress)-bx, (slot->advance.x*multiplier*compress));
+			bx += round_to_int(slot->advance.x*multiplier*compress)-bx%round_to_int(slot->advance.x*multiplier*compress);
 		else
-			bx += (slot->advance.x*compress*multiplier);
+			bx += round_to_int(slot->advance.x*compress*multiplier);
 
-		//bx += round_to_int(slot->advance.x*compress*multiplier);
-		//by += round_to_int(slot->advance.y*compress);
 		by += slot->advance.y*multiplier;
 
 		lines.front().glyph_table.push_back(curr_glyph);
 
 	}
 
-	//float	string_height;
-	//string_height=(((lines.size()-1)*face->size->metrics.height+lines.back().actual_height()));
-
-	//int string_height=face->size->metrics.ascender;
-//#define METRICS_SCALE_ONE		(65536.0f)
 #define METRICS_SCALE_ONE		((float)(1<<16))
 
 	float line_height;
@@ -1112,15 +1106,13 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 	// This module sees to expect pixel height to be negative, as it
 	// usually is.  But rendering to .bmp format causes ph to be
 	// positive, which was causing text to be rendered upside down.
-	//if (ph>0) line_height = -line_height;
+	if (ph>0) line_height = -line_height;
 
 	int	string_height;
 	string_height=round_to_int(((lines.size()-1)*line_height+lines.back().actual_height()));
-	//synfig::info("string_height=%d",string_height);
-	//synfig::info("line_height=%f",line_height);
 
 	/*
- --	** -- RENDER THE GLYPHS ---------------------------------------------------
+	--	** -- RENDER THE GLYPHS ---------------------------------------------------
 	*/
 
 	renderer_opengl->set_color(color);
@@ -1141,17 +1133,14 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 		int curr_line;
 		for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
 		{
-			bx=(origin[0]-renddesc.get_tl()[0])*CHAR_RESOLUTION-orient[0]*iter->width;
+			bx=round_to_int((origin[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
 			// I've no idea why 1.5, but it kind of works.  Otherwise,
 			// rendering to .bmp (which renders from bottom to top, due to
 			// the .bmp format describing the image from bottom to top,
 			// renders text in the wrong place.
-			by=(origin[1]-renddesc.get_tl()[1])*CHAR_RESOLUTION +
-							(1.0-orient[1])*string_height-line_height*curr_line +
-							((h>0) ? line_height/1.5 : 0);
-
-			//by=round_to_int(vcompress*((origin[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
-			//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
+			by=round_to_int((origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
+			(1.0-orient[1])*string_height-line_height*curr_line +
+			((ph>0) ? line_height/1.5 : 0));
 
 			std::vector<Glyph>::iterator iter2;
 			for(iter2=iter->glyph_table.begin();iter2!=iter->glyph_table.end();++iter2)
@@ -1173,8 +1162,10 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 					for (int k = startPoint; k <= vec->outline.contours[j]; k++) {
 						synfig::info("Point nº %d (%d, %d) bit %d", k, vec->outline.points[k].x, vec->outline.points[k].y,
 								  vec->outline.tags[k]);
+						synfig::info("Point nº %d (%f, %f)", k, ((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw + renddesc.get_tl()[0], ((float)(vec->outline.points[k].y + pen.y) / CHAR_RESOLUTION) / ph,
+								  vec->outline.tags[k]);
 						if (vec->outline.tags[k])
-							renderer_opengl->add_contour_vertex((vec->outline.points[k].x + pen.x) / pw, (vec->outline.points[k].y + iter2->pos.y) / -ph);
+							renderer_opengl->add_contour_vertex(((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(vec->outline.points[k].y + pen.y) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
 					}
 					renderer_opengl->end_contour();
 				}
