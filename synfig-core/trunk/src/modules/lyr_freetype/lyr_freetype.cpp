@@ -1165,7 +1165,7 @@ Layer_Freetype::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,i
 						synfig::info("Point nº %d (%f, %f)", k, ((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw + renddesc.get_tl()[0], ((float)(vec->outline.points[k].y + pen.y) / CHAR_RESOLUTION) / ph,
 								  vec->outline.tags[k]);
 						if (vec->outline.tags[k])
-							renderer_opengl->add_contour_vertex(((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(vec->outline.points[k].y + pen.y) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
+							renderer_opengl->add_contour_vertex(((float)(vec->outline.points[k].x + pen.x) / CHAR_RESOLUTION) / pw - renddesc.get_br()[0], (((float)(pen.y - vec->outline.points[k].y) / CHAR_RESOLUTION) / ph - renddesc.get_br()[1]));
 					}
 					renderer_opengl->end_contour();
 				}
