@@ -40,6 +40,7 @@
 #include <synfig/distance.h>
 #include <synfig/synfig_string.h>
 #include <synfig/synfig_time.h>
+#include <synfig/target.h>		// For RenderMethod
 
 #include <gtkmm/uimanager.h>
 
@@ -204,6 +205,7 @@ public:
 	static int preferred_x_size;
 	static int preferred_y_size;
 	static synfig::String predefined_size;
+	static synfig::RenderMethod render_method;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/

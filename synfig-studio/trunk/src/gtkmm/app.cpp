@@ -283,6 +283,7 @@ String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
 String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
+synfig::RenderMethod::App::render_method(SOFTWARE);
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else

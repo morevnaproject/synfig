@@ -136,6 +136,7 @@ void studio::Widget_NavView::on_start_render()
 		targ->set_remove_alpha();
 		targ->set_avoid_time_sync();
 		targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
+		targ->set_render_method(App::render_method);
 		//synfig::info("Set the quality level to: %d", get_canvas_view()->get_work_area()->get_quality());
 
 		//this should set it to render a single frame

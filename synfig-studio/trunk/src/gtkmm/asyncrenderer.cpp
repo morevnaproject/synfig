@@ -110,6 +110,7 @@ public:
 		set_tile_h(warm_target->get_tile_h());
 		set_canvas(warm_target->get_canvas());
 		set_quality(warm_target->get_quality());
+		set_render_method(warm_target->get_render_method());
 		set_remove_alpha(warm_target->get_remove_alpha());
 		set_threads(warm_target->get_threads());
 		set_clipping(warm_target->get_clipping());
@@ -264,6 +265,7 @@ public:
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());
 		set_quality(warm_target->get_quality());
+		set_render_method(warm_target->get_render_method());
 		set_remove_alpha(warm_target->get_remove_alpha());
 		set_threads(warm_target->get_threads());
 		set_rend_desc(&warm_target->rend_desc());

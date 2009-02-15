@@ -191,6 +191,7 @@ void studio::Preview::render()
 		//synfig::warning("Setting Canvas");
 		target->set_canvas(get_canvas());
 		target->set_quality(quality);
+		target->set_render_method(App::render_method);
 
 		//render description
 		RendDesc desc = get_canvas()->rend_desc();

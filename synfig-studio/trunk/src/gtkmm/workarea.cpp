@@ -186,6 +186,7 @@ public:
 		}
 		set_canvas(workarea->get_canvas());
 		set_quality(workarea->get_quality());
+		set_render_method(App::render_method);
 	}
 
 	~WorkAreaTarget()
@@ -468,6 +469,7 @@ public:
 	{
 		set_canvas(workarea->get_canvas());
 		set_quality(workarea->get_quality());
+		set_render_method(App::render_method);
 	}
 
 	~WorkAreaTarget_Full()
@@ -2426,6 +2428,9 @@ studio::WorkArea::async_update_preview()
 	// UPDATE: This is kind of needless with
 	// the way that time is handled now in SYNFIG.
 	//target->set_avoid_time_sync(true);
+	
+	// Set software or another rendering method
+	target->set_render_method(App::render_method);
 	async_renderer=new AsyncRenderer(target);
 	async_renderer->signal_finished().connect(
 		sigc::mem_fun(this,&WorkArea::async_update_finished)
