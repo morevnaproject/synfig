@@ -109,7 +109,7 @@ private:
 		etl::trivial<synfig::ValueNode_Animated::Waypoint::Model> waypoint_model;
 		etl::trivial<synfig::String> string;
 		etl::trivial<synfig::Keyframe> keyframe;
-		etl::trivial<synfig::Time> time;
+		etl::trivial<synfig::Synfig_Time> time;
 		etl::trivial<synfigapp::ValueDesc> value_desc;
 		etl::trivial<etl::loose_handle<synfigapp::CanvasInterface> > canvas_interface;
 		etl::trivial<synfig::RendDesc> rend_desc;
@@ -143,7 +143,7 @@ public:
 	Param(const int& x);
 	Param(const EditMode& x);
 	Param(const synfig::Real& x);
-	Param(const synfig::Time& x);
+	Param(const synfig::Synfig_Time& x);
 	Param(const bool& x);
 	Param(const synfig::ValueBase& x);
 
@@ -165,7 +165,7 @@ public:
 	const synfig::Keyframe& get_keyframe()const { assert(type_==TYPE_KEYFRAME); return data.keyframe.get(); }
 	const synfigapp::ValueDesc& get_value_desc()const { assert(type_==TYPE_VALUEDESC); return data.value_desc.get(); }
 	const synfig::Real& get_real()const { assert(type_==TYPE_REAL); return data.real; }
-	const synfig::Time& get_time()const { assert(type_==TYPE_TIME); return data.time.get(); }
+	const synfig::Synfig_Time& get_time()const { assert(type_==TYPE_TIME); return data.time.get(); }
 	const synfig::RendDesc& get_rend_desc()const { assert(type_==TYPE_RENDDESC); return data.rend_desc.get(); }
 	int get_integer()const { assert(type_==TYPE_INTEGER); return data.integer; }
 	EditMode get_edit_mode()const { assert(type_==TYPE_EDITMODE); return data.edit_mode; }

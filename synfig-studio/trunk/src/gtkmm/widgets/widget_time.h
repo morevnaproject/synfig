@@ -50,7 +50,7 @@ class Widget_Time : public Gtk::Entry
 
 	float fps_;
 
-	synfig::Time time_;
+	synfig::Synfig_Time time_;
 
 protected:
 	bool on_focus_out_event(GdkEventFocus* event);
@@ -70,8 +70,8 @@ public:
 
 
 
-	void set_value(const synfig::Time &data);
-	synfig::Time get_value()const;
+	void set_value(const synfig::Synfig_Time &data);
+	synfig::Synfig_Time get_value()const;
 	void set_fps(float x);
 	Widget_Time();
 	~Widget_Time();

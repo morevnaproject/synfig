@@ -125,28 +125,28 @@ CellRenderer_TimeTrack::is_selected(const Waypoint& waypoint)const
 	return selected==waypoint;
 }
 
-const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
+const synfig::Synfig_Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
 	if(getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") ||
 	   v.get_value_type() != synfig::ValueBase::TYPE_CANVAS)
-		return synfig::Time::zero();
+		return synfig::Synfig_Time::zero();
 
 	synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
 	if(!canvasparam)
-		return synfig::Time::zero();
+		return synfig::Synfig_Time::zero();
 
 	if (!v.parent_is_layer_param())
-		return synfig::Time::zero();
+		return synfig::Synfig_Time::zero();
 
 	synfig::Layer::Handle layer = v.get_layer();
 
 	if (layer->get_name()!="PasteCanvas")
-		return synfig::Time::zero();
+		return synfig::Synfig_Time::zero();
 
-	return layer->get_param("time_offset").get(Time());
+	return layer->get_param("time_offset").get(Synfig_Time());
 #else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	return synfig::Time::zero();
+	return synfig::Synfig_Time::zero();
 #endif
 }
 
@@ -180,7 +180,7 @@ const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v
 	return 0;
 }
 
-bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const Time &range, Time &out)
+bool get_closest_time(const synfig::Node::time_set &tset, const Synfig_Time &t, const Synfig_Time &range, Synfig_Time &out)
 {
 	Node::time_set::const_iterator	i,j,end = tset.end();
 
@@ -197,7 +197,7 @@ bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const T
 	i = tset.upper_bound(t); //where t is the lower bound, t < [first,i)
 	j = i; --j;
 
-	double dist = Time::end();
+	double dist = Synfig_Time::end();
 	double closest = 0;
 
 	if(i != end)
@@ -288,7 +288,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 		if(tset)
 		{
-			const synfig::Time time_offset = get_time_offset_from_vdesc(value_desc);
+			const synfig::Synfig_Time time_offset = get_time_offset_from_vdesc(value_desc);
 			synfig::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
 
 			float 	lower = adjustment->get_lower(),
@@ -304,15 +304,15 @@ CellRenderer_TimeTrack::render_vfunc(
 
 			float cfps = get_canvas()->rend_desc().get_frame_rate();
 
-			vector<Time>	drawredafter;
+			vector<Synfig_Time>	drawredafter;
 
-			Time diff = actual_time - actual_dragtime;//selected_time-drag_time;
+			Synfig_Time diff = actual_time - actual_dragtime;//selected_time-drag_time;
 			for(; i != end; ++i)
 			{
 				//find the coordinate in the drawable space...
-				Time t_orig = i->get_time();
+				Synfig_Time t_orig = i->get_time();
 				if(!t_orig.is_valid()) continue;
-				Time t = t_orig - time_offset;
+				Synfig_Time t = t_orig - time_offset;
 				if(t<adjustment->get_lower() || t>adjustment->get_upper()) continue;
 
 				//if it found it... (might want to change comparison, and optimize
@@ -376,11 +376,11 @@ CellRenderer_TimeTrack::render_vfunc(
 			}
 
 			{
-				vector<Time>::iterator i = drawredafter.begin(), end = drawredafter.end();
+				vector<Synfig_Time>::iterator i = drawredafter.begin(), end = drawredafter.end();
 				for(; i != end; ++i)
 				{
 					//find the coordinate in the drawable space...
-					Time t = *i;
+					Synfig_Time t = *i;
 
 					if(!t.is_valid())
 						continue;
@@ -432,7 +432,7 @@ CellRenderer_TimeTrack::render_vfunc(
 			bool selected=false;
 			if(is_selected(*iter))
 			{
-				Time t(iter->get_time());
+				Synfig_Time t(iter->get_time());
 
 
 				if(dragging)
@@ -494,7 +494,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				status_at_time=!list_entry.status_at_time((iter->time+next->time)/2.0);
 			}
 			else
-				status_at_time=!list_entry.status_at_time(Time::end());
+				status_at_time=!list_entry.status_at_time(Synfig_Time::end());
 
 			if(!is_off && status_at_time)
 			{
@@ -556,11 +556,11 @@ CellRenderer_TimeTrack::render_vfunc(
 }
 
 synfig::ValueNode_Animated::WaypointList::iterator
-CellRenderer_TimeTrack::find_waypoint(const synfig::Time& /*t*/,const synfig::Time& scope)
+CellRenderer_TimeTrack::find_waypoint(const synfig::Synfig_Time& /*t*/,const synfig::Synfig_Time& scope)
 {
 	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
-    Time nearest(Time::end());
+    Synfig_Time nearest(Synfig_Time::end());
 
 	synfig::ValueNode_Animated::WaypointList::iterator iter,ret;
 
@@ -572,7 +572,7 @@ CellRenderer_TimeTrack::find_waypoint(const synfig::Time& /*t*/,const synfig::Ti
 			iter++
 			)
 		{
-			Time val=abs(iter->get_time()-selected_time);
+			Synfig_Time val=abs(iter->get_time()-selected_time);
 			if(val<nearest)
 			{
 				nearest=val;
@@ -580,7 +580,7 @@ CellRenderer_TimeTrack::find_waypoint(const synfig::Time& /*t*/,const synfig::Ti
 			}
 		}
 
-		if(nearest!=Time::end() && nearest<scope)
+		if(nearest!=Synfig_Time::end() && nearest<scope)
 		{
 			return ret;
 		}
@@ -599,7 +599,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 {
 	path=treepath;
 	synfig::ValueNode_Animated::WaypointList::iterator iter;
-    Time nearest=1000000000;
+    Synfig_Time nearest=1000000000;
 	Gtk::Adjustment *adjustment=get_adjustment();
 
 	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
@@ -610,8 +610,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 	if(property_value_desc().get_value().parent_is_value_node())
 		parent_value_node=dynamic_cast<synfig::ValueNode_DynamicList*>(property_value_desc().get_value().get_parent_value_node().get());
 
-	Time deltatime = 0;
-	Time curr_time;
+	Synfig_Time deltatime = 0;
+	Synfig_Time curr_time;
 	switch(event->type)
 	{
 	case GDK_MOTION_NOTIFY:
@@ -640,7 +640,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 		curr_time=curr_time.round(canvas->rend_desc().get_frame_rate());
 	selected_time=curr_time;
 
-    Time pixel_width((adjustment->get_upper()-adjustment->get_lower())/cell_area.get_width());
+    Synfig_Time pixel_width((adjustment->get_upper()-adjustment->get_lower())/cell_area.get_width());
 
     switch(event->type)
     {
@@ -650,7 +650,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 		//Deal with time point selection, but only if they aren't involved in the insanity...
 		if(/*!value_node && */event->button.button == 1)
 		{
-			Time stime;
+			Synfig_Time stime;
 
 			/*!	UI specification:
 
@@ -667,7 +667,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 			const Node::time_set *tset = get_times_from_vdesc(valdesc);
-			const synfig::Time time_offset = get_time_offset_from_vdesc(valdesc);
+			const synfig::Synfig_Time time_offset = get_time_offset_from_vdesc(valdesc);
 
 			bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
 			bool selectmode = mode & SELECT_MASK;
@@ -682,7 +682,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 			}
 
 			//now that we've made sure we're selecting the correct value, deal with the already selected points
-			set<Time>::iterator foundi = clickfound ? sel_times.find(stime) : sel_times.end();
+			set<Synfig_Time>::iterator foundi = clickfound ? sel_times.find(stime) : sel_times.end();
 			bool found = foundi != sel_times.end();
 
 			//remove all other points from our list... (only select the one we need)
@@ -734,7 +734,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			for(iter=activepoint_list.begin();iter!=activepoint_list.end();++iter)
 			{
-				Time val=abs(iter->time-selected_time);
+				Synfig_Time val=abs(iter->time-selected_time);
 				if(val<nearest)
 				{
 					nearest=val;
@@ -747,10 +747,10 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			if(event->button.button==3)
 			{
-				Time stime;
+				Synfig_Time stime;
 				synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 				const Node::time_set *tset = get_times_from_vdesc(valdesc);
-				synfig::Time time_offset = get_time_offset_from_vdesc(valdesc);
+				synfig::Synfig_Time time_offset = get_time_offset_from_vdesc(valdesc);
 
 				bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
 
@@ -793,7 +793,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 			{
 				bool delmode = (mode & DELETE_MASK) && !(mode & COPY_MASK);
 				deltatime = actual_time - actual_dragtime;
-				if(sel_times.size() != 0 && (delmode || !deltatime.is_equal(Time(0))))
+				if(sel_times.size() != 0 && (delmode || !deltatime.is_equal(Synfig_Time(0))))
 				{
 					synfigapp::Action::ParamList param_list;
 					param_list.add("canvas",canvas_interface()->get_canvas());
@@ -808,8 +808,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 						param_list.add("addvaluedesc",sel_value);
 					}
 
-					set<Time>	newset;
-					std::set<synfig::Time>::iterator i = sel_times.begin(), end = sel_times.end();
+					set<Synfig_Time>	newset;
+					std::set<synfig::Synfig_Time>::iterator i = sel_times.begin(), end = sel_times.end();
 					for(; i != end; ++i)
 					{
 						param_list.add("addtime",*i);
@@ -850,7 +850,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				if(event->button.button==1)
 				{
 					synfig::Waypoint waypoint(*selected_waypoint);
-					Time newtime((waypoint.get_time()+(selected_time-drag_time)).round(canvas->rend_desc().get_frame_rate()));
+					Synfig_Time newtime((waypoint.get_time()+(selected_time-drag_time)).round(canvas->rend_desc().get_frame_rate()));
 					if(waypoint.get_time()!=newtime)
 					{
 						waypoint.set_time(newtime);

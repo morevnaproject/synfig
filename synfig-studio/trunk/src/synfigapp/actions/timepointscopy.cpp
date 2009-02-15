@@ -201,7 +201,7 @@ Action::TimepointsCopy::prepare()
 	//		an operation on a specific valuenode, etc....
 	timepoints_ref	match;
 
-	Time fps = get_canvas()->rend_desc().get_frame_rate();
+	Synfig_Time fps = get_canvas()->rend_desc().get_frame_rate();
 
 	//std::vector<synfig::Layer::Handle>
 	//synfig::info("Layers %d", sel_layers.size());

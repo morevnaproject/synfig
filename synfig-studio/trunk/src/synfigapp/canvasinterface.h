@@ -71,7 +71,7 @@ private:
 	etl::handle<synfig::Canvas> canvas_;
 	etl::handle<SelectionManager> selection_manager_;
 	etl::handle<UIInterface> ui_interface_;
-	synfig::Time cur_time_;
+	synfig::Synfig_Time cur_time_;
 	Mode mode_;
 
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_raised_;
@@ -229,10 +229,10 @@ public:
 	synfig::String get_id()const { return get_canvas()->get_id(); }
 
 	//! Sets the current time
-	void set_time(synfig::Time x);
+	void set_time(synfig::Synfig_Time x);
 
 	//! Retrieves the current time
-	synfig::Time get_time()const;
+	synfig::Synfig_Time get_time()const;
 
 	//! Changes the current time to the next keyframe
 	void jump_to_next_keyframe();
@@ -242,7 +242,7 @@ public:
 
 	void seek_frame(int frames);
 
-	void seek_time(synfig::Time time);
+	void seek_time(synfig::Synfig_Time time);
 
 	//! \writeme
 	void refresh_current_values();

@@ -1373,15 +1373,15 @@ CanvasView::init_menus()
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame),-1));
 
 		action=Gtk::Action::create("seek-next-second", Gtk::Stock::GO_FORWARD,_("Seek Forward"),_("Seek Forward"));
-		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time(1)));
+		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Synfig_Time(1)));
 		action=Gtk::Action::create("seek-prev-second", Gtk::Stock::GO_BACK,_("Seek Backward"),_("Seek Backward"));
-		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time(-1)));
+		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Synfig_Time(-1)));
 
 		action=Gtk::Action::create("seek-end", Gtk::Stock::GOTO_LAST,_("Seek to End"),_("Seek to End"));
-		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time::end()));
+		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Synfig_Time::end()));
 
 		action=Gtk::Action::create("seek-begin", Gtk::Stock::GOTO_FIRST,_("Seek to Begin"),_("Seek to Begin"));
-		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time::begin()));
+		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Synfig_Time::begin()));
 
 		action=Gtk::Action::create("jump-next-keyframe", Gtk::Stock::GO_FORWARD,_("Jump to Next Keyframe"),_("Jump to Next Keyframe"));
 		action_group->add( action,sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
@@ -1911,7 +1911,7 @@ CanvasView::refresh_rend_desc()
 		time_adjustment().value_changed();
 	}
 
-	Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
+	Synfig_Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
 	if(length<DEFAULT_TIME_WINDOW_SIZE)
 	{
 		time_window_adjustment().set_page_increment(length);
@@ -1927,13 +1927,13 @@ CanvasView::refresh_rend_desc()
 	timeslider->set_global_fps(get_canvas()->rend_desc().get_frame_rate());
 
 	//set the beginning and ending time of the time slider
-	Time begin_time=get_canvas()->rend_desc().get_time_start();
-	Time end_time=get_canvas()->rend_desc().get_time_end();
+	Synfig_Time begin_time=get_canvas()->rend_desc().get_time_start();
+	Synfig_Time end_time=get_canvas()->rend_desc().get_time_end();
 
 	// Setup the time_window adjustment
 	time_window_adjustment().set_lower(begin_time);
 	time_window_adjustment().set_upper(end_time);
-	time_window_adjustment().set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
+	time_window_adjustment().set_step_increment(synfig::Synfig_Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
 
 	//Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
 	if(length < time_window_adjustment().get_page_size())
@@ -1958,8 +1958,8 @@ CanvasView::refresh_rend_desc()
 
 //	time_adjustment().set_lower(get_canvas()->rend_desc().get_time_start());
 //	time_adjustment().set_upper(get_canvas()->rend_desc().get_time_end());
-	time_adjustment().set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
-	time_adjustment().set_page_increment(synfig::Time(1.0));
+	time_adjustment().set_step_increment(synfig::Synfig_Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
+	time_adjustment().set_page_increment(synfig::Synfig_Time(1.0));
 	time_adjustment().set_page_size(0);
 
 	time_adjustment().changed();
@@ -2414,7 +2414,7 @@ CanvasView::refresh_time_window()
 void
 CanvasView::on_time_changed()
 {
-	Time time(get_time());
+	Synfig_Time time(get_time());
 
 	current_time_widget->set_value(time);
 	try {
@@ -2449,7 +2449,7 @@ void
 CanvasView::time_zoom_in()
 {
 	float frame_rate = get_canvas()->rend_desc().get_frame_rate();
-	Time min_page_size = 2/frame_rate;
+	Synfig_Time min_page_size = 2/frame_rate;
 
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()*0.75);
 	if (time_window_adjustment().get_page_size() < min_page_size)
@@ -2463,7 +2463,7 @@ CanvasView::time_zoom_in()
 void
 CanvasView::time_zoom_out()
 {
-	Time length = (get_canvas()->rend_desc().get_time_end() -
+	Synfig_Time length = (get_canvas()->rend_desc().get_time_end() -
 				   get_canvas()->rend_desc().get_time_start());
 
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()/0.75);
@@ -2478,7 +2478,7 @@ CanvasView::time_zoom_out()
 void
 CanvasView::time_was_changed()
 {
-	synfig::Time time((synfig::Time)(double)time_adjustment().get_value());
+	synfig::Synfig_Time time((synfig::Synfig_Time)(double)time_adjustment().get_value());
 	set_time(time);
 }
 
@@ -3032,7 +3032,7 @@ CanvasView::play()
 	IsWorking is_working(*this);
 
 	etl::clock timer;
-	Time
+	Synfig_Time
 		time=work_area->get_time(),
 		endtime=get_canvas()->rend_desc().get_time_end();
 
@@ -3049,7 +3049,7 @@ CanvasView::play()
 		//Clamp the time window so we can see the time value as it races across the horizon
 		bool timewindreset = false;
 
-		while( time + timer() > Time(time_window_adjustment().get_sub_upper()) )
+		while( time + timer() > Synfig_Time(time_window_adjustment().get_sub_upper()) )
 		{
 			time_window_adjustment().set_value(
 					min(
@@ -3059,7 +3059,7 @@ CanvasView::play()
 			timewindreset = true;
 		}
 
-		while( time + timer() < Time(time_window_adjustment().get_sub_lower()) )
+		while( time + timer() < Synfig_Time(time_window_adjustment().get_sub_lower()) )
 		{
 			time_window_adjustment().set_value(
 				max(
@@ -3252,7 +3252,7 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 {
 	int size = waypoint_set.size();
 	Waypoint waypoint(*(waypoint_set.begin()));
-	Time time(waypoint.get_time());
+	Synfig_Time time(waypoint.get_time());
 
 	if (size == 1)
 	{
@@ -3697,7 +3697,7 @@ CanvasView::on_audio_file_change(const std::string &f)
 }
 
 void
-CanvasView::on_audio_offset_change(const synfig::Time &t)
+CanvasView::on_audio_offset_change(const synfig::Synfig_Time &t)
 {
 	canvas_interface()->set_meta_data("audiooffset",t.get_string());
 }
@@ -3743,7 +3743,7 @@ CanvasView::on_audio_file_notify()
 void
 CanvasView::on_audio_offset_notify()
 {
-	Time t(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
+	Synfig_Time t(get_canvas()->get_meta_data("audiooffset"),get_canvas()->rend_desc().get_frame_rate());
 	audio->set_offset(t);
 	sound_dialog->set_offset(t);
 	disp_audio->queue_draw();

@@ -3,6 +3,46 @@
 #include <iostream>
 #include <cmath>
 
+/*static void checkGLErrors(const char *label) {
+	GLenum errCode;
+	const GLubyte *errStr;
+	if ((errCode = glGetError()) != GL_NO_ERROR) {
+		errStr = gluErrorString(errCode);
+		synfig::error("OpenGL ERROR: %s (Label: %s)", (char*)errStr, label);
+	}
+}
+
+static bool checkFramebufferStatus() {
+    GLenum status;
+    status=(GLenum)glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    switch(status) {
+        case GL_FRAMEBUFFER_COMPLETE_EXT:
+            return true;
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+            synfig::error("Framebuffer incomplete,incomplete attachment\n");
+				break;
+        case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+            synfig::error("Unsupported framebuffer format\n");
+				break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+            synfig::error("Framebuffer incomplete,missing attachment\n");
+				break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+            synfig::error("Framebuffer incomplete,attached images must have same dimensions\n");
+				break;
+        case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+             synfig::error("Framebuffer incomplete,attached images must have same format\n");
+				break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+            synfig::error("Framebuffer incomplete,missing draw buffer\n");
+				break;
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+            synfig::error("Framebuffer incomplete,missing read buffer\n");
+				break;
+    }
+	return false;
+}*/
+
 glPlayfield::glPlayfield():
 	_width(0),
 	_height(0),

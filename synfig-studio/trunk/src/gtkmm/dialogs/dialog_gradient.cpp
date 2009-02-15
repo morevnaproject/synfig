@@ -179,7 +179,7 @@ dialog_gradient_value_desc_edit(synfig::Gradient /*g*/,synfigapp::ValueDesc /*x*
 }
 
 void
-Dialog_Gradient::edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time time)
+Dialog_Gradient::edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Synfig_Time time)
 {
 	reset();
 	if(x.is_const())

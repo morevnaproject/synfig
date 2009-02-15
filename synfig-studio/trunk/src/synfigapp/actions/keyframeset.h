@@ -52,17 +52,17 @@ private:
 
 	synfig::Keyframe keyframe;
 	synfig::Keyframe old_keyframe;
-	synfig::Time old_time;
-	synfig::Time new_time;
+	synfig::Synfig_Time old_time;
+	synfig::Synfig_Time new_time;
 
-	synfig::Time keyframe_prev,keyframe_next;
+	synfig::Synfig_Time keyframe_prev,keyframe_next;
 
 	std::set<synfig::GUID> guid_set;
 
 	void process_value_desc(const synfigapp::ValueDesc& value_desc);
 
-	int scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end);
-	int scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end);
+	int scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Synfig_Time& old_begin,const synfig::Synfig_Time& old_end,const synfig::Synfig_Time& new_begin,const synfig::Synfig_Time& new_end);
+	int scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Synfig_Time& old_begin,const synfig::Synfig_Time& old_end,const synfig::Synfig_Time& new_begin,const synfig::Synfig_Time& new_end);
 
 public:
 

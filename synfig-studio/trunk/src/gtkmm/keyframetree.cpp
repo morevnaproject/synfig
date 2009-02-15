@@ -190,7 +190,7 @@ KeyframeTree::set_editable(bool x)
 }
 
 void
-KeyframeTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
+KeyframeTree::on_edited_time(const Glib::ustring&path_string,synfig::Synfig_Time time)
 {
 	Gtk::TreePath path(path_string);
 
@@ -207,7 +207,7 @@ KeyframeTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
 }
 
 void
-KeyframeTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
+KeyframeTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Synfig_Time time)
 {
 	Gtk::TreePath path(path_string);
 

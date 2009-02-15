@@ -65,7 +65,7 @@ ACTION_SET_CVS_ID(Action::KeyframeSet,"$Id$");
 
 Action::KeyframeSet::KeyframeSet()
 {
-	keyframe.set_time(Time::begin()-1);
+	keyframe.set_time(Synfig_Time::begin()-1);
 	set_dirty(false);
 }
 
@@ -107,7 +107,7 @@ Action::KeyframeSet::set_param(const synfig::String& name, const Action::Param &
 bool
 Action::KeyframeSet::is_ready()const
 {
-	if(keyframe.get_time()==(Time::begin()-1))
+	if(keyframe.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -147,7 +147,7 @@ Action::KeyframeSet::prepare()
 #define old_2_new(x)	(((x)-old_begin)/(old_end-old_begin)*(new_end-new_begin)+new_begin)
 
 int
-Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end)
+Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Synfig_Time& old_begin,const synfig::Synfig_Time& old_end,const synfig::Synfig_Time& new_begin,const synfig::Synfig_Time& new_end)
 {
 	ValueNode_DynamicList::Handle value_node(ValueNode_DynamicList::Handle::cast_static(value_desc.get_parent_value_node()));
 	ValueNode_DynamicList::ListEntry& list_entry(value_node->list[value_desc.get_index()]);
@@ -162,7 +162,7 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 		{
 			try
 			{
-				Time new_time(old_2_new((*iter)->get_time()));
+				Synfig_Time new_time(old_2_new((*iter)->get_time()));
 				if(new_time>=old_begin && new_time<old_end)
 					continue;
 				list_entry.find(new_time);
@@ -205,7 +205,7 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 }
 
 int
-Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end)
+Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Synfig_Time& old_begin,const synfig::Synfig_Time& old_end,const synfig::Synfig_Time& new_begin,const synfig::Synfig_Time& new_end)
 {
 	ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_static(value_desc.get_value_node()));
 
@@ -219,7 +219,7 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 		{
 			try
 			{
-				Time new_time(old_2_new((*iter)->get_time()));
+				Synfig_Time new_time(old_2_new((*iter)->get_time()));
 				if(new_time>=old_begin && new_time<old_end)
 					continue;
 				value_node->find(new_time);
@@ -387,9 +387,9 @@ Action::KeyframeSet::perform()
 		catch(Exception::NotFound) { }
 	}
 	try { keyframe_next=get_canvas()->keyframe_list().find_next(old_time)->get_time(); }
-	catch(...) { keyframe_next=Time::end(); }
+	catch(...) { keyframe_next=Synfig_Time::end(); }
 	try { keyframe_prev=get_canvas()->keyframe_list().find_prev(old_time)->get_time(); }
-	catch(...) { keyframe_prev=Time::begin(); }
+	catch(...) { keyframe_prev=Synfig_Time::begin(); }
 
 	old_keyframe=*get_canvas()->keyframe_list().find(keyframe);
 	*get_canvas()->keyframe_list().find(keyframe)=keyframe;

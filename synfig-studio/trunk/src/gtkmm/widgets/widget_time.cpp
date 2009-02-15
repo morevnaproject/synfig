@@ -75,13 +75,13 @@ Widget_Time::refresh_text()
 
 
 void
-Widget_Time::set_value(const synfig::Time &data)
+Widget_Time::set_value(const synfig::Synfig_Time &data)
 {
 	time_=data;
 	refresh_text();
 }
 
-synfig::Time
+synfig::Synfig_Time
 Widget_Time::get_value() const
 {
 	return time_;
@@ -90,7 +90,7 @@ Widget_Time::get_value() const
 void
 Widget_Time::set_fps(float x)
 {
-	fps_=Time(x);
+	fps_=Synfig_Time(x);
 	refresh_text();
 }
 
@@ -99,7 +99,7 @@ Widget_Time::refresh_value()
 {
 	try
 	{
-		Time newtime(get_text(),fps_);
+		Synfig_Time newtime(get_text(),fps_);
 		if(abs(newtime-time_)>=0.001)
 		{
 			time_=newtime;
@@ -116,7 +116,7 @@ Widget_Time::refresh_value()
 bool
 Widget_Time::on_event(GdkEvent* event)
 {
-	const Time scroll_amount(0.25);
+	const Synfig_Time scroll_amount(0.25);
 
 	switch(event->type)
 	{
@@ -161,7 +161,7 @@ Widget_Time::on_focus_in_event(GdkEventFocus* event)
 {
 	// if defined, show the full time format "0h 0m 5s 0f" when the time widget gets focus
 	if (getenv("SYNFIG_SHOW_FULL_TIME_ON_FOCUS"))
-		set_text(time_.get_string(fps_,App::get_time_format()|Time::FORMAT_FULL));
+		set_text(time_.get_string(fps_,App::get_time_format()|Synfig_Time::FORMAT_FULL));
 
 	return Gtk::Entry::on_focus_in_event(event);
 }

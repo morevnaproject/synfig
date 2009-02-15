@@ -321,8 +321,8 @@ public:
 	static void set_max_recent_files(int x);
 
 
-	static synfig::Time::Format get_time_format();
-	static void set_time_format(synfig::Time::Format x);
+	static synfig::Synfig_Time::Format get_time_format();
+	static void set_time_format(synfig::Synfig_Time::Format x);
 
 	static bool shutdown_request(GdkEventAny*bleh=NULL);
 

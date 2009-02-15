@@ -69,7 +69,7 @@ ACTION_SET_CVS_ID(Action::ActivepointSetSmart,"$Id$");
 
 Action::ActivepointSetSmart::ActivepointSetSmart()
 {
-	activepoint.set_time(Time::begin()-1);
+	activepoint.set_time(Synfig_Time::begin()-1);
 	time_set=false;
 	set_dirty(true);
 }
@@ -141,7 +141,7 @@ Action::ActivepointSetSmart::set_param(const synfig::String& name, const Action:
 
 		return true;
 	}
-	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Time::begin()-1)
+	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Synfig_Time::begin()-1)
 	{
 		activepoint.set_time(param.get_time());
 		time_set=true;
@@ -163,10 +163,10 @@ Action::ActivepointSetSmart::is_ready()const
 	if(!value_node)
 		synfig::error("Missing value_node");
 
-	if(activepoint.get_time()==(Time::begin()-1))
+	if(activepoint.get_time()==(Synfig_Time::begin()-1))
 		synfig::error("Missing activepoint");
 
-	if(!value_node || activepoint.get_time()==(Time::begin()-1))
+	if(!value_node || activepoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

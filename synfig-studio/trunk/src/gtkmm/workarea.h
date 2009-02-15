@@ -451,11 +451,11 @@ public:
 
 	bool async_update_preview();
 	void async_update_finished();
-	void async_render_preview(synfig::Time time);
+	void async_render_preview(synfig::Synfig_Time time);
 	void async_render_preview();
 
 	bool sync_update_preview();
-	bool sync_render_preview(synfig::Time time);
+	bool sync_render_preview(synfig::Synfig_Time time);
 	bool sync_render_preview();
 	void sync_render_preview_hook();
 

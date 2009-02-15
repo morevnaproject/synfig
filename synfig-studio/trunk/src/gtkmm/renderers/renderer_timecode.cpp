@@ -124,7 +124,7 @@ Renderer_Timecode::render_vfunc(
 //	const float pw(get_pw()),ph(get_ph());
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
-	synfig::Time cur_time(canvas->get_time());
+	synfig::Synfig_Time cur_time(canvas->get_time());
 
 	// Print out the timecode
 	{

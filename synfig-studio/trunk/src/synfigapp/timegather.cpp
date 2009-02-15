@@ -98,8 +98,8 @@ void synfigapp::timepoints_ref::insert(synfigapp::ValueDesc v, synfig::Activepoi
 }
 
 //recursion functions
-void synfigapp::recurse_canvas(synfig::Canvas::Handle h, const std::set<Time> &tlist,
-								timepoints_ref &vals, synfig::Time time_offset)
+void synfigapp::recurse_canvas(synfig::Canvas::Handle h, const std::set<Synfig_Time> &tlist,
+								timepoints_ref &vals, synfig::Synfig_Time time_offset)
 {
 
 	//synfig::info("Canvas...\n Recurse through layers");
@@ -117,8 +117,8 @@ void synfigapp::recurse_canvas(synfig::Canvas::Handle h, const std::set<Time> &t
 	}
 }
 
-void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tlist,
-								timepoints_ref &vals, synfig::Time time_offset)
+void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Synfig_Time> &tlist,
+								timepoints_ref &vals, synfig::Synfig_Time time_offset)
 {
 	// iterate through the layers
 	//check for special case of paste canvas
@@ -131,7 +131,7 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 		//synfig::info("We are a paste canvas so go into that");
 		//recurse into the canvas
 		const synfig::Node::time_set &tset = p->get_sub_canvas()->get_times();
-		synfig::Time subcanvas_time_offset(time_offset + p->get_time_offset());
+		synfig::Synfig_Time subcanvas_time_offset(time_offset + p->get_time_offset());
 
 		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),subcanvas_time_offset))
 			recurse_canvas(p->get_sub_canvas(),tlist,vals,subcanvas_time_offset);
@@ -166,8 +166,8 @@ static bool sorted(IT i,IT end, const CMP &cmp = CMP())
 	return true;
 }
 
-void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &tlist,
-								timepoints_ref &vals, synfig::Time time_offset)
+void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Synfig_Time> &tlist,
+								timepoints_ref &vals, synfig::Synfig_Time time_offset)
 {
 	//special cases for Animated, DynamicList, and Linkable
 
@@ -186,7 +186,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 			synfig::WaypointList::const_iterator i = w.begin(),
 												end = w.end();
 
-			std::set<Time>::const_iterator		j = tlist.begin(),
+			std::set<Synfig_Time>::const_iterator		j = tlist.begin(),
 												jend = tlist.end();
 			for(; i != end && j != jend;)
 			{
@@ -219,7 +219,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 
 			//synfig::info("Our parent = dynamic list, searching in %d activepts",a.size());
 
-			std::set<Time>::const_iterator			i = tlist.begin(),
+			std::set<Synfig_Time>::const_iterator			i = tlist.begin(),
 													end = tlist.end();
 
 			synfig::ActivepointList::const_iterator 	j = a.begin(),
@@ -234,7 +234,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 				//synfig::info("\ttpair match(%.4lg) - %.4lg (diff = %lg",it,jt,diff);
 
 				//
-				if(abs(diff) < (double)Time::epsilon())
+				if(abs(diff) < (double)Synfig_Time::epsilon())
 				{
 					//synfig::info("\tActivepoint to add being referenced (%x,%s,%.4lg)",
 					//				(int)j->get_uid(),j->state?"true":"false", (double)j->time);

@@ -48,7 +48,7 @@ class BLinePointTangentMerge :
 private:
 
 	synfig::ValueNode_Composite::Handle value_node;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 
 public:
 

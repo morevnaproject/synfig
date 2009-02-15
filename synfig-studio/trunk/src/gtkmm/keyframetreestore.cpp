@@ -301,7 +301,7 @@ KeyframeTreeStore::time_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::Tr
 	_keyframe_iterator *rhs_iter(static_cast<_keyframe_iterator*>(rhs->gobj()->user_data));
 	_keyframe_iterator *lhs_iter(static_cast<_keyframe_iterator*>(lhs->gobj()->user_data));
 
-	Time diff(rhs_iter->iter->get_time()-lhs_iter->iter->get_time());
+	Synfig_Time diff(rhs_iter->iter->get_time()-lhs_iter->iter->get_time());
 	if(diff<0)
 		return -1;
 	if(diff>0)
@@ -347,19 +347,19 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 	{
 		if(column==model.time_delta.index())
 		{
-			Glib::Value<synfig::Time> x;
+			Glib::Value<synfig::Synfig_Time> x;
 			g_value_init(x.gobj(),model.time.type());
 			g_value_copy(value.gobj(),x.gobj());
 
-			Time new_delta(x.get());
-			if(new_delta<=Time::zero()+Time::epsilon())
+			Synfig_Time new_delta(x.get());
+			if(new_delta<=Synfig_Time::zero()+Synfig_Time::epsilon())
 			{
 				// Bad value
 				return;
 			}
 
-			Time old_delta((*row)[model.time_delta]);
-			if(old_delta<=Time::zero()+Time::epsilon())
+			Synfig_Time old_delta((*row)[model.time_delta]);
+			if(old_delta<=Synfig_Time::zero()+Synfig_Time::epsilon())
 			{
 				// Bad old delta
 				return;
@@ -369,9 +369,9 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			//row++;
 			//if(!row)return;
 
-			Time change_delta(new_delta-old_delta);
+			Synfig_Time change_delta(new_delta-old_delta);
 
-			if(change_delta<=Time::zero()+Time::epsilon() &&change_delta>=Time::zero()-Time::epsilon())
+			if(change_delta<=Synfig_Time::zero()+Synfig_Time::epsilon() &&change_delta>=Synfig_Time::zero()-Synfig_Time::epsilon())
 			{
 				// Not an error, just no change
 				return;
@@ -398,7 +398,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 		{
 			OneMoment one_moment;
 
-			Glib::Value<synfig::Time> x;
+			Glib::Value<synfig::Synfig_Time> x;
 			g_value_init(x.gobj(),model.time.type());
 			g_value_copy(value.gobj(),x.gobj());
 			synfig::Keyframe keyframe(*iter->iter);
@@ -729,7 +729,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 	{
 	case 0:		// Time
 	{
-		Glib::Value<synfig::Time> x;
+		Glib::Value<synfig::Synfig_Time> x;
 		g_value_init(x.gobj(),x.value_type());
 		x.set(iter->iter->get_time());
 		g_value_init(value.gobj(),x.value_type());
@@ -738,7 +738,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 	}
 	case 3:		// Time Delta
 	{
-		Glib::Value<synfig::Time> x;
+		Glib::Value<synfig::Synfig_Time> x;
 		g_value_init(x.gobj(),x.value_type());
 
 		synfig::Keyframe prev_keyframe(*iter->iter);
@@ -748,7 +748,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 			tmp++;
 			if(tmp==get_canvas()->keyframe_list().end())
 			{
-				x.set(Time(0));
+				x.set(Synfig_Time(0));
 				g_value_init(value.gobj(),x.value_type());
 				g_value_copy(x.gobj(),value.gobj());
 				return;
@@ -756,7 +756,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 			keyframe=*tmp;
 		}
 
-		Time delta(0);
+		Synfig_Time delta(0);
 		try {
 			delta=keyframe.get_time()-prev_keyframe.get_time();
 		}catch(...) { }

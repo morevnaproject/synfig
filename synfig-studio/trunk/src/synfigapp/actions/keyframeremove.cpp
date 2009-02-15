@@ -65,7 +65,7 @@ ACTION_SET_CVS_ID(Action::KeyframeRemove,"$Id$");
 
 Action::KeyframeRemove::KeyframeRemove()
 {
-	keyframe.set_time(Time::begin()-1);
+	keyframe.set_time(Synfig_Time::begin()-1);
 	set_dirty(true);
 }
 
@@ -104,7 +104,7 @@ Action::KeyframeRemove::set_param(const synfig::String& name, const Action::Para
 bool
 Action::KeyframeRemove::is_ready()const
 {
-	if(keyframe.get_time()==(Time::begin()-1))
+	if(keyframe.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -135,7 +135,7 @@ Action::KeyframeRemove::prepare()
 void
 Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_desc)
 {
-	const synfig::Time time(keyframe.get_time());
+	const synfig::Synfig_Time time(keyframe.get_time());
 
 	if(value_desc.is_value_node())
 	{

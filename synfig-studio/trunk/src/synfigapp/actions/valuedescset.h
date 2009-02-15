@@ -49,7 +49,7 @@ private:
 
 	ValueDesc value_desc;
 	synfig::ValueBase value;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 	synfig::ValueNode_Animated::Handle value_node_animated;
 
 public:

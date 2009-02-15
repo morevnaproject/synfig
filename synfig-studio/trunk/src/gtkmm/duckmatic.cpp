@@ -547,7 +547,7 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_);
 	int i;
-	Time time(duckmatic->get_time());
+	Synfig_Time time(duckmatic->get_time());
 
 	// drag the vertex and position ducks first
 	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)

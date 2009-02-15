@@ -61,7 +61,7 @@ ACTION_SET_CVS_ID(Action::KeyframeAdd,"$Id$");
 
 Action::KeyframeAdd::KeyframeAdd()
 {
-	keyframe.set_time(Time::begin()-1);
+	keyframe.set_time(Synfig_Time::begin()-1);
 	set_dirty(false);
 }
 
@@ -103,7 +103,7 @@ Action::KeyframeAdd::set_param(const synfig::String& name, const Action::Param &
 bool
 Action::KeyframeAdd::is_ready()const
 {
-	if(keyframe.get_time()==(Time::begin()-1))
+	if(keyframe.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

@@ -68,7 +68,7 @@ ACTION_SET_CVS_ID(Action::BLinePointTangentSplit,"$Id$");
 
 Action::BLinePointTangentSplit::BLinePointTangentSplit()
 {
-	time=(Time::begin()-1);
+	time=(Synfig_Time::begin()-1);
 	set_dirty(true);
 }
 
@@ -103,7 +103,7 @@ Action::BLinePointTangentSplit::is_candidate(const ParamList &x)
 		value_node=ValueNode_Composite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());
 		if(!value_node || value_node->get_type()!=ValueBase::TYPE_BLINEPOINT)
 			return false;
-		synfig::Time time(x.find("time")->second.get_time());
+		synfig::Synfig_Time time(x.find("time")->second.get_time());
 		if((*value_node->get_link("split"))(time).get(bool())==true)
 			return false;
 		return true;
@@ -136,10 +136,10 @@ Action::BLinePointTangentSplit::is_ready()const
 	if(!value_node)
 		synfig::error("Missing or bad value_node");
 
-	if(time==(Time::begin()-1))
+	if(time==(Synfig_Time::begin()-1))
 		synfig::error("Missing time");
 
-	if(!value_node || time==(Time::begin()-1))
+	if(!value_node || time==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

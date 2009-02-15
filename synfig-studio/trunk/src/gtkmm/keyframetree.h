@@ -85,7 +85,7 @@ private:
 
 	sigc::signal<void,synfig::Keyframe> signal_edited_;
 
-	sigc::signal<void,synfig::Keyframe,synfig::Time> signal_edited_time_;
+	sigc::signal<void,synfig::Keyframe,synfig::Synfig_Time> signal_edited_time_;
 
 	sigc::signal<void,synfig::Keyframe,synfig::String> signal_edited_description_;
 
@@ -105,9 +105,9 @@ private:
 
 private:
 
-	void on_edited_time(const Glib::ustring&path_string,synfig::Time time);
+	void on_edited_time(const Glib::ustring&path_string,synfig::Synfig_Time time);
 
-	void on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time);
+	void on_edited_time_delta(const Glib::ustring&path_string,synfig::Synfig_Time time);
 
 	void on_edited_description(const Glib::ustring&path_string,const Glib::ustring &description);
 
@@ -134,7 +134,7 @@ public:
 	sigc::signal<void,synfig::Keyframe>& signal_edited() { return signal_edited_; }
 
 	//! Signal called when a time has been edited.
-	sigc::signal<void,synfig::Keyframe,synfig::Time>& signal_edited_time() { return signal_edited_time_; }
+	sigc::signal<void,synfig::Keyframe,synfig::Synfig_Time>& signal_edited_time() { return signal_edited_time_; }
 
 	//! Signal called when a description has been edited.
 	sigc::signal<void,synfig::Keyframe,synfig::String>& signal_edited_description() { return signal_edited_description_; }

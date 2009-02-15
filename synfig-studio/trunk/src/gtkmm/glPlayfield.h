@@ -8,6 +8,9 @@
 #include <vector>
 #include <iostream>
 
+/*static void checkGLErrors(const char *label);
+static bool checkFramebufferStatus();*/
+
 class glPlayfield
 {
 	private:
@@ -24,6 +27,7 @@ class glPlayfield
 		void initializeGL();
 		void resizeGL(int width, int height);
 		void clearGL();
+
 		inline void setColorGL(const GLfloat r, const GLfloat g, const GLfloat b) { glColor3f(r, g, b); }
 		inline void setColorGL(const GLdouble r, const GLdouble g, const GLdouble b) { glColor3d(r, g, b); }
 		inline void setColorGL(const GLubyte r, const GLubyte g, const GLubyte b) { glColor3ub(r, g, b); }

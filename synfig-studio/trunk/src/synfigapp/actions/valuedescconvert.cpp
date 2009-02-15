@@ -72,7 +72,7 @@ ACTION_SET_CVS_ID(Action::ValueDescConvert,"$Id$");
 
 Action::ValueDescConvert::ValueDescConvert()
 {
-	time=(Time::begin()-1);
+	time=(Synfig_Time::begin()-1);
 }
 
 synfig::String
@@ -143,7 +143,7 @@ Action::ValueDescConvert::is_ready()const
 {
 	if(!value_desc || type.empty())
 		return false;
-	if(time==(Time::begin()-1))
+	if(time==(Synfig_Time::begin()-1))
 	{
 		synfig::error("Missing time");
 		return false;

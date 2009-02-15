@@ -201,7 +201,7 @@ protected:
 
 	etl::handle<Bezier> selected_bezier;
 
-	synfig::Time cur_time;
+	synfig::Synfig_Time cur_time;
 
 	//! This flag is set if operations should snap to the grid
 	/*! \todo perhaps there should be two of these flags, one for each axis?
@@ -277,12 +277,12 @@ public:
 	const synfig::Vector &get_grid_size()const { return grid_size; }
 
 
-	const synfig::Time &get_time()const { return cur_time; }
+	const synfig::Synfig_Time &get_time()const { return cur_time; }
 
 	bool get_axis_lock()const { return axis_lock; }
 	void set_axis_lock(bool x) { axis_lock=x; }
 
-	void set_time(synfig::Time x) { cur_time=x; }
+	void set_time(synfig::Synfig_Time x) { cur_time=x; }
 
 	bool is_duck_group_selectable(const etl::handle<Duck>& x)const;
 

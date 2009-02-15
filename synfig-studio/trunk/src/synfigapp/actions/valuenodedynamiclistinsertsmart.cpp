@@ -223,7 +223,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 			action->set_param("edit_mode",MODE_ANIMATE);
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",Time::begin());
+			action->set_param("time",Synfig_Time::begin());
 			action->set_param("origin",origin);
 			action->set_param("value_desc",ValueDesc(value_node,index));
 

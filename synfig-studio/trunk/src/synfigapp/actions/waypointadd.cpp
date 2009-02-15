@@ -63,7 +63,7 @@ ACTION_SET_CVS_ID(Action::WaypointAdd,"$Id$");
 
 Action::WaypointAdd::WaypointAdd()
 {
-	waypoint.set_time(Time::begin()-1);
+	waypoint.set_time(Synfig_Time::begin()-1);
 	time_set=false;
 	set_dirty(true);
 }
@@ -119,7 +119,7 @@ Action::WaypointAdd::set_param(const synfig::String& name, const Action::Param &
 
 		return true;
 	}
-	if(name=="time" && param.get_type()==Param::TYPE_TIME && waypoint.get_time()==Time::begin()-1)
+	if(name=="time" && param.get_type()==Param::TYPE_TIME && waypoint.get_time()==Synfig_Time::begin()-1)
 	{
 		waypoint.set_time(param.get_time());
 		time_set=true;
@@ -136,7 +136,7 @@ Action::WaypointAdd::set_param(const synfig::String& name, const Action::Param &
 bool
 Action::WaypointAdd::is_ready()const
 {
-	if(!value_node || waypoint.get_time()==(Time::begin()-1))
+	if(!value_node || waypoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -147,7 +147,7 @@ Action::WaypointAdd::is_ready()const
 void
 Action::WaypointAdd::calc_waypoint()
 {
-	Time time=waypoint.get_time();
+	Synfig_Time time=waypoint.get_time();
 	Waypoint original(waypoint);
 	waypoint=value_node->new_waypoint_at_time(time);
 	waypoint.mimic(original);

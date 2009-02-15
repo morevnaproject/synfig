@@ -62,7 +62,7 @@ ACTION_SET_CVS_ID(Action::ActivepointRemove,"$Id$");
 
 Action::ActivepointRemove::ActivepointRemove()
 {
-	activepoint.set_time(Time::begin()-1);
+	activepoint.set_time(Synfig_Time::begin()-1);
 	set_dirty(true);
 }
 
@@ -128,7 +128,7 @@ Action::ActivepointRemove::set_param(const synfig::String& name, const Action::P
 bool
 Action::ActivepointRemove::is_ready()const
 {
-	if(!value_node || activepoint.get_time()==(Time::begin()-1))
+	if(!value_node || activepoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

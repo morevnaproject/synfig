@@ -97,12 +97,12 @@ CanvasInterface::~CanvasInterface()
 }
 
 void
-CanvasInterface::set_time(synfig::Time x)
+CanvasInterface::set_time(synfig::Synfig_Time x)
 {
 	if(get_canvas()->rend_desc().get_frame_rate())
 	{
 		float fps(get_canvas()->rend_desc().get_frame_rate());
-		Time r(x.round(fps));
+		Synfig_Time r(x.round(fps));
 		//synfig::info("CanvasInterface::set_time(): %s rounded to %s\n",x.get_string(fps).c_str(),r.get_string(fps).c_str());
 		x=r;
 	}
@@ -121,7 +121,7 @@ CanvasInterface::set_time(synfig::Time x)
 	signal_dirty_preview()();
 }
 
-synfig::Time
+synfig::Synfig_Time
 CanvasInterface::get_time()const
 {
 	return cur_time_;
@@ -940,7 +940,7 @@ CanvasInterface::seek_frame(int frames)
 	if(!frames)
 		return;
 	float fps(get_canvas()->rend_desc().get_frame_rate());
-	Time newtime(get_time()+(float)frames/fps);
+	Synfig_Time newtime(get_time()+(float)frames/fps);
 	newtime=newtime.round(fps);
 
 	if(newtime<=get_canvas()->rend_desc().get_time_start())
@@ -951,25 +951,25 @@ CanvasInterface::seek_frame(int frames)
 }
 
 void
-CanvasInterface::seek_time(synfig::Time time)
+CanvasInterface::seek_time(synfig::Synfig_Time time)
 {
 	if(!time)
 		return;
 
 	float fps(get_canvas()->rend_desc().get_frame_rate());
 
-	if(time>=synfig::Time::end())
+	if(time>=synfig::Synfig_Time::end())
 	{
 		set_time(get_canvas()->rend_desc().get_time_end());
 		return;
 	}
-	if(time<=synfig::Time::begin())
+	if(time<=synfig::Synfig_Time::begin())
 	{
 		set_time(get_canvas()->rend_desc().get_time_start());
 		return;
 	}
 
-	Time newtime(get_time()+time);
+	Synfig_Time newtime(get_time()+time);
 	newtime=newtime.round(fps);
 
 	if(newtime<=get_canvas()->rend_desc().get_time_start())

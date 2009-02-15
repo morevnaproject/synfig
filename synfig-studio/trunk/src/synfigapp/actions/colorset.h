@@ -48,7 +48,7 @@ private:
 
 	ValueDesc value_desc;
 	synfig::Color color;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 
 public:
 

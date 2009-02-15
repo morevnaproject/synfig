@@ -51,7 +51,7 @@ private:
 	ValueDesc value_desc;
 	std::list<ValueDesc> value_desc_list;
 	synfig::ValueNode::Handle link_value_node;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 	synfig::Real origin;
 	int index;
 public:

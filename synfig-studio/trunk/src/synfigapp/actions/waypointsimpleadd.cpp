@@ -62,7 +62,7 @@ ACTION_SET_CVS_ID(Action::WaypointSimpleAdd,"$Id$");
 Action::WaypointSimpleAdd::WaypointSimpleAdd()
 {
 	set_dirty(true);
-	waypoint.set_time(Time::begin()-1);
+	waypoint.set_time(Synfig_Time::begin()-1);
 }
 
 Action::ParamVocab
@@ -110,7 +110,7 @@ Action::WaypointSimpleAdd::set_param(const synfig::String& name, const Action::P
 bool
 Action::WaypointSimpleAdd::is_ready()const
 {
-	if(!value_node && waypoint.get_time() != (Time::begin()-1))
+	if(!value_node && waypoint.get_time() != (Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

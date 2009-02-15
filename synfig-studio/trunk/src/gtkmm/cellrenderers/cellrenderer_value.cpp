@@ -298,7 +298,7 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring&path,const Glib::ustr
 
 	if(old_value.get_type()==ValueBase::TYPE_TIME)
 	{
-		value=ValueBase(Time((String)str,get_canvas()->rend_desc().get_frame_rate()));
+		value=ValueBase(Synfig_Time((String)str,get_canvas()->rend_desc().get_frame_rate()));
 	}
 	else
 		value=ValueBase((String)str);
@@ -353,7 +353,7 @@ CellRenderer_ValueBase::render_vfunc(
 			property_text()=(Glib::ustring)strprintf("%.6f",data.get(Real()));
 		break;
 	case ValueBase::TYPE_TIME:
-		property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format());
+		property_text()=(Glib::ustring)data.get(Synfig_Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format());
 		break;
 	case ValueBase::TYPE_ANGLE:
 		property_text()=(Glib::ustring)strprintf("%.2f DEG",(Real)Angle::deg(data.get(Angle())).get());
@@ -522,7 +522,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		signal_edited_(path,ValueBase(!data.get(bool())));
     	return NULL;
 	//case ValueBase::TYPE_TIME:
-	//	property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Time::FORMAT_FULL);
+	//	property_text()=(Glib::ustring)data.get(Synfig_Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Synfig_Time::FORMAT_FULL);
 	//	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 
 	case ValueBase::TYPE_GRADIENT:

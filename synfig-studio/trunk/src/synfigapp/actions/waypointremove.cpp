@@ -61,7 +61,7 @@ ACTION_SET_CVS_ID(Action::WaypointRemove,"$Id$");
 
 Action::WaypointRemove::WaypointRemove()
 {
-	waypoint.set_time(Time::begin()-1);
+	waypoint.set_time(Synfig_Time::begin()-1);
 	set_dirty(true);
 }
 
@@ -110,7 +110,7 @@ Action::WaypointRemove::set_param(const synfig::String& name, const Action::Para
 bool
 Action::WaypointRemove::is_ready()const
 {
-	if(!value_node || waypoint.get_time()==(Time::begin()-1))
+	if(!value_node || waypoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

@@ -155,7 +155,7 @@ LayerGroupTree::set_editable(bool x)
 }
 /*
 void
-LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
+LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Synfig_Time time)
 {
 	Gtk::TreePath path(path_string);
 
@@ -172,7 +172,7 @@ LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time
 }
 
 void
-LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
+LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Synfig_Time time)
 {
 	Gtk::TreePath path(path_string);
 

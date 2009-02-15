@@ -110,11 +110,11 @@ public:
 	float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);
 
-	synfig::Time get_begintime() const { return time_begin.get_value(); }
-	void set_begintime(const synfig::Time &t) { time_begin.set_value(t); }
+	synfig::Synfig_Time get_begintime() const { return time_begin.get_value(); }
+	void set_begintime(const synfig::Synfig_Time &t) { time_begin.set_value(t); }
 
-	synfig::Time get_endtime() const { return time_end.get_value(); }
-	void set_endtime(const synfig::Time &t) { time_end.set_value(t); }
+	synfig::Synfig_Time get_endtime() const { return time_end.get_value(); }
+	void set_endtime(const synfig::Synfig_Time &t) { time_end.set_value(t); }
 
 	bool get_begin_override() const { return check_overbegin.get_active(); }
 	void set_begin_override(bool o) { check_overbegin.set_active(o); }

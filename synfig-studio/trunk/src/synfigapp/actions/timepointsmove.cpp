@@ -197,7 +197,7 @@ Action::TimepointsMove::prepare()
 	//all our lists should be set correctly...
 
 	/*{
-		std::set<synfig::Time>::iterator i = sel_times.begin(), end = sel_times.end();
+		std::set<synfig::Synfig_Time>::iterator i = sel_times.begin(), end = sel_times.end();
 
 		for(; i != end; ++i)
 		{
@@ -210,7 +210,7 @@ Action::TimepointsMove::prepare()
 	//		an operation on a specific valuenode, etc....
 	timepoints_ref	match;
 
-	Time fps = get_canvas()->rend_desc().get_frame_rate();
+	Synfig_Time fps = get_canvas()->rend_desc().get_frame_rate();
 
 	//std::vector<synfig::Layer::Handle>
 	//synfig::info("Layers %d", sel_layers.size());

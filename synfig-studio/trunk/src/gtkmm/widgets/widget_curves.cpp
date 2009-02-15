@@ -252,7 +252,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels[0].values[time]=value.get(Real());
 				break;
 			case ValueBase::TYPE_TIME:
-				channels[0].values[time]=value.get(Time());
+				channels[0].values[time]=value.get(Synfig_Time());
 				break;
 			case ValueBase::TYPE_INTEGER:
 				channels[0].values[time]=value.get(int());

@@ -62,10 +62,10 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<synfig::Time> time;
+		Gtk::TreeModelColumn<synfig::Synfig_Time> time;
 		Gtk::TreeModelColumn<Glib::ustring> description;
 		Gtk::TreeModelColumn<synfig::Keyframe> keyframe;
-		Gtk::TreeModelColumn<synfig::Time> time_delta;
+		Gtk::TreeModelColumn<synfig::Synfig_Time> time_delta;
 
 		Model()
 		{

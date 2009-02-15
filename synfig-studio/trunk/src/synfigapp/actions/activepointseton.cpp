@@ -70,7 +70,7 @@ ACTION_SET_CVS_ID(Action::ActivepointSetOn,"$Id$");
 
 Action::ActivepointSetOn::ActivepointSetOn()
 {
-	activepoint.set_time(Time::begin()-1);
+	activepoint.set_time(Synfig_Time::begin()-1);
 	time_set=false;
 	set_dirty(true);
 }
@@ -146,7 +146,7 @@ Action::ActivepointSetOn::set_param(const synfig::String& name, const Action::Pa
 
 		return true;
 	}
-	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Time::begin()-1)
+	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Synfig_Time::begin()-1)
 	{
 		activepoint.set_time(param.get_time());
 		time_set=true;
@@ -166,10 +166,10 @@ Action::ActivepointSetOn::is_ready()const
 	if(!value_node)
 		synfig::error("Missing value_node");
 
-	if(activepoint.get_time()==(Time::begin()-1))
+	if(activepoint.get_time()==(Synfig_Time::begin()-1))
 		synfig::error("Missing activepoint");
 
-	if(!value_node || activepoint.get_time()==(Time::begin()-1))
+	if(!value_node || activepoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -180,7 +180,7 @@ Action::ActivepointSetOn::is_ready()const
 void
 Action::ActivepointSetOn::calc_activepoint()
 {
-	const Time time(activepoint.get_time());
+	const Synfig_Time time(activepoint.get_time());
 
 	try { activepoint=*value_node->list[index].find(time); }
 	catch(...)

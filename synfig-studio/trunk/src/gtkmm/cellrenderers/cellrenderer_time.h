@@ -48,21 +48,21 @@ namespace studio {
 class CellRenderer_Time : public Gtk::CellRendererText
 {
 	sigc::signal<void, const Glib::ustring&> signal_secondary_click_;
-	sigc::signal<void, const Glib::ustring&, synfig::Time> signal_edited_;
+	sigc::signal<void, const Glib::ustring&, synfig::Synfig_Time> signal_edited_;
 
-	Glib::Property<synfig::Time> property_time_;
-	Glib::Property<synfig::Time> property_fps_;
+	Glib::Property<synfig::Synfig_Time> property_time_;
+	Glib::Property<synfig::Synfig_Time> property_fps_;
 
 	void string_edited_(const Glib::ustring&,const Glib::ustring&);
 
 	void on_value_editing_done();
 
 public:
-	sigc::signal<void, const Glib::ustring&, synfig::Time> &signal_edited()
+	sigc::signal<void, const Glib::ustring&, synfig::Synfig_Time> &signal_edited()
 	{return signal_edited_; }
 
-	Glib::PropertyProxy<synfig::Time> property_time() { return property_time_.get_proxy();}
-	Glib::PropertyProxy<synfig::Time> property_fps() { return property_fps_.get_proxy();}
+	Glib::PropertyProxy<synfig::Synfig_Time> property_time() { return property_time_.get_proxy();}
+	Glib::PropertyProxy<synfig::Synfig_Time> property_fps() { return property_fps_.get_proxy();}
 
 	CellRenderer_Time();
 	~CellRenderer_Time();

@@ -44,7 +44,7 @@ namespace studio {
 struct AudioBaseInfo
 {
 	std::string		file;
-	synfig::Time		offset;
+	synfig::Synfig_Time		offset;
 };
 
 class Dialog_SoundSelect : public Gtk::Dialog
@@ -56,7 +56,7 @@ class Dialog_SoundSelect : public Gtk::Dialog
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
 	sigc::signal<void,const std::string &>	signal_file_changed_;
-	sigc::signal<void,const synfig::Time &>	signal_offset_changed_;
+	sigc::signal<void,const synfig::Synfig_Time &>	signal_offset_changed_;
 
 	void on_file();
 	void on_offset();
@@ -69,14 +69,14 @@ public:
 	//float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);
 
-	synfig::Time get_offset() const { return offset.get_value(); }
-	void set_offset(const synfig::Time &t) {offset.set_value(t); }
+	synfig::Synfig_Time get_offset() const { return offset.get_value(); }
+	void set_offset(const synfig::Synfig_Time &t) {offset.set_value(t); }
 
 	std::string get_file() const { return soundfile.get_value(); }
 	void set_file(const std::string &f) {soundfile.set_value(f); }
 
 	sigc::signal<void,const std::string &> &signal_file_changed() { return signal_file_changed_; }
-	sigc::signal<void,const synfig::Time &> &signal_offset_changed() { return signal_offset_changed_; }
+	sigc::signal<void,const synfig::Synfig_Time &> &signal_offset_changed() { return signal_offset_changed_; }
 };
 
 }; // END of namespace studio

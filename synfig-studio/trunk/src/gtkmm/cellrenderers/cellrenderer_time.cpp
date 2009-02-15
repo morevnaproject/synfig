@@ -58,7 +58,7 @@ using namespace studio;
 CellRenderer_Time::CellRenderer_Time():
 	Glib::ObjectBase	(typeid(CellRenderer_Time)),
 	Gtk::CellRendererText	(),
-	property_time_(*this,"time",synfig::Time(0)),
+	property_time_(*this,"time",synfig::Synfig_Time(0)),
 	property_fps_(*this,"fps", float(0))
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&studio::CellRenderer_Time::string_edited_));
@@ -73,7 +73,7 @@ CellRenderer_Time::~CellRenderer_Time()
 void
 CellRenderer_Time::string_edited_(const Glib::ustring&path,const Glib::ustring&str)
 {
-	signal_edited_(path,Time((String)str,(Real)Time(property_fps_)));
+	signal_edited_(path,Synfig_Time((String)str,(Real)Synfig_Time(property_fps_)));
 }
 
 void
@@ -95,8 +95,8 @@ CellRenderer_Time::render_vfunc(
 	if((flags & Gtk::CELL_RENDERER_SELECTED) != 0)
 		state = (widget.has_focus()) ? Gtk::STATE_SELECTED : Gtk::STATE_ACTIVE;
 
-	const Time time(property_time_);
-	const float fps((Real)Time(property_fps_));
+	const Synfig_Time time(property_time_);
+	const float fps((Real)Synfig_Time(property_fps_));
 
 	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format());
 
@@ -117,10 +117,10 @@ CellRenderer_Time::start_editing_vfunc(
 	if(!property_editable())
 		return 0;
 
-	const Time time(property_time_);
-	const float fps((Real)Time(property_fps_));
+	const Synfig_Time time(property_time_);
+	const float fps((Real)Synfig_Time(property_fps_));
 
-	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format()|Time::FORMAT_FULL);
+	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format()|Synfig_Time::FORMAT_FULL);
 #if 0
 	Widget_Time* widget_time(manage(new Widget_Time));
 	widget_time->set_fps(fps);

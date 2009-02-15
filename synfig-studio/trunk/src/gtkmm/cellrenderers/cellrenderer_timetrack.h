@@ -85,7 +85,7 @@ private:
 	Gtk::Adjustment adjustment_;
 
 	//! Signal for when the user clicks on a waypoint
-	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int> signal_waypoint_clicked_cellrenderer_;
+	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Synfig_Time&, const synfig::Synfig_Time&, int> signal_waypoint_clicked_cellrenderer_;
 
 	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> signal_waypoint_changed_;
 
@@ -96,14 +96,14 @@ private:
 
 	//! selected information for time... (will work for way points etc...)
 	//TODO: make multiple... on both time and value select...
-	std::set<synfig::Time>	sel_times;
+	std::set<synfig::Synfig_Time>	sel_times;
 	synfigapp::ValueDesc		sel_value;
-	synfig::Time				actual_time;
-	synfig::Time				actual_dragtime;
+	synfig::Synfig_Time				actual_time;
+	synfig::Synfig_Time				actual_dragtime;
 	int						mode;
 
 	//! ???
-	synfig::Time selected_time;
+	synfig::Synfig_Time selected_time;
 
 	//! The path to the current item in the tree model
 	Glib::ustring path;
@@ -113,7 +113,7 @@ private:
 
 	bool dragging;
 
-	synfig::Time drag_time;
+	synfig::Synfig_Time drag_time;
 
 	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface_;
 
@@ -153,7 +153,7 @@ public:
 
 public:
 
-	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int> &signal_waypoint_clicked_cellrenderer()
+	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Synfig_Time&, const synfig::Synfig_Time&, int> &signal_waypoint_clicked_cellrenderer()
 	{return signal_waypoint_clicked_cellrenderer_; }
 
 	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> &signal_waypoint_changed()
@@ -179,7 +179,7 @@ public:
 
 	bool is_selected(const synfig::Waypoint& waypoint)const;
 
-	synfig::ValueNode_Animated::WaypointList::iterator find_waypoint(const synfig::Time& t, const synfig::Time& scope=synfig::Time::end());
+	synfig::ValueNode_Animated::WaypointList::iterator find_waypoint(const synfig::Synfig_Time& t, const synfig::Synfig_Time& scope=synfig::Synfig_Time::end());
 
 	virtual void
 	render_vfunc(

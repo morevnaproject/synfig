@@ -482,9 +482,9 @@ public:
 
 	Glib::RefPtr<const Gtk::TreeModel> keyframe_tree_store()const { return get_tree_model("keyframes"); }
 
-	void set_time(synfig::Time t) { canvas_interface_->set_time(t); }
+	void set_time(synfig::Synfig_Time t) { canvas_interface_->set_time(t); }
 
-	synfig::Time get_time() { return canvas_interface_->get_time(); }
+	synfig::Synfig_Time get_time() { return canvas_interface_->get_time(); }
 
 	etl::handle<synfig::Canvas> get_canvas()const { return canvas_interface_->get_canvas(); }
 
@@ -657,7 +657,7 @@ private:
 
 	void on_audio_option();
 	void on_audio_file_change(const std::string &f);
-	void on_audio_offset_change(const synfig::Time &t);
+	void on_audio_offset_change(const synfig::Synfig_Time &t);
 
 	void on_audio_file_notify();
 	void on_audio_offset_notify();

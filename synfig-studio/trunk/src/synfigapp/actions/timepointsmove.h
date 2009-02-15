@@ -57,9 +57,9 @@ private:
 	std::vector<synfig::Layer::Handle>	sel_layers;
 	std::vector<synfig::Canvas::Handle>	sel_canvases;
 	std::vector<synfigapp::ValueDesc>	sel_values;
-	std::set<synfig::Time>				sel_times;
+	std::set<synfig::Synfig_Time>				sel_times;
 
-	synfig::Time							timemove;
+	synfig::Synfig_Time							timemove;
 
 public:
 

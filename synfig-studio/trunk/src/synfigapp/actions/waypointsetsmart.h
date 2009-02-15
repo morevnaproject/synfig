@@ -57,7 +57,7 @@ private:
 	void calc_waypoint();
 	void enclose_waypoint(const synfig::Waypoint& waypoint);
 
-	std::set<synfig::Time> times;
+	std::set<synfig::Synfig_Time> times;
 
 public:
 

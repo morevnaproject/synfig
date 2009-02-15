@@ -54,7 +54,7 @@ private:
 	synfig::ValueNode_BLine::Handle value_node_bline;
 	synfig::ValueNode_DynamicList::ListEntry list_entry;
 	synfig::ValueNode::Handle item;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 	synfig::Real origin;
 	int index;
 

@@ -52,7 +52,7 @@ private:
 	synfig::String	param_name;
 	synfig::ValueNode::Handle	old_value_node;
 	synfig::ValueNode::Handle	new_value_node;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 
 public:
 

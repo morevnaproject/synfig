@@ -569,7 +569,7 @@ public:
 		if(key=="time_format")
 		{
 			int i(atoi(value.c_str()));
-			App::set_time_format(static_cast<synfig::Time::Format>(i));
+			App::set_time_format(static_cast<synfig::Synfig_Time::Format>(i));
 			return true;
 		}
 		if(key=="auto_recover_backup_interval")
@@ -1582,16 +1582,16 @@ App::add_recent_file(const std::string &file_name, const std::string &window_siz
 	return;
 }
 
-static Time::Format _App_time_format(Time::FORMAT_NORMAL);
+static Synfig_Time::Format _App_time_format(Synfig_Time::FORMAT_NORMAL);
 
-Time::Format
+Synfig_Time::Format
 App::get_time_format()
 {
 	return _App_time_format;
 }
 
 void
-App::set_time_format(synfig::Time::Format x)
+App::set_time_format(synfig::Synfig_Time::Format x)
 {
 	_App_time_format=x;
 }

@@ -66,7 +66,7 @@ ACTION_SET_CVS_ID(Action::KeyframeSetDelta,"$Id$");
 Action::KeyframeSetDelta::KeyframeSetDelta():
 	delta(0)
 {
-	keyframe.set_time(Time::end());
+	keyframe.set_time(Synfig_Time::end());
 	set_dirty(false);
 }
 
@@ -111,7 +111,7 @@ Action::KeyframeSetDelta::set_param(const synfig::String& name, const Action::Pa
 bool
 Action::KeyframeSetDelta::is_ready()const
 {
-	if(keyframe.get_time()==Time::end())
+	if(keyframe.get_time()==Synfig_Time::end())
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -124,7 +124,7 @@ Action::KeyframeSetDelta::prepare()
 	get_canvas_interface()->find_important_value_descs(value_desc_list);
 
 
-	Time time(get_canvas()->keyframe_list().find(keyframe)->get_time());
+	Synfig_Time time(get_canvas()->keyframe_list().find(keyframe)->get_time());
 
 	std::vector<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
@@ -177,8 +177,8 @@ Action::KeyframeSetDelta::perform()
 	Action::Super::perform();
 
 //	Time location(keyframe.get_time());
-	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
-	Time delta(delta);
+	Synfig_Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
+	Synfig_Time delta(delta);
 
 	get_canvas()->keyframe_list().insert_time(location,delta);
 
@@ -221,8 +221,8 @@ Action::KeyframeSetDelta::undo()
 		return;
 
 //	Time location(keyframe.get_time());
-	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
-	Time delta(-delta);
+	Synfig_Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
+	Synfig_Time delta(-delta);
 
 	get_canvas()->keyframe_list().insert_time(location,delta);
 

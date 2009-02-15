@@ -62,7 +62,7 @@ ACTION_SET_CVS_ID(Action::ActivepointAdd,"$Id$");
 
 Action::ActivepointAdd::ActivepointAdd()
 {
-	activepoint.set_time(Time::begin()-1);
+	activepoint.set_time(Synfig_Time::begin()-1);
 	time_set=false;
 	set_dirty(true);
 }
@@ -134,7 +134,7 @@ Action::ActivepointAdd::set_param(const synfig::String& name, const Action::Para
 
 		return true;
 	}
-	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Time::begin()-1)
+	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Synfig_Time::begin()-1)
 	{
 		activepoint.set_time(param.get_time());
 		time_set=true;
@@ -151,7 +151,7 @@ Action::ActivepointAdd::set_param(const synfig::String& name, const Action::Para
 bool
 Action::ActivepointAdd::is_ready()const
 {
-	if(!value_node || activepoint.get_time()==(Time::begin()-1))
+	if(!value_node || activepoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -162,7 +162,7 @@ Action::ActivepointAdd::is_ready()const
 void
 Action::ActivepointAdd::calc_activepoint()
 {
-	const Time time(activepoint.get_time());
+	const Synfig_Time time(activepoint.get_time());
 	activepoint.set_state(value_node->list[index].status_at_time(time));
 	activepoint.set_priority(0);
 

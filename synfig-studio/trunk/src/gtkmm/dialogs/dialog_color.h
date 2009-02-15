@@ -94,7 +94,7 @@ public:
 	Dialog_Color();
 	~Dialog_Color();
 
-//	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time x=0);
+//	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Synfig_Time x=0);
 }; // END of Dialog_Color
 
 }; // END of namespace studio

@@ -125,7 +125,7 @@ public:
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
+	synfig::Synfig_Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 

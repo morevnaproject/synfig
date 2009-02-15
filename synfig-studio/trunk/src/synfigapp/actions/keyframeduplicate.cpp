@@ -65,8 +65,8 @@ ACTION_SET_CVS_ID(Action::KeyframeDuplicate,"$Id$");
 
 Action::KeyframeDuplicate::KeyframeDuplicate()
 {
-	new_keyframe.set_time(Time::begin()-1);
-	keyframe.set_time(Time::begin()-1);
+	new_keyframe.set_time(Synfig_Time::begin()-1);
+	keyframe.set_time(Synfig_Time::begin()-1);
 	set_dirty(true);
 }
 
@@ -116,7 +116,7 @@ Action::KeyframeDuplicate::set_param(const synfig::String& name, const Action::P
 bool
 Action::KeyframeDuplicate::is_ready()const
 {
-	if(keyframe.get_time()==(Time::begin()-1) || new_keyframe.get_time()==(Time::begin()-1))
+	if(keyframe.get_time()==(Synfig_Time::begin()-1) || new_keyframe.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -126,8 +126,8 @@ Action::KeyframeDuplicate::prepare()
 {
 	clear();
 
-	const synfig::Time old_time=keyframe.get_time();
-	const synfig::Time new_time=new_keyframe.get_time();
+	const synfig::Synfig_Time old_time=keyframe.get_time();
+	const synfig::Synfig_Time new_time=new_keyframe.get_time();
 
 	try { get_canvas()->keyframe_list().find(keyframe);}
 	catch(synfig::Exception::NotFound)
@@ -156,8 +156,8 @@ Action::KeyframeDuplicate::prepare()
 void
 Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_desc)
 {
-	const synfig::Time old_time=keyframe.get_time();
-	const synfig::Time new_time=new_keyframe.get_time();
+	const synfig::Synfig_Time old_time=keyframe.get_time();
+	const synfig::Synfig_Time new_time=new_keyframe.get_time();
 
 	if(value_desc.is_value_node())
 	{

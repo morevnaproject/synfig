@@ -51,7 +51,7 @@ private:
 	synfig::LinkableValueNode::Handle	parent_value_node;
 	int index;
 	synfig::ValueNode::Handle	old_value_node;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 
 public:
 

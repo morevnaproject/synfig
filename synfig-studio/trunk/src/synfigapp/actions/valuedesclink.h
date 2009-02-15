@@ -52,7 +52,7 @@ private:
 	bool poison;
 	int status_level;
 	synfig::String status_message;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 public:
 
 	ValueDescLink();

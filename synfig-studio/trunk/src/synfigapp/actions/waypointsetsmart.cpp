@@ -71,7 +71,7 @@ ACTION_SET_CVS_ID(Action::WaypointSetSmart,"$Id$");
 
 Action::WaypointSetSmart::WaypointSetSmart()
 {
-	waypoint.set_time(Time::begin()-1);
+	waypoint.set_time(Synfig_Time::begin()-1);
 	time_set=false;
 	set_dirty(true);
 }
@@ -133,7 +133,7 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 		return true;
 	}
 
-	if(name=="time" && param.get_type()==Param::TYPE_TIME && waypoint.get_time()==(Time::begin()-1))
+	if(name=="time" && param.get_type()==Param::TYPE_TIME && waypoint.get_time()==(Synfig_Time::begin()-1))
 	{
 		waypoint.set_time(param.get_time());
 		time_set=true;
@@ -163,10 +163,10 @@ Action::WaypointSetSmart::is_ready()const
 	if(!value_node)
 		synfig::error("Missing value_node");
 
-	if(waypoint.get_time()==(Time::begin()-1))
+	if(waypoint.get_time()==(Synfig_Time::begin()-1))
 		synfig::error("Missing waypoint");
 
-	if(!value_node || waypoint.get_time()==(Time::begin()-1))
+	if(!value_node || waypoint.get_time()==(Synfig_Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -177,7 +177,7 @@ Action::WaypointSetSmart::is_ready()const
 void
 Action::WaypointSetSmart::calc_waypoint()
 {
-	Time time=waypoint.get_time();
+	Synfig_Time time=waypoint.get_time();
 	try
 	{
 		// Trivial case, we are sitting on a waypoint
@@ -229,7 +229,7 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 	// maintain the integrity of the keyframes.
 	if(get_edit_mode()&MODE_ANIMATE_PAST) try
 	{
-		Time curr_time(waypoint.get_time());
+		Synfig_Time curr_time(waypoint.get_time());
 
 		//while(value_node->waypoint_list().front().get_time()<=curr_time)
 		{
@@ -291,7 +291,7 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 
 	if(get_edit_mode()&MODE_ANIMATE_FUTURE)try
 	{
-		Time curr_time(waypoint.get_time());
+		Synfig_Time curr_time(waypoint.get_time());
 
 		//while(value_node->waypoint_list().back().get_time()>=curr_time)
 		{

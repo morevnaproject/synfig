@@ -673,7 +673,7 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 	*/
 
 	if(layer->dynamic_param_list().count("z_depth"))
-		row[model.z_depth]=Time::begin();
+		row[model.z_depth]=Synfig_Time::begin();
 	//	row_changed(get_path(row),row);
 
 	Gtk::TreeModel::Children children = row.children();
@@ -925,7 +925,7 @@ LayerTreeStore::on_layer_param_changed(synfig::Layer::Handle handle,synfig::Stri
 		Gtk::TreeModel::Children::iterator iter;
 		if(find_layer_row(handle,iter))
 		{
-			(*iter)[model.z_depth]=Time::begin();
+			(*iter)[model.z_depth]=Synfig_Time::begin();
 		}
 	}
 

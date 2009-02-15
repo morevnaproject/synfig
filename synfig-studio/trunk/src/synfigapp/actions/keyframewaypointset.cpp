@@ -65,7 +65,7 @@ ACTION_SET_CVS_ID(Action::KeyframeWaypointSet,"$Id$");
 
 Action::KeyframeWaypointSet::KeyframeWaypointSet()
 {
-	keyframe.set_time(Time::begin()-1);
+	keyframe.set_time(Synfig_Time::begin()-1);
 	set_dirty(false);
 }
 
@@ -113,7 +113,7 @@ Action::KeyframeWaypointSet::set_param(const synfig::String& name, const Action:
 bool
 Action::KeyframeWaypointSet::is_ready()const
 {
-	if(keyframe.get_time()==(Time::begin()-1) || waypoint_model.is_trivial())
+	if(keyframe.get_time()==(Synfig_Time::begin()-1) || waypoint_model.is_trivial())
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

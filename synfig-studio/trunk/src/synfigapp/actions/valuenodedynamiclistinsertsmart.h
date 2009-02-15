@@ -50,7 +50,7 @@ class ValueNodeDynamicListInsertSmart :
 private:
 
 	synfig::ValueNode_DynamicList::Handle value_node;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 	synfig::Real origin;
 	int index;
 

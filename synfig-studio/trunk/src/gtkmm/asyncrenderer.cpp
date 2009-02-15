@@ -143,7 +143,7 @@ public:
 		return warm_target->next_tile(x,y);
 	}
 
-	virtual int next_frame(Time& time)
+	virtual int next_frame(Synfig_Time& time)
 	{
 		if(!alive_flag)
 			return 0;
@@ -279,7 +279,7 @@ public:
 		ready_connection.disconnect();
 	}
 
-	virtual int next_frame(Time& time)
+	virtual int next_frame(Synfig_Time& time)
 	{
 		if(!alive_flag)
 			return 0;
@@ -342,6 +342,18 @@ public:
 	}
 
 	virtual bool end_scanline()
+	{
+		return alive_flag;
+	}
+
+	virtual unsigned char* start_scanline_rgba(int scanline)
+	{
+		Glib::Mutex::Lock lock(mutex);
+
+		return NULL;
+	}
+
+	virtual bool end_scanline_rgba()
 	{
 		return alive_flag;
 	}

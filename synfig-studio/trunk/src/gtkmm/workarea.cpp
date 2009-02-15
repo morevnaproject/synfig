@@ -117,7 +117,7 @@ public:
 	bool onion_first_tile;
 	int onion_layers;
 
-	std::list<synfig::Time> onion_skin_queue;
+	std::list<synfig::Synfig_Time> onion_skin_queue;
 
 	synfig::Mutex mutex;
 
@@ -125,7 +125,7 @@ public:
 	{
 		onionskin=x;
 
-		Time time(rend_desc().get_time_start());
+		Synfig_Time time(rend_desc().get_time_start());
 
 		onion_skin_queue.push_back(time);
 		onion_skin_queue.push_back(time-1);
@@ -224,7 +224,7 @@ public:
 		return tw*th;
 	}
 
-	virtual int next_frame(Time& time)
+	virtual int next_frame(Synfig_Time& time)
 	{
 		synfig::Mutex::Lock lock(mutex);
 
@@ -415,13 +415,13 @@ public:
 
 	Surface surface;
 
-	std::list<synfig::Time> onion_skin_queue;
+	std::list<synfig::Synfig_Time> onion_skin_queue;
 
 	void set_onion_skin(bool x)
 	{
 		onionskin=x;
 
-		Time time(rend_desc().get_time_start());
+		Synfig_Time time(rend_desc().get_time_start());
 
 		onion_skin_queue.push_back(time);
 		onion_skin_queue.push_back(time-1);
@@ -499,7 +499,7 @@ public:
 		return true;
 	}
 
-	virtual int next_frame(Time& time)
+	virtual int next_frame(Synfig_Time& time)
 	{
 		// Mark this tile as "up-to-date"
 		if(onionskin)
@@ -2569,7 +2569,7 @@ again:
 }
 
 void
-studio::WorkArea::async_render_preview(synfig::Time time)
+studio::WorkArea::async_render_preview(synfig::Synfig_Time time)
 {
 	cur_time=time;
 	//tile_book.clear();
@@ -2590,7 +2590,7 @@ WorkArea::async_render_preview()
 }
 
 bool
-studio::WorkArea::sync_render_preview(synfig::Time time)
+studio::WorkArea::sync_render_preview(synfig::Synfig_Time time)
 {
 	cur_time=time;
 	//tile_book.clear();

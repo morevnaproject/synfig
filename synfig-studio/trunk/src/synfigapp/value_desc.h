@@ -53,7 +53,7 @@ class ValueDesc
 	// Info for ValueNode parent
 	synfig::ValueNode::Handle parent_value_node;
 	int index;					// -2 if it's a waypoint, -1 if it's const, >=0 if it's LinkableValueNode
-	synfig::Time waypoint_time;
+	synfig::Synfig_Time waypoint_time;
 
 	// Info for exported ValueNode
 	synfig::Canvas::Handle canvas;
@@ -97,7 +97,7 @@ public:
 //		parent_value_node(parent_value_node),
 //		index(parent_value_node->get_link_index_from_name(param_name)) { }
 
-	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time):
+	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Synfig_Time waypoint_time):
 		parent_value_node(parent_value_node),
 		index(-2),
 		waypoint_time(waypoint_time) { }
@@ -130,7 +130,7 @@ public:
 
 	synfig::ValueNode::Handle get_parent_value_node()const { assert(parent_is_value_node()); return parent_value_node; }
 	int get_index()const { assert(parent_is_linkable_value_node()); return index; }
-	synfig::Time get_waypoint_time()const { assert(parent_is_waypoint()); return waypoint_time; }
+	synfig::Synfig_Time get_waypoint_time()const { assert(parent_is_waypoint()); return waypoint_time; }
 
 	const synfig::String& get_value_node_id()const { assert(parent_is_canvas()); return name; }
 
@@ -163,7 +163,7 @@ public:
 	}
 
 	synfig::ValueBase
-	get_value(synfig::Time time=0)const
+	get_value(synfig::Synfig_Time time=0)const
 	{
 		// if the value is constant, return that constant value (at *any* time, it doesn't matter which)
 		if(parent_is_value_node_const())

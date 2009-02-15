@@ -161,12 +161,12 @@ Dialog_Setup::Dialog_Setup():
 					*this,										\
 					&studio::Dialog_Setup::set_time_format),	\
 				x)));
-	ADD_TIMESTAMP("HH:MM:SS.FF",		Time::FORMAT_VIDEO	);
-	ADD_TIMESTAMP("(HHh MMm SSs) FFf",	Time::FORMAT_NORMAL	);
-	ADD_TIMESTAMP("(HHhMMmSSs)FFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	);
-	ADD_TIMESTAMP("HHh MMm SSs FFf",	Time::FORMAT_NORMAL	| Time::FORMAT_FULL		);
-	ADD_TIMESTAMP("HHhMMmSSsFFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	| Time::FORMAT_FULL);
-	ADD_TIMESTAMP("FFf",				Time::FORMAT_FRAMES );
+	ADD_TIMESTAMP("HH:MM:SS.FF",		Synfig_Time::FORMAT_VIDEO	);
+	ADD_TIMESTAMP("(HHh MMm SSs) FFf",	Synfig_Time::FORMAT_NORMAL	);
+	ADD_TIMESTAMP("(HHhMMmSSs)FFf",		Synfig_Time::FORMAT_NORMAL	| Synfig_Time::FORMAT_NOSPACES	);
+	ADD_TIMESTAMP("HHh MMm SSs FFf",	Synfig_Time::FORMAT_NORMAL	| Synfig_Time::FORMAT_FULL		);
+	ADD_TIMESTAMP("HHhMMmSSsFFf",		Synfig_Time::FORMAT_NORMAL	| Synfig_Time::FORMAT_NOSPACES	| Synfig_Time::FORMAT_FULL);
+	ADD_TIMESTAMP("FFf",				Synfig_Time::FORMAT_FRAMES );
 
 	timestamp_optionmenu.set_menu(*timestamp_menu);
 
@@ -647,20 +647,20 @@ BlackLevelSelector::on_event(GdkEvent *event)
 
 
 void
-Dialog_Setup::set_time_format(synfig::Time::Format x)
+Dialog_Setup::set_time_format(synfig::Synfig_Time::Format x)
 {
 	time_format=x;
-	if (x <= Time::FORMAT_VIDEO)
+	if (x <= Synfig_Time::FORMAT_VIDEO)
 		timestamp_optionmenu.set_history(0);
-	else if (x == (Time::FORMAT_NORMAL))
+	else if (x == (Synfig_Time::FORMAT_NORMAL))
 		timestamp_optionmenu.set_history(1);
-	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES))
+	else if (x == (Synfig_Time::FORMAT_NORMAL | Synfig_Time::FORMAT_NOSPACES))
 		timestamp_optionmenu.set_history(2);
-	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_FULL))
+	else if (x == (Synfig_Time::FORMAT_NORMAL | Synfig_Time::FORMAT_FULL))
 		timestamp_optionmenu.set_history(3);
-	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES | Time::FORMAT_FULL))
+	else if (x == (Synfig_Time::FORMAT_NORMAL | Synfig_Time::FORMAT_NOSPACES | Synfig_Time::FORMAT_FULL))
 		timestamp_optionmenu.set_history(4);
-	else if (x == (Time::FORMAT_FRAMES))
+	else if (x == (Synfig_Time::FORMAT_FRAMES))
 		timestamp_optionmenu.set_history(5);
 	else
 		timestamp_optionmenu.set_history(1);

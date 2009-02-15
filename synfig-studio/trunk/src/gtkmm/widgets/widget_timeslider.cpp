@@ -570,7 +570,7 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 		{
 			window->draw_line(gc,xpx,0,xpx,heightbig);
 			//round the time to nearest frame and draw the text
-			Time tm((double)time);
+			Synfig_Time tm((double)time);
 			if(get_global_fps()) tm.round(get_global_fps());
 			Glib::ustring timecode(tm.get_string(get_global_fps(),App::get_time_format()));
 

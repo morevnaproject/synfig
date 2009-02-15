@@ -49,7 +49,7 @@ private:
 
 	ValueDesc value_desc;
 	synfig::String type;
-	synfig::Time time;
+	synfig::Synfig_Time time;
 
 public:
 

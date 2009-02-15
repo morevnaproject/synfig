@@ -58,7 +58,7 @@ private:
 	void calc_activepoint();
 	void enclose_activepoint(const synfig::Activepoint& activepoint);
 
-	std::set<synfig::Time> times;
+	std::set<synfig::Synfig_Time> times;
 
 public:
 

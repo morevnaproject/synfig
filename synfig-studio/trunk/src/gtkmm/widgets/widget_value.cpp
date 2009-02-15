@@ -236,7 +236,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		break;
 	case ValueBase::TYPE_TIME:
 		if(canvas)time_widget->set_fps(canvas->rend_desc().get_frame_rate());
-		time_widget->set_value(value.get(Time()));
+		time_widget->set_value(value.get(Synfig_Time()));
 		time_widget->show();
 		break;
 	case ValueBase::TYPE_ANGLE:

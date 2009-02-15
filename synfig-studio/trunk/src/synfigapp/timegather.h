@@ -39,7 +39,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	class Time;
+	class Synfig_Time;
 }
 
 namespace synfigapp {
@@ -96,7 +96,7 @@ struct timepoints_ref
 //assumes they're sorted... (incremental advance)
 //checks the intersection of the two sets... might be something better in the stl
 template < typename I1, typename I2 >
-bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2, synfig::Time time_offset = 0)
+bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2, synfig::Synfig_Time time_offset = 0)
 {
 	if(b1 == end1 || b2 == end2)
 		return false;
@@ -115,17 +115,17 @@ bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2, synfig::Time time_offset = 
 }
 
 //gets the closest time inside the set
-bool get_closest_time(const synfig::Node::time_set &tset, const synfig::Time &t,
-						const synfig::Time &range, synfig::Time &out);
+bool get_closest_time(const synfig::Node::time_set &tset, const synfig::Synfig_Time &t,
+						const synfig::Synfig_Time &range, synfig::Synfig_Time &out);
 
 //recursion functions based on time restrictions (can be expanded later)...
 //builds a list of relevant waypoints and activepoints inside the timepoints_ref structure
-void recurse_valuedesc(synfigapp::ValueDesc valdesc, const std::set<synfig::Time> &tlist,
-								timepoints_ref &vals, synfig::Time time = 0);
-void recurse_layer(synfig::Layer::Handle layer, const std::set<synfig::Time> &tlist,
-								timepoints_ref &vals, synfig::Time time = 0);
-void recurse_canvas(synfig::Canvas::Handle canvas, const std::set<synfig::Time> &tlist,
-								timepoints_ref &vals, synfig::Time time = 0);
+void recurse_valuedesc(synfigapp::ValueDesc valdesc, const std::set<synfig::Synfig_Time> &tlist,
+								timepoints_ref &vals, synfig::Synfig_Time time = 0);
+void recurse_layer(synfig::Layer::Handle layer, const std::set<synfig::Synfig_Time> &tlist,
+								timepoints_ref &vals, synfig::Synfig_Time time = 0);
+void recurse_canvas(synfig::Canvas::Handle canvas, const std::set<synfig::Synfig_Time> &tlist,
+								timepoints_ref &vals, synfig::Synfig_Time time = 0);
 
 
 

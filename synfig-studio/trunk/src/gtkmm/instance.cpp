@@ -1248,7 +1248,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
 
 	// Add the edit waypoints option if that might be useful
-	if(canvas->rend_desc().get_time_end()-Time::epsilon()>canvas->rend_desc().get_time_start())
+	if(canvas->rend_desc().get_time_end()-Synfig_Time::epsilon()>canvas->rend_desc().get_time_start())
 	{
 		menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit Waypoints"),
 			sigc::bind(

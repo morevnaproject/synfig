@@ -174,7 +174,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_single_threaded;
 #endif
 
-	synfig::Time::Format time_format;
+	synfig::Synfig_Time::Format time_format;
 
 	Gtk::Menu *timestamp_menu;
 	Widget_Enum *widget_enum;
@@ -193,9 +193,9 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Tooltips tooltips_;
 public:
 
-	void set_time_format(synfig::Time::Format time_format);
+	void set_time_format(synfig::Synfig_Time::Format time_format);
 
-	const synfig::Time::Format& get_time_format()const { return time_format; }
+	const synfig::Synfig_Time::Format& get_time_format()const { return time_format; }
 
 	Dialog_Setup();
 	~Dialog_Setup();

@@ -588,7 +588,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		if(timedisp >= 0)
 		{
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-			Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
+			Glib::ustring timecode(Synfig_Time((double)timedisp).round(preview->get_global_fps())
 															.get_string(preview->get_global_fps(),
 																			App::get_time_format()));
 			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
@@ -751,7 +751,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 
 void studio::Widget_Preview::whenupdated()
 {
-	l_lasttime.set_text((Time((double)(--preview->end())->t)
+	l_lasttime.set_text((Synfig_Time((double)(--preview->end())->t)
 							.round(preview->get_global_fps())
 							.get_string(preview->get_global_fps(),App::get_time_format())));
 	update();

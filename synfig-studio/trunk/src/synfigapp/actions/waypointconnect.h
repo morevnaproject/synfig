@@ -52,7 +52,7 @@ private:
 	synfig::ValueNode_Animated::Handle	parent_value_node;
 	synfig::ValueNode::Handle	new_value_node;
 	synfig::ValueNode::Handle	old_value_node;
-	synfig::Time waypoint_time;
+	synfig::Synfig_Time waypoint_time;
 	bool waypoint_time_set;
 
 public:

@@ -271,7 +271,7 @@ Param::Param(const synfig::RendDesc& x):
 	data.rend_desc.get()=x;
 }
 
-Param::Param(const synfig::Time& x):
+Param::Param(const synfig::Synfig_Time& x):
 	type_(TYPE_TIME)
 {
 	_ParamCounter::counter++;
