@@ -71,6 +71,7 @@ public:
 
 	virtual void set_time(synfig::Context context, synfig::Synfig_Time time)const;
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	virtual bool opengl_render(synfig::Context context,synfig::Renderer_OpenGL *renderer_opengl,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */

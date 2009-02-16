@@ -250,3 +250,9 @@ Layer_TimeLoop::accelerated_render(Context context,Surface *surface,int quality,
 {
 	return context.render(surface,quality,renddesc,cb, SOFTWARE);
 }
+
+bool
+Layer_TimeLoop::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	return context.render(NULL,quality,renddesc,cb, OPENGL);
+}
