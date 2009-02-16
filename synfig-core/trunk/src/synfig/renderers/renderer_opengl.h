@@ -221,6 +221,12 @@ class Renderer_OpenGL
 		void end_contour();
 		void add_contour_vertex(const GLdouble x, const GLdouble y, const GLdouble z = 0);
 
+		// Particles
+		inline void begin_particles() { glBegin(GL_POINTS); }
+		inline void end_particles() { glEnd(); }
+		inline void set_particle_radius(const GLfloat radius) { glPointSize(radius); }
+		void add_particle_vertex(const Point origin);
+
 		void blend(synfig::Color::BlendMethod blend_method);
 
 		const unsigned char* get_data(PixelFormat pf);

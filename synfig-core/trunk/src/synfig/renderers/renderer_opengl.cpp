@@ -683,6 +683,12 @@ Renderer_OpenGL::add_contour_vertex(const GLdouble x, const GLdouble y, const GL
 	vec.push_back(z);
 }
 
+void
+Renderer_OpenGL::add_particle_vertex(const Point origin)
+{
+	glVertex3f(origin[0], origin[1], 0);
+}
+
 const unsigned char*
 Renderer_OpenGL::get_data(PixelFormat pf)
 {
