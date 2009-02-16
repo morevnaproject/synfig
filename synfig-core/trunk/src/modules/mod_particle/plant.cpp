@@ -48,6 +48,8 @@
 
 #include <synfig/valuenodes/valuenode_bline.h>
 
+#include "synfig/renderers/renderer_opengl.h"
+
 #endif
 
 using namespace etl;
@@ -720,6 +722,86 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 
 	Surface::alpha_pen pen(surface->get_pen(0,0),get_amount(),get_blend_method());
 	dest_surface.blit_to(pen);
+
+	return true;
+}
+
+bool
+Plant::opengl_render(Context context,Renderer_OpenGL *renderer_opengl,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	bool ret(context.render(NULL,quality,renddesc,cb, OPENGL));
+	if(is_disabled() || !ret)
+		return ret;
+
+	const Point	tl(renddesc.get_tl()-origin);
+	const Point br(renddesc.get_br()-origin);
+
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+
+	if (isinf(pw) || isinf(ph))
+		return true;
+
+	if(needs_sync_==true)
+		sync();
+
+	float last_radius = 0;
+
+	renderer_opengl->begin_particles();
+
+	if (particle_list.begin() != particle_list.end())
+	{
+		std::vector<Particle>::iterator iter;
+		Particle *particle;
+
+		float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
+
+		int x1,y1,x2,y2;
+
+		if (reverse)	iter = particle_list.end();
+		else			iter = particle_list.begin();
+
+		while (true)
+		{
+			if (reverse)	particle = &(*(iter-1));
+			else			particle = &(*iter);
+
+			float scaled_radius(radius);
+			Color color(particle->color);
+			if(size_as_alpha)
+			{
+				scaled_radius*=color.get_a();
+				color.set_a(1);
+			}
+
+			if (last_radius != scaled_radius) {
+				renderer_opengl->end_particles();
+				renderer_opengl->set_particle_radius(scaled_radius*2);
+				renderer_opengl->begin_particles();
+				last_radius = scaled_radius;
+			}
+			renderer_opengl->set_color(color);
+			renderer_opengl->add_particle_vertex(particle->point + origin);
+
+			if (reverse)
+			{
+				if (--iter == particle_list.begin())
+					break;
+			}
+			else
+			{
+				if (++iter == particle_list.end())
+					break;
+			}
+		}
+	}
+
+	renderer_opengl->end_particles();
+	renderer_opengl->blend(get_blend_method());
 
 	return true;
 }
