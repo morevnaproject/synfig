@@ -546,6 +546,11 @@ public:
 			value=strprintf("%s",App::predefined_size.c_str());
 			return true;
 		}
+		if(key=="render_method")
+		{
+			value=strprintf("%i",App::render_method);
+			return true;
+		}
 
 		return synfigapp::Settings::get_value(key,value);
 	}
@@ -643,6 +648,12 @@ public:
 			App::predefined_size=value;
 			return true;
 		}
+		if(key=="render_method")
+		{
+			int i(atoi(value.c_str()));
+			App::render_method=(RenderMethod)i;
+			return true;
+		}
 		return synfigapp::Settings::set_value(key,value);
 	}
 
@@ -665,6 +676,7 @@ public:
 		ret.push_back("preferred_x_size");
 		ret.push_back("preferred_y_size");
 		ret.push_back("predefined_size");
+		ret.push_back("render_method");
 		return ret;
 	}
 };
@@ -1748,6 +1760,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
+	synfigapp::Main::settings().set_value("pref.render_method",strprintf("%i", SOFTWARE));
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 
