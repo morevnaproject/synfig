@@ -84,7 +84,9 @@ Dialog_Setup::Dialog_Setup():
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	adj_pref_x_size(480,1,10000,1,10,0),
-	adj_pref_y_size(270,1,10000,1,10,0)
+	adj_pref_y_size(270,1,10000,1,10,0),
+	rend_soft_radio(_("Software renderer")),
+	rend_opengl_radio(_("OpenGL renderer"))
 
 	{
 	// Setup the buttons
@@ -262,6 +264,16 @@ Dialog_Setup::Dialog_Setup():
 	size_template_combo->prepend_text(_("360x203   Web 360x HD"));
 	size_template_combo->prepend_text(DEFAULT_PREDEFINED_SIZE);
 
+	// Renderers
+	Gtk::Table *rend_table=manage(new Gtk::Table(2,2,false));
+	notebook->append_page(*rend_table,_("Renderers"));
+
+	Gtk::RadioButton::Group group = rend_soft_radio.get_group();
+	rend_opengl_radio.set_group(group);
+
+	rend_table->attach(rend_soft_radio, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	rend_table->attach(rend_opengl_radio, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
 	show_all_children();
 }
 
@@ -319,6 +331,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the preferred Predefined size
 	App::predefined_size=size_template_combo->get_active_text();
+
+	// Set the preferred rendering method (TODO: Change checking method to allow more rendering methods)
+	App::render_method=rend_opengl_radio.get_active() ? OPENGL : SOFTWARE;
 
 	App::save_settings();
 }
@@ -439,6 +454,10 @@ Dialog_Setup::refresh()
 
 	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
+
+	// Refresh the preferred rendering method
+	rend_soft_radio.set_active(App::render_method == SOFTWARE);
+	rend_opengl_radio.set_active(App::render_method == OPENGL);
 }
 
 GammaPattern::GammaPattern():

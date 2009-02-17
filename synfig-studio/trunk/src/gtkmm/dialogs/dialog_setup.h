@@ -190,6 +190,10 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Entry textbox_custom_filename_prefix;
 	Gtk::Adjustment adj_pref_x_size;
 	Gtk::Adjustment adj_pref_y_size;
+
+	Gtk::RadioButton rend_soft_radio;
+	Gtk::RadioButton rend_opengl_radio;
+
 	Gtk::Tooltips tooltips_;
 public:
 
