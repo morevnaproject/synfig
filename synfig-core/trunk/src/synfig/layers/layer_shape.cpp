@@ -3221,15 +3221,13 @@ Layer_Shape::render_shape_opengl(Renderer_OpenGL *renderer_opengl,bool useblend,
 
 		for(curnum=0; curnum < number;)
 		{
-			data[curnum][0] += origin[0];
-			data[curnum][1] += origin[1];
 			switch(operation)
 			{
 				// MOVE_TO and LINE_TO are the same cases
 				case Primitive::MOVE_TO:
 				case Primitive::LINE_TO:
 				{
-					renderer_opengl->add_contour_vertex(data[curnum][0], data[curnum][1]);
+					renderer_opengl->add_contour_vertex(data[curnum][0] + origin[0], data[curnum][1] + origin[1]);
 					curnum++; //only advance one point
 
 					break;
