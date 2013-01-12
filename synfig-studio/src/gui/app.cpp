@@ -820,7 +820,8 @@ init_ui_manager()
 #define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); actions_action_group->add(action); }
 #define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); group->add(action,sig); }
 
-	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties"));
+	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"),
+			_("Keyframe Properties"));
 	DEFINE_ACTION("about", Gtk::StockID("synfig-about"));
 	DEFINE_ACTION("new", Gtk::Stock::NEW);
 	DEFINE_ACTION("open", Gtk::Stock::OPEN);
@@ -874,8 +875,10 @@ init_ui_manager()
 	DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
 	DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
 	DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
-	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
-		DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
+	for (list<int>::iterator iter = CanvasView::get_pixel_sizes().begin();
+			iter != CanvasView::get_pixel_sizes().end(); iter++)
+		DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter),
+			strprintf(_("Set Low-Res pixel size to %d"), *iter));
 	DEFINE_ACTION("play", _("Play"));
 	// DEFINE_ACTION("pause", _("Pause"));
 	DEFINE_ACTION("stop", _("Stop"));
@@ -884,8 +887,10 @@ init_ui_manager()
 	DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
 	DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
 	DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
-	DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
-	DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
+	DEFINE_ACTION("decrease-low-res-pixel-size",
+		_("Decrease Low-Res Pixel Size"));
+	DEFINE_ACTION("increase-low-res-pixel-size",
+		_("Increase Low-Res Pixel Size"));
 	DEFINE_ACTION("toggle-onion-skin", _("Toggle Onion Skin"));
 	DEFINE_ACTION("canvas-zoom-in", Gtk::StockID("gtk-zoom-in"));
 	DEFINE_ACTION("canvas-zoom-out", Gtk::StockID("gtk-zoom-out"));
@@ -905,7 +910,6 @@ init_ui_manager()
 	DEFINE_ACTION("action-group_add", _("Add set"));
 
 	DEFINE_ACTION("canvas-new", _("New Canvas"));
-
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
@@ -1094,12 +1098,13 @@ init_ui_manager()
 	{
 		actions_action_group->set_sensitive(false);
 		App::ui_manager()->set_add_tearoffs(true);
-		App::ui_manager()->insert_action_group(menus_action_group,1);
-		App::ui_manager()->insert_action_group(actions_action_group,1);
+		App::ui_manager()->insert_action_group(menus_action_group, 1);
+		App::ui_manager()->insert_action_group(actions_action_group, 1);
 		App::ui_manager()->add_ui_from_string(ui_info);
 
-		//App::ui_manager()->get_accel_group()->unlock();
+		// App::ui_manager()->get_accel_group()->unlock();
 	}
+
 	catch(const Glib::Error& ex)
 	{
 		synfig::error("building menus and toolbars failed: " + ex.what());
@@ -1119,24 +1124,24 @@ init_ui_manager()
 	}
 
 	// the toolbox
-	ACCEL("<Mod1>a",													"<Actions>/action_group_state_manager/state-normal"					);
-	ACCEL("<Mod1>v",													"<Actions>/action_group_state_manager/state-smooth_move"				);
-	ACCEL("<Mod1>s",													"<Actions>/action_group_state_manager/state-scale"					);
-	ACCEL("<Mod1>t",													"<Actions>/action_group_state_manager/state-rotate"					);
-	ACCEL("<Mod1>m",													"<Actions>/action_group_state_manager/state-mirror"					);
-	ACCEL("<Mod1>c",													"<Actions>/action_group_state_manager/state-circle"					);
-	ACCEL("<Mod1>r",													"<Actions>/action_group_state_manager/state-rectangle"				);
-	ACCEL("<Mod1>q",													"<Actions>/action_group_state_manager/state-star"						);
-	ACCEL("<Mod1>g",													"<Actions>/action_group_state_manager/state-gradient"					);
-	ACCEL("<Mod1>p",													"<Actions>/action_group_state_manager/state-polygon"					);
-	ACCEL("<Mod1>b",													"<Actions>/action_group_state_manager/state-bline"					);
-	ACCEL("<Mod1>x",													"<Actions>/action_group_state_manager/state-text"						);
-	ACCEL("<Mod1>f",													"<Actions>/action_group_state_manager/state-fill"						);
-	ACCEL("<Mod1>e",													"<Actions>/action_group_state_manager/state-eyedrop"					);
-	ACCEL("<Mod1>z",													"<Actions>/action_group_state_manager/state-zoom"						);
-	ACCEL("<Mod1>d",													"<Actions>/action_group_state_manager/state-draw"						);
-	ACCEL("<Mod1>k",													"<Actions>/action_group_state_manager/state-sketch"					);
-	ACCEL("<Mod1>w",													"<Actions>/action_group_state_manager/state-width"					);
+	ACCEL("<Mod1>a", "<Actions>/action_group_state_manager/state-normal");
+	ACCEL("<Mod1>v", "<Actions>/action_group_state_manager/state-smooth_move");
+	ACCEL("<Mod1>s", "<Actions>/action_group_state_manager/state-scale");
+	ACCEL("<Mod1>t", "<Actions>/action_group_state_manager/state-rotate");
+	ACCEL("<Mod1>m", "<Actions>/action_group_state_manager/state-mirror");
+	ACCEL("<Mod1>c", "<Actions>/action_group_state_manager/state-circle");
+	ACCEL("<Mod1>r", "<Actions>/action_group_state_manager/state-rectangle");
+	ACCEL("<Mod1>q", "<Actions>/action_group_state_manager/state-star");
+	ACCEL("<Mod1>g", "<Actions>/action_group_state_manager/state-gradient");
+	ACCEL("<Mod1>p", "<Actions>/action_group_state_manager/state-polygon");
+	ACCEL("<Mod1>b", "<Actions>/action_group_state_manager/state-bline");
+	ACCEL("<Mod1>x", "<Actions>/action_group_state_manager/state-text");
+	ACCEL("<Mod1>f", "<Actions>/action_group_state_manager/state-fill");
+	ACCEL("<Mod1>e", "<Actions>/action_group_state_manager/state-eyedrop");
+	ACCEL("<Mod1>z", "<Actions>/action_group_state_manager/state-zoom");
+	ACCEL("<Mod1>d", "<Actions>/action_group_state_manager/state-draw");
+	ACCEL("<Mod1>k", "<Actions>/action_group_state_manager/state-sketch");
+	ACCEL("<Mod1>w", "<Actions>/action_group_state_manager/state-width");
 
 	// everything else
 	ACCEL("<Control>a",													"<Actions>/canvasview/select-all-ducks"				);
