@@ -751,15 +751,21 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 4, false));
+	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 5, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_work_area(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	init_menus();
-	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_work_area(), 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL,
+			Gtk::EXPAND|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_display_bar(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL,
+			Gtk::SHRINK|Gtk::FILL, 0, 0);
 
-	layout_table->attach(*create_time_bar(), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_status_bar(), 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	init_menus();
+
+	layout_table->attach(*App::ui_manager()->get_widget("/menu-menubar"), 0, 1, 0, 1,
+			Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_time_bar(), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL,
+			Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_status_bar(), 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL,
+			Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	update_title();
 
