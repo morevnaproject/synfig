@@ -845,8 +845,8 @@ init_ui_manager()
 	DEFINE_ACTION("cvs-commit", Gtk::StockID("synfig-cvs_commit"));
 	DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
 	DEFINE_ACTION("import", _("Import"));
-	DEFINE_ACTION("render", _("Render"));
-	DEFINE_ACTION("preview", _("Preview"));
+	DEFINE_ACTION("render", "synfig-render_options");
+	DEFINE_ACTION("preview", "synfig-preview_options");
 	DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 	DEFINE_ACTION("sound", _("Sound File"));
 	DEFINE_ACTION("options", _("Options"));
@@ -918,10 +918,8 @@ init_ui_manager()
 	DEFINE_ACTION("seek-prev-second", _("Seek Backward"));
 	DEFINE_ACTION("seek-begin", _("Seek to Begin"));
 	DEFINE_ACTION("seek-end", _("Seek to End"));
-
 	DEFINE_ACTION("action-group_add", _("Add set"));
-
-	DEFINE_ACTION("canvas-new", _("New Canvas"));
+	DEFINE_ACTION("canvas-new", "synfig-canvas_new");
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
