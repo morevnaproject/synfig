@@ -836,7 +836,7 @@ init_ui_manager()
 			_("Keyframe Properties"));
 	DEFINE_ACTION("about", Gtk::StockID("synfig-about"));
 	DEFINE_ACTION_SIG(menus_action_group, "new", Gtk::Stock::NEW,
-		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
+		sigc::hide_return(sigc::ptr_fun(App::new_instance))
 	);
 	DEFINE_ACTION("open", Gtk::Stock::OPEN);
 	DEFINE_ACTION("save", Gtk::Stock::SAVE);
