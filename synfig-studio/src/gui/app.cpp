@@ -922,8 +922,8 @@ init_ui_manager()
 	DEFINE_ACTION("seek-end", _("Seek to End"));
 	DEFINE_ACTION("action-group_add", _("Add set"));
 	DEFINE_ACTION("canvas-new", "synfig-canvas_new");
-	DEFINE_ACTION("amount-inc", _("Increase Amount"));
-	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
+	DEFINE_ACTION("amount-inc", "synfig-amount_inc");
+	DEFINE_ACTION("amount-dec", "synfig-amount_dec");
 
 #undef DEFINE_ACTION
 #undef DEFINE_ACTION_2

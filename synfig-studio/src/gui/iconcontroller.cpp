@@ -324,6 +324,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));
 	INIT_STOCK_ICON_CLONE(cvs_revert,"gtk-revert",_("CVS Revert"));
+	INIT_STOCK_ICON_CLONE(amount-inc, "gtk-add", _("Increase Amount"));
+	INIT_STOCK_ICON_CLONE(amount-dec, "gtk-minus", _("Decrease Amount"));
 
 #undef INIT_STOCK_ICON
 #undef INIT_STOCK_ICON_CLONE
