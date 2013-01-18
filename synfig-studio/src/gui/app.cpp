@@ -816,9 +816,21 @@ init_ui_manager()
 		));
 	}
 
-#define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
-#define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); actions_action_group->add(action); }
-#define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); group->add(action,sig); }
+#define DEFINE_ACTION(x, stock) {\
+	Glib::RefPtr<Gtk::Action> action(\
+	Gtk::Action::create(x, Gtk::StockID(stock)));\
+	actions_action_group->add(action);\
+	}
+#define DEFINE_ACTION2(x, stock, label) {\
+	Glib::RefPtr<Gtk::Action> action(\
+	Gtk::Action::create(x, Gtk::StockID(stock), label, label) );\
+	actions_action_group->add(action);\
+	}
+#define DEFINE_ACTION_SIG(group, x, stock, sig) {\
+	Glib::RefPtr<Gtk::Action> action(\
+	Gtk::Action::create(x, stock) );\
+	group->add(action, sig);\
+	}
 
 	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"),
 			_("Keyframe Properties"));
