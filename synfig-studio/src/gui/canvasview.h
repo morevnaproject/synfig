@@ -439,6 +439,8 @@ private:
 	/*! \see popup_main_menu() */
 	Gtk::Widget *create_work_area();
 
+	Gtk::Widget *create_menu_bar();
+
 	Gtk::Widget *create_time_bar();
 
 	Gtk::Widget *create_display_bar();

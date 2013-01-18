@@ -760,7 +760,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	//init_menus();
 synfig::info("menu init");
-	layout_table->attach(*App::ui_manager()->get_widget("/menu-menubar"), 0, 1, 0, 1,
+	layout_table->attach(*create_menu_bar(), 0, 1, 0, 1,
 			Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 synfig::info("menu bar loaded");
 	layout_table->attach(*create_time_bar(), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL,
@@ -967,6 +967,15 @@ CanvasView::get_pixel_sizes()
 
 	return pixel_sizes;
 }
+
+
+Gtk::Widget *
+CanvasView::create_menu_bar()
+{
+	init_menus();
+	return App::ui_manager()->get_widget("/menu-menubar");
+}
+
 
 Gtk::Widget *
 CanvasView::create_time_bar()
