@@ -2188,7 +2188,7 @@ void
 CanvasView::popup_main_menu()
 {
 	//mainmenu.popup(0,gtk_get_current_event_time());
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
+	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popupmenu"));
 	if(menu)
 	{
 		//menu->set_accel_group(App::ui_manager()->get_accel_group());

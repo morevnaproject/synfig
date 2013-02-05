@@ -1081,12 +1081,12 @@ init_ui_manager()
 		"	</popup>"
 
 		// canvas window popup menus
-		"	<popup name='menu-main' action='menu-main'>"
+		"	<popup name='popupmenu' action='menu-main'>"
 		+ menu_items +
 		"	</popup>"
 
 		// canvas window menubar menus
-		"	<menubar name='menu-menubar' action='menu-main'>"
+		"	<menubar name='menubar' action='menu-main'>"
 		+ menu_items +
 		"	</menubar>"
 		"</ui>";
