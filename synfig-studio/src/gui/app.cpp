@@ -1074,6 +1074,7 @@ init_ui_manager()
 	}
 
 	Glib::ustring ui_info =
+		// toolbox menus
 		"<ui>"
 		"	<popup name='menu-toolbox' action='menu-toolbox'>"
 		"	<menu action='menu-file'>"
