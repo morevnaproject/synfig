@@ -790,6 +790,7 @@ init_ui_manager()
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
+	menus_action_group->add( Gtk::Action::create("menu-app", _("Synfig")) );
 	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
 	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
 	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
@@ -930,6 +931,19 @@ init_ui_manager()
 #undef DEFINE_ACTION_SIG
 
 	Glib::ustring menu_items =
+		// app menu, all global menu items should be listed here
+		// in gereneral, the toolbox menu will be move here,
+		// the desigh refs to gnome app menu design.
+		"	<menu action='menu-app'>"
+		"		<menuitem action='new'/>"
+		"		<menuitem action='open'/>"
+		"		<menuitem action='save'/>"
+		"		<separator name='bleh04'/>"
+		"		<menuitem action='about'/>"
+		// help action not defined yet
+		// "		<menuitem action='help'/>"
+		"		<menuitem action='quit'/>"
+		"	</menu>"
 		"	<menu action='menu-file'>"
 		"		<menuitem action='new' />"
 		"		<menuitem action='open' />"
@@ -1090,6 +1104,16 @@ init_ui_manager()
 		"	<menubar name='menubar' action='menu-main'>"
 		+ menu_items +
 		"	</menubar>"
+
+		// canvas window toolbar
+		"	<toolbar name='toolbar' action='tool-main'>"
+		"		<toolitem action='new'/>"
+		"		<toolitem action='open'/>"
+		"		<toolitem action='save'/>"
+		"		<toolitem action='undo'/>"
+		"		<toolitem action='redo'/>"
+		"	</toolbar>"
+
 		"</ui>";
 
 

@@ -768,6 +768,7 @@ synfig::info("menu bar loaded");
 	layout_table->attach(*create_status_bar(), 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL,
 			Gtk::SHRINK|Gtk::FILL, 0, 0);
 
+	init_menus();
 	update_title();
 
 	layout_table->show();
@@ -972,8 +973,7 @@ CanvasView::get_pixel_sizes()
 Gtk::Widget *
 CanvasView::create_menu_bar()
 {
-	init_menus();
-	return App::ui_manager()->get_widget("/menu-menubar");
+	return App::ui_manager()->get_widget("/menubar");
 }
 
 
