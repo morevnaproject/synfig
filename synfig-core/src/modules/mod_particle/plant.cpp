@@ -112,8 +112,7 @@ Plant::Plant():
 	sync();
 	size_as_alpha=false;
 	reverse=true;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 void

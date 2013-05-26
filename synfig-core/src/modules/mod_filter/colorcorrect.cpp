@@ -69,8 +69,7 @@ Layer_ColorCorrect::Layer_ColorCorrect():
 	contrast(1.0),
 	exposure(0.0)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 inline Color

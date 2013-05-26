@@ -88,8 +88,7 @@ percent(1.0),
 type(TYPE_NORMAL),
 clip(false)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 

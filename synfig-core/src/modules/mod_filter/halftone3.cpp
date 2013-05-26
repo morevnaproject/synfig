@@ -103,8 +103,7 @@ Halftone3::Halftone3()
 
 	sync();
 
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 void
