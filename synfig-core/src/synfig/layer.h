@@ -39,6 +39,7 @@
 #include "node.h"
 #include "time.h"
 #include "guid.h"
+#include "interpolation.h"
 #include "target.h" // for RenderMethod. TODO: put RenderMethod apart
 
 #include "cairo.h"
@@ -139,6 +140,13 @@
 		return true;															\
 	}
 
+//! Imports a parameter's interpolation value
+#define IMPORT_INTERPOLATION(x)													\
+	if ("param_"+param==#x){													\
+		x.set_interpolation(value);												\
+		return true;															\
+	}
+
 //TODO: This macro is safe to remove when we will finish converting
 //      all layer parameters to ValueBase type
 //! Exports a parameter 'x' if param is same type as given 'y'
@@ -161,6 +169,20 @@
 	if (#x=="param_"+param)																\
 	{																					\
 		return x;																		\
+	}
+
+//! Exports a parameter's static value
+#define EXPORT_STATIC(x)														\
+	if (#x=="param_"+param)														\
+	{																			\
+		return x.get_static();													\
+	}
+
+//! Exports a parameter's static value
+#define EXPORT_INTERPOLATION(x)													\
+	if (#x=="param_"+param)														\
+	{																			\
+		return x.get_interpolation();											\
 	}
 
 //! Exports the name or the local name of the layer
@@ -321,7 +343,7 @@ private:
 	String description_;
 
 	//! The depth parameter of the layer in the layer stack
-	float z_depth;
+	ValueBase param_z_depth;
 
 	//! True if zdepth is not affected when in animation mode
 	typedef std::map<String, bool> Sparams;
@@ -439,13 +461,13 @@ public:
 	int get_depth()const;
 
 	//! Gets the non animated z depth of the layer
-	float get_z_depth()const { return z_depth; }
+	float get_z_depth()const { return param_z_depth.get(Real()); }
 
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
 	//! Sets the z depth of the layer (non animated)
-	void set_z_depth(float x) { z_depth=x; }
+	void set_z_depth(float x) { param_z_depth=ValueBase(Real(x)); }
 
 	//! Sets the Canvas that this Layer is a part of
 	void set_canvas(etl::loose_handle<Canvas> canvas);
@@ -518,8 +540,11 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 
 	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 	virtual bool get_param_static(const String &param) const;
+	virtual Interpolation get_param_interpolation(const String &param)const;
 	virtual void fill_static(Vocab vocab);
+	virtual void set_interpolation_defaults();
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);
