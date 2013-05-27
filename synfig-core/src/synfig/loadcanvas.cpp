@@ -1221,6 +1221,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_time(element,canvas));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1229,6 +1230,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_integer(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1237,6 +1239,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_string(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1245,6 +1248,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_vector(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1253,6 +1257,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_color(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1261,6 +1266,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_segment(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1272,6 +1278,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_gradient(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1280,6 +1287,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_bool(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1288,6 +1296,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_angle(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}	else
 	if(element->get_name()=="bline_point")
@@ -1348,9 +1357,9 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 	value_node->set_root_canvas(canvas->get_root());
 	
-	if(element->get_attribute("default_interpolation"))
+	if(element->get_attribute("interpolation"))
 	{
-		value_node->set_interpolation(parse_interpolation(element, "default_interpolation"));
+		value_node->set_interpolation(parse_interpolation(element, "interpolation"));
 	}
 
 	xmlpp::Element::NodeList list = element->get_children();
