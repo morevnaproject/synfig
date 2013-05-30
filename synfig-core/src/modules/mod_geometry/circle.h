@@ -48,12 +48,12 @@ class Circle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	synfig::Color color;
-	synfig::Point origin;
-	synfig::ValueBase param_radius;
-	synfig::Real feather;
-	bool invert;
-	int falloff;
+	ValueBase param_color;
+	ValueBase param_origin;
+	ValueBase param_radius;
+	ValueBase param_feather;
+	ValueBase param_invert;
+	ValueBase param_falloff;
 
 	//Caching system for circle
 	struct CircleDataCache
@@ -103,11 +103,8 @@ public:
 	Circle();
 
 	virtual bool set_param(const String &param, const ValueBase &value);
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 
 	virtual ValueBase get_param(const String &param)const;
-	virtual Interpolation get_param_interpolation(const String &param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 

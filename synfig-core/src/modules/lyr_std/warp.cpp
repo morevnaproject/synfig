@@ -75,8 +75,7 @@ Warp::Warp():
 {
 	sync();
 	horizon=4;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 Warp::~Warp()

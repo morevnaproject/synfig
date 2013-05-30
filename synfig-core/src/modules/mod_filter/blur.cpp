@@ -83,9 +83,8 @@ Blur_Layer::Blur_Layer():
 	size(0.1,0.1),
 	type(Blur::FASTGAUSSIAN)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
-	set_param_static("blend_method", true);
+
+	//set_param_static("blend_method", true);
 }
 
 bool

@@ -69,9 +69,8 @@ RadialBlur::RadialBlur():
 	size	(0.2),
 	fade_out(false)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
-	set_param_static("blend_method",true);
+
+	//set_param_static("blend_method",true);
 }
 
 RadialBlur::~RadialBlur()

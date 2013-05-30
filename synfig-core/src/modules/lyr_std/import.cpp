@@ -68,8 +68,7 @@ SYNFIG_LAYER_SET_CVS_ID(Import,"$Id$");
 Import::Import()
 {
 	time_offset=0;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 Import::~Import()
@@ -89,7 +88,6 @@ Import::set_param(const String & param, const ValueBase &value)
 	IMPORT(time_offset);
 	if(param=="filename" && value.same_type_as(filename))
 	{
-		set_param_static(param, value.get_static());
 		if(!get_canvas())
 		{
 			filename=value.get(filename);
@@ -259,7 +257,7 @@ Import::get_param(const String & param)const
 		if(param=="filename")
 		{
 			ValueBase ret(ValueBase::TYPE_STRING);
-			ret.set_static(get_param_static(param));
+			
 			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
 			ret=relative_path(curpath,abs_filename);
 			return ret;

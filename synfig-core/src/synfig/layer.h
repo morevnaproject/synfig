@@ -89,7 +89,6 @@
 	if (param==#x && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(#x,value.get_static());										\
 		{																				\
 			y;																			\
 		}																				\
@@ -103,7 +102,6 @@
 	if (param==y && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(y,value.get_static());										\
 		return true;																	\
 	}
 
@@ -133,20 +131,6 @@
 		return true;																	\
 	}
 
-//! Imports a parameter's static value
-#define IMPORT_STATIC(x)														\
-	if ("param_"+param==#x){													\
-		x.set_static(value);													\
-		return true;															\
-	}
-
-//! Imports a parameter's interpolation value
-#define IMPORT_INTERPOLATION(x)													\
-	if ("param_"+param==#x){													\
-		x.set_interpolation(value);												\
-		return true;															\
-	}
-
 //TODO: This macro is safe to remove when we will finish converting
 //      all layer parameters to ValueBase type
 //! Exports a parameter 'x' if param is same type as given 'y'
@@ -154,7 +138,6 @@
 	if (param==y)																		\
 	{																					\
 		synfig::ValueBase ret(x);														\
-		ret.set_static(get_param_static(y));											\
 		return ret;																		\
 	}
 
@@ -169,20 +152,6 @@
 	if (#x=="param_"+param)																\
 	{																					\
 		return x;																		\
-	}
-
-//! Exports a parameter's static value
-#define EXPORT_STATIC(x)														\
-	if (#x=="param_"+param)														\
-	{																			\
-		return x.get_static();													\
-	}
-
-//! Exports a parameter's static value
-#define EXPORT_INTERPOLATION(x)													\
-	if (#x=="param_"+param)														\
-	{																			\
-		return x.get_interpolation();											\
 	}
 
 //! Exports the name or the local name of the layer
@@ -344,10 +313,6 @@ private:
 
 	//! The depth parameter of the layer in the layer stack
 	ValueBase param_z_depth;
-
-	//! True if zdepth is not affected when in animation mode
-	typedef std::map<String, bool> Sparams;
-	Sparams static_params;
 
 	//! \writeme
 	mutable Time dirty_time_;
@@ -539,12 +504,8 @@ public:
 	*/
 	virtual bool set_param(const String &param, const ValueBase &value);
 
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool set_param_interpolation(const String &param, const Interpolation i);
-	virtual bool get_param_static(const String &param) const;
-	virtual Interpolation get_param_interpolation(const String &param)const;
-	virtual void fill_static(Vocab vocab);
 	virtual void set_interpolation_defaults();
+	virtual void set_static_defaults();
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);

@@ -94,9 +94,8 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	muck_with_time_=true;
 	curr_time=Time::begin();
 	outline_grow=0.0;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
-	set_param_static("children_lock", true);
+
+	//set_param_static("children_lock", true);
 }
 
 Layer_PasteCanvas::~Layer_PasteCanvas()
@@ -195,7 +194,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
 	{
 		set_sub_canvas(value.get(Canvas::Handle()));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	//! \todo this introduces bug 1844764 if enabled; it was introduced in r954.
@@ -716,20 +714,6 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 			);
 
 	Layer::get_times_vfunc(set);
-}
-
-
-bool
-Layer_PasteCanvas::set_param_static(const String &param, const bool x)
-{
-	return Layer_Composite::set_param_static(param, x);
-}
-
-
-bool
-Layer_PasteCanvas::get_param_static(const String &param) const
-{
-	return Layer_Composite::get_param_static(param);
 }
 
 void

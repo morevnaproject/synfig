@@ -143,9 +143,8 @@ Layer::Layer():
 	dirty_time_(Time::end())
 {
 	_LayerCounter::counter++;
-	Vocab vocab=get_param_vocab();
-	fill_static(vocab);
 	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 Layer::LooseHandle
@@ -306,61 +305,31 @@ Layer::set_param(const String &param, const ValueBase &value)
 	return false;
 }
 
-bool
-Layer::set_param_static(const String &param, const bool x)
-{
-	Sparams::iterator iter=static_params.find(param);
-	if(iter!=static_params.end())
-	{
-		iter->second=x;
-		return true;
-	}
-	return false;
-}
 
-bool
-Layer::set_param_interpolation(const String &param, const Interpolation value)
-{
-	IMPORT_INTERPOLATION(param_z_depth)
-	return false;
-}
-
-void Layer::fill_static(Vocab vocab)
-{
-	Vocab::const_iterator viter;
-	for(viter=vocab.begin();viter!=vocab.end();viter++)
-	{
-		if(static_params.find(viter->get_name())==static_params.end())
-			static_params.insert(make_pair(viter->get_name(),false));
-	}
-}
-
-void Layer::set_interpolation_defaults()
+void
+Layer::set_interpolation_defaults()
 {
 	Vocab vocab(get_param_vocab());
 	Vocab::const_iterator viter;
 	for(viter=vocab.begin();viter!=vocab.end();viter++)
-		set_param_interpolation(viter->get_name(), viter->get_interpolation());
-	
+	{
+		ValueBase value=get_param(viter->get_name());
+		value.set_interpolation(viter->get_interpolation());
+		set_param(viter->get_name(), value);
+	}
 }
 
-//TODO: This function is safe to remove when we will finish converting
-//      all layer parameters to ValueBase type
-bool
-Layer::get_param_static(const String &param) const
+void
+Layer::set_static_defaults()
 {
-
-	Sparams::const_iterator iter=static_params.find(param);
-	if(iter!=static_params.end())
-		return iter->second;
-	return false;
-}
-
-Interpolation
-Layer::get_param_interpolation(const String &param)const
-{
-	EXPORT_INTERPOLATION(param_z_depth)
-	return INTERPOLATION_UNDEFINED;
+	Vocab vocab(get_param_vocab());
+	Vocab::const_iterator viter;
+	for(viter=vocab.begin();viter!=vocab.end();viter++)
+	{
+		ValueBase value=get_param(viter->get_name());
+		value.set_static(viter->get_static());
+		set_param(viter->get_name(), value);
+	}
 }
 
 etl::handle<Transform>
@@ -645,7 +614,6 @@ Layer::get_param_vocab()const
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
 		.set_description(_("Modifies the position of the layer in the layer stack"))
-		.set_interpolation(INTERPOLATION_CONSTANT)
 	);
 
 	return ret;

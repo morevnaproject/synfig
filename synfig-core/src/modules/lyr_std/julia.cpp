@@ -118,8 +118,7 @@ Julia::Julia():color_shift(angle::degrees(0))
 
 	bailout=4;
 	lp=log(log(bailout));
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool
@@ -154,7 +153,6 @@ Julia::set_param(const String & param, const ValueBase &value)
 			iterations=0;
 		if(iterations>500000)
 			iterations=500000;
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	if(param=="bailout" && value.same_type_as(bailout))
@@ -162,7 +160,6 @@ Julia::set_param(const String & param, const ValueBase &value)
 		bailout=value.get(bailout);
 		bailout*=bailout;
 		lp=log(log(bailout));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -195,7 +192,7 @@ Julia::get_param(const String & param)const
 	if(param=="bailout")
 	{
 		ValueBase ret(sqrt(bailout));
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 
