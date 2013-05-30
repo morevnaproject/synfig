@@ -157,7 +157,6 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 			iterations=0;
 		if(iterations>500000)
 			iterations=500000;
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	if(param=="bailout" && value.same_type_as(bailout))
@@ -165,7 +164,6 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 		bailout=value.get(bailout);
 		bailout*=bailout;
 		lp=log(log(bailout));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 

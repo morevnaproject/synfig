@@ -84,7 +84,7 @@ Blur_Layer::Blur_Layer():
 	type(Blur::FASTGAUSSIAN)
 {
 
-	set_param_static("blend_method", true);
+	//set_param_static("blend_method", true);
 }
 
 bool

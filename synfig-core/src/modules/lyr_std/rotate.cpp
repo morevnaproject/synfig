@@ -87,7 +87,6 @@ Rotate::set_param(const String & param, const ValueBase &value)
 		amount=value.get(amount);
 		sin_val=Angle::sin(amount).get();
 		cos_val=Angle::cos(amount).get();
-		set_param_static(param, value.get_static());
 		return true;
 	}
 

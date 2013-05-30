@@ -110,7 +110,6 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&radius1);
 		sync();
-		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -118,7 +117,6 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&radius2);
 		sync();
-		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -127,7 +125,6 @@ Star::set_param(const String & param, const ValueBase &value)
 		value.put(&points);
 		if(points<2)points=2;
 		sync();
-		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -137,7 +134,6 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&regular_polygon);
 		sync();
-		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -145,13 +141,6 @@ Star::set_param(const String & param, const ValueBase &value)
 		return false;
 
 	return Layer_Polygon::set_param(param,value);
-}
-
-bool
-Star::set_param_static(const String &param, const bool value)
-{
-	IMPORT_STATIC(param_angle);
-	return Layer_Polygon::set_param_static(param,value);
 }
 
 ValueBase

@@ -305,35 +305,31 @@ Layer::set_param(const String &param, const ValueBase &value)
 	return false;
 }
 
-bool
-Layer::set_param_static(const String &param, const bool value)
-{
-	IMPORT_STATIC(param_z_depth)
-	return false;
-}
 
-bool
-
-Layer::set_param_interpolation(const String &param, const Interpolation value)
-{
-	IMPORT_INTERPOLATION(param_z_depth)
-	return false;
-}
-
-void Layer::set_interpolation_defaults()
+void
+Layer::set_interpolation_defaults()
 {
 	Vocab vocab(get_param_vocab());
 	Vocab::const_iterator viter;
 	for(viter=vocab.begin();viter!=vocab.end();viter++)
-		set_param_interpolation(viter->get_name(), viter->get_interpolation());
+	{
+		ValueBase value=get_param(viter->get_name());
+		value.set_interpolation(viter->get_interpolation());
+		set_param(viter->get_name(), value);
+	}
 }
 
-void Layer::set_static_defaults()
+void
+Layer::set_static_defaults()
 {
 	Vocab vocab(get_param_vocab());
 	Vocab::const_iterator viter;
 	for(viter=vocab.begin();viter!=vocab.end();viter++)
-		set_param_static(viter->get_name(), viter->get_static());
+	{
+		ValueBase value=get_param(viter->get_name());
+		value.set_static(viter->get_static());
+		set_param(viter->get_name(), value);
+	}
 }
 
 etl::handle<Transform>

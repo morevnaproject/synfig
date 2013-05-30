@@ -162,8 +162,9 @@ Action::LayerParamSetStatic::perform()
 		throw Error(_("This action is not for Value Nodes!"));
 
 	old_static_value=false;
-
-	if(!layer->set_param_static(param_name,true))
+	ValueBase value=layer->get_param(param_name);
+	value.set_static(true);
+	if(!layer->set_param(param_name, value))
 		throw Error(_("Layer did not accept static value."));
 
 	//! Signal layer changed
@@ -176,7 +177,9 @@ Action::LayerParamSetStatic::perform()
 void
 Action::LayerParamSetStatic::undo()
 {
-	if(!layer->set_param_static(param_name,old_static_value))
+	ValueBase value=layer->get_param(param_name);
+	value.set_static(old_static_value);
+	if(!layer->set_param(param_name, value))
 		throw Error(_("Layer did not accept static value."));
 	//! Signal layer changed
 	layer->changed();
