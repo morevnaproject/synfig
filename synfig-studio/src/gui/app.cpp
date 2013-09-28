@@ -926,10 +926,6 @@ init_ui_manager()
 	DEFINE_ACTION("amount-inc", "synfig-amount_inc");
 	DEFINE_ACTION("amount-dec", "synfig-amount_dec");
 
-#undef DEFINE_ACTION
-#undef DEFINE_ACTION_2
-#undef DEFINE_ACTION_SIG
-
 	Glib::ustring menu_items =
 		// app menu, all global menu items should be listed here
 		// in gereneral, the toolbox menu will be move here,
@@ -1084,8 +1080,14 @@ init_ui_manager()
 		synfigapp::PluginManager::plugin plugin = *p;
 		
 		DEFINE_ACTION(plugin.id, plugin.name);
-		ui_info += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
+		menu_items += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
 	}
+	
+	menu_items += "	</menu>";
+	
+#undef DEFINE_ACTION
+#undef DEFINE_ACTION_2
+#undef DEFINE_ACTION_SIG
 
 	Glib::ustring ui_info =
 		// toolbox menus
