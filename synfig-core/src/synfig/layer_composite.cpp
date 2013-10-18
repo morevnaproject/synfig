@@ -62,8 +62,8 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-Layer_Composite::Layer_Composite(float 	a, Color::BlendMethod 	bm):
-		amount				(a),
+Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
+		param_amount		(a),
 		blend_method		(bm),
 		converted_blend_	(false),
 		transparent_color_	(false)
@@ -74,7 +74,7 @@ bool
 Layer_Composite::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
-
+	Real amount(param_amount.get(Real()));
 	if(!amount)
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
@@ -144,6 +144,8 @@ bool
 Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
+	Real amount(param_amount.get(Real()));
+
 	if(!amount)
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
 
@@ -241,7 +243,7 @@ Layer_Composite::get_param_vocab()const
 	//! First fills the returning vocabulary with the ancestor class
 	Layer::Vocab ret(Layer::get_param_vocab());
 	//! Now inserts the two parameters that this layer knows.
-	ret.push_back(ParamDesc(amount,"amount")
+	ret.push_back(ParamDesc(param_amount,"amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("Alpha channel of the layer"))
 	);
@@ -256,9 +258,9 @@ Layer_Composite::get_param_vocab()const
 bool
 Layer_Composite::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="amount" && value.same_type_as(amount))
+	if(param=="amount" && value.get_type()==param_amount.get_type())
 	{
-		amount=value.get(amount);
+		param_amount=value;
 		//set_param_static(param,value.get_static());
 	}
 	else
@@ -313,9 +315,7 @@ Layer_Composite::get_param(const String & param)const
 	//! First check if the parameter's string is known.
 	if(param=="amount")
 	{
-		synfig::ValueBase ret(get_amount());
-		
-		return ret;
+		return param_amount;
 	}
 	if(param=="blend_method")
 	{
