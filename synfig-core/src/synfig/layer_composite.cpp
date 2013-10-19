@@ -62,7 +62,7 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
+Layer_Composite::Layer_Composite(float a, Color::BlendMethod bm):
 		param_amount		(a),
 		blend_method		(bm),
 		converted_blend_	(false),
@@ -74,7 +74,9 @@ bool
 Layer_Composite::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
-	Real amount(param_amount.get(Real()));
+	
+	float amount(param_amount.get(float()));
+	
 	if(!amount)
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
@@ -144,7 +146,8 @@ bool
 Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
-	Real amount(param_amount.get(Real()));
+	
+	float amount(param_amount.get(float()));
 
 	if(!amount)
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);

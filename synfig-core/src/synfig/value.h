@@ -277,7 +277,7 @@ public:
 		return *static_cast<const T*>(data);
 	}
 	//! Gets the Real part of the data
-	float get(const float &)const { return get(Real()); }
+	float get(const float &)const { return static_cast<float>(get(Real())); }
 	//! Gets the Canvas Handle part of the data based on Canvas Handle type
 	etl::loose_handle<Canvas> get(const etl::handle<Canvas>&)const
 		{ return get(etl::loose_handle<Canvas>()); }
