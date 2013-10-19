@@ -315,7 +315,11 @@ Layer_Composite::get_param(const String & param)const
 	//! First check if the parameter's string is known.
 	if(param=="amount")
 	{
-		return param_amount;
+		synfig::ValueBase ret(param_amount.get(float()));
+		ret.set_interpolation(param_amount.get_interpolation());
+		ret.set_static(param_amount.get_static());
+		
+		return ret;
 	}
 	if(param=="blend_method")
 	{
