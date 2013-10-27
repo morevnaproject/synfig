@@ -345,8 +345,7 @@ Import::set_time(IndependentContext context, Time time)const
 			   cimporter->is_animated())
 			{
 				cairo_surface_t* cs;
-				cimporter->get_frame(cs, get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
-				if(cs)
+				if(cimporter->get_frame(cs, get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left))
 				{
 					csurface.set_cairo_surface(cs);
 					csurface.map_cairo_image();
