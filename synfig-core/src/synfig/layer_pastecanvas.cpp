@@ -415,6 +415,23 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	return Color::blend(canvas->get_context(cp).get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
 }
 
+CairoColor
+Layer_PasteCanvas::get_cairocolor(Context context, const Point &pos)const
+{
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Real zoom=param_zoom.get(Real());
+	
+	if(!canvas || !get_amount())
+		return context.get_cairocolor(pos);
+
+	if(depth==MAX_DEPTH)return CairoColor::alpha();depth_counter counter(depth);
+
+	Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
+
+	return CairoColor::blend(canvas->get_context(context).get_cairocolor(target_pos),context.get_cairocolor(pos),get_amount(),get_blend_method());
+}
+
 Rect
 Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &context_params)const
 {
