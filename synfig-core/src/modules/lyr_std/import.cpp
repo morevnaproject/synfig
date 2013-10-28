@@ -98,7 +98,8 @@ Import::set_param(const String & param, const ValueBase &value)
 			filename=value.get(filename);
 			importer=0;
 			cimporter=0;
-			surface.clear();
+			//surface.clear();
+			surface.set_wh(0,0);
 			csurface.set_cairo_surface(NULL);
 			param_filename.set(filename);
 			return true;
@@ -143,7 +144,8 @@ Import::set_param(const String & param, const ValueBase &value)
 			filename=newfilename;
 			importer=0;
 			cimporter=0;
-			surface.clear();
+			//surface.clear();
+			surface.set_wh(0,0);
 			csurface.set_cairo_surface(NULL);
 			param_filename.set(filename);
 			return true;
@@ -154,6 +156,9 @@ Import::set_param(const String & param, const ValueBase &value)
 		
 		case SOFTWARE:
 			{
+				// clear cairo surface (we use software)
+				csurface.set_cairo_surface(NULL);
+
 				// If we are already loaded, don't reload
 				if(filename==newfilename && importer)
 				{
@@ -185,14 +190,16 @@ Import::set_param(const String & param, const ValueBase &value)
 						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
 						importer=0;
 						filename=newfilename;
-						abs_filename=filename_with_path;
-						surface.clear();
+						abs_filename=absolute_path(filename_with_path);
+						//surface.clear();
+						surface.set_wh(0,0);
 						param_filename.set(filename);
 						return false;
 					}
 				}
 
-				surface.clear();
+				//surface.clear();
+				surface.set_wh(0,0);
 				if(!newimporter->get_frame(surface,get_canvas()->rend_desc(),Time(0),trimmed,width,height,top,left))
 				{
 					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
@@ -211,7 +218,9 @@ Import::set_param(const String & param, const ValueBase &value)
 			}
 		case CAIRO:
 			{
-				
+				// clear sofware surface (we use cairo)
+				surface.set_wh(0,0);
+
 				if(filename==newfilename && cimporter)
 				{
 					synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
