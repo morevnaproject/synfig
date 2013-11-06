@@ -63,7 +63,7 @@ fi
 
 BUILDROOT_VERSION=8
 BUILDROOT_LIBRARY_SET_ID=3
-MAKE_THREADS=2					#count of threads for make
+MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -585,7 +585,7 @@ EOF
 	chmod a+x $PREFIX/synfigstudio
 	
 	#== tar.bz2 ==
-	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
+	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
 	mkdir -p $TBZPREFIX
 	cp -r  ${PREFIX}/* $TBZPREFIX
@@ -652,9 +652,9 @@ EOF
 	rm -rf $TBZPREFIX/share/ImageMagick-6.4.0
 	rm -rf $TBZPREFIX/share/man
 
-	rm -f /packages/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}.tar.bz2
+	rm -f /packages/synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}.tar.bz2
 	pushd $TBZPREFIX/../
-	tar cjf /packages/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
+	tar cjf /packages/synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}
 	popd
 	rm -rf $TBZPREFIX
 
@@ -664,7 +664,7 @@ EOF
 
 Name:           synfigstudio
 Version:        ${VERSION}
-Release:        ${REVISION}.${BREED}.${RELEASE}
+Release:        ${REVISION}.${RELEASE}
 Summary:        Film-Quality 2D Vector Animation package
 Group:          Applications/Graphics
 License:        GPL
@@ -780,10 +780,10 @@ $PREFIX
 EOF
     rpmbuild -bb synfigstudio.spec
 
-    #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm ../
-    cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm /packages/
+    #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}.rpm ../
+    cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}.rpm /packages/
     pushd /packages/
-    alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm
+    alien -k --scripts synfigstudio-${VERSION}-${REVISION}.$RELEASE.${ARCH}.rpm
     rm -rf synfigstudio-${VERSION}
     popd
 }
@@ -945,11 +945,12 @@ initialize()
 			VERSION=${VERSION%%-*}
 		fi
 		[[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
+		[[ $WITHOUT_BREED == 1 ]] || REVISION=${REVISION}.$BREED
 		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
 		REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 		echo
 		echo
-		echo "BUILDING synfigstudio-$VERSION-$REVISION.$BREED.$RELEASE"
+		echo "BUILDING synfigstudio-$VERSION-$REVISION.$RELEASE"
 		echo
 		echo
 		sleep 5
