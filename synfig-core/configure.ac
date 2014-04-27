@@ -176,7 +176,59 @@ AC_ARG_WITH(libdv,
 ])
 AM_CONDITIONAL(WITH_LIBDV, test $with_libdv = yes)
 
+# OPENGL CHECK-----------------------
 
+AC_ARG_WITH(opengl, AS_HELP_STRING(--without-opengl, [do not use OpenGL]))
+
+if test "x$with_opengl" != "xno" ; then {
+	dnl Check for OpenGL and GLUT
+
+
+	case "$host" in
+		*-*-darwin*)
+			  AC_DEFINE([HAVE_APPLE_OPENGL_FRAMEWORK], [1],
+						[Use the Apple OpenGL framework.])
+			  GL_LIBS="-framework GLUT -framework OpenGL -framework Carbon -framework AGL"
+			  have_glut=yes
+			  have_glu=yes
+			  have_gl=yes
+			;;
+		*)
+			have_gl_headers=yes
+			# AC_CHECK_HEADERS(GL/gl.h GL/glu.h GL/glext.h GL/glut.h, ,
+			AC_CHECK_HEADERS(GL/gl.h GL/glu.h GL/glext.h, ,
+				      [have_gl_headers=no],
+				 [[#ifdef WIN32
+				       #include <windows.h>
+				       #endif
+				       #if HAVE_GL_GL_H
+				       #include <GL/gl.h>
+				       #endif
+					       #if HAVE_GL_GLU_H
+				       #include <GL/glu.h>
+				       #endif
+				 ]])
+			have_gl=no
+			have_glu=no
+			# have_glut=no
+			TEMP_LDFLAGS="$LDFLAGS"
+			AC_CHECK_LIB(GL, main, [GL_LIBS="-lGL"; have_gl=yes])
+			AC_CHECK_LIB(GLU, main, [GL_LIBS="-lGLU $GL_LIBS"; have_glu=yes], , -lGL)
+			# AC_CHECK_LIB(GLUT, main, [GL_LIBS="-lGLUT -LGLU  $GL_LIBS"; have_glut=yes], ,-lGLUT)
+			AC_CHECK_LIB(opengl32, main, [GL_LIBS="-lopengl32"; have_gl=yes])
+			AC_CHECK_LIB(glu32, main, [GL_LIBS="-lglu32 $GL_LIBS"; have_glu=yes], , -lopengl32)
+			LDFLAGS="$TEMP_LDFLAGS"
+			#if test $have_gl = no -o $have_glu = no -o $have_gl_headers = no; then
+			if test $have_gl = no -o $have_glu = no -o $have_gl_headers = no; then
+			      AC_MSG_WARN([OpenGL doesn't seem to work.])
+			else
+			      AC_MSG_NOTICE([Found OpenGL])
+			fi
+		;;
+	esac
+}; fi
+
+AC_SUBST(GL_LIBS)
 
 
 # LIBAVCODEC CHECK--------------------
@@ -646,7 +698,7 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $MAGICKPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GL_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $MAGICKPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
 SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $MAGICKPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -747,6 +799,7 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"LIBCAIRO_LIBS -------------------> '$LIBCAIRO_LIBS'
 "'$'"LIBCAIROMM_LIBS -----------------> '$LIBCAIROMM_LIBS'
 "'$'"LIBPANGO_LIBS -------------------> '$LIBPANGO_LIBS'
+"'$'"GL_LIBS -------------------------> '$GL_LIBS'
 "'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
