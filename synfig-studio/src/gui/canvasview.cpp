@@ -2490,6 +2490,9 @@ CanvasView::on_time_changed()
 {
 	Time time(get_time());
 
+	if (!is_time_equal_to_current_frame(soundProcessor.get_position(), 0.5))
+		soundProcessor.set_position(time);
+
 #ifdef WITH_JACK
 	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time))
 	{
@@ -3026,6 +3029,7 @@ CanvasView::play_async()
 
 	soundProcessor.clear();
 	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);
+	soundProcessor.set_position(canvas_interface()->get_canvas()->get_time());
 	soundProcessor.set_playing(true);
 
 	playing_connection = Glib::signal_timeout().connect(
@@ -4133,7 +4137,7 @@ CanvasView::on_play_pause_pressed()
 }
 
 bool
-CanvasView::is_time_equal_to_current_frame(const synfig::Time &time)
+CanvasView::is_time_equal_to_current_frame(const synfig::Time &time, const synfig::Time &range)
 {
 	float fps(get_canvas()->rend_desc().get_frame_rate());
 	Time starttime = Time(0);
@@ -4149,8 +4153,11 @@ CanvasView::is_time_equal_to_current_frame(const synfig::Time &time)
 
 	t0 = std::max(starttime, std::min(endtime, t0));
 	t1 = std::max(starttime, std::min(endtime, t1));
+	double epsilon = max(range, Time::epsilon());
+	double dt0 = t0;
+	double dt1 = t1;
 
-	return t0.is_equal(t1);
+	return abs(dt0 - dt1) <= epsilon;
 }
 
 #ifdef WITH_JACK
