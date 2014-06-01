@@ -215,6 +215,7 @@ mkdeps()
 		libsigcxx2 \
 		libtool \
 		libxmlxx2 \
+		mlt \
 		openexr \
 		pkgconfig \
 		ffmpeg \
