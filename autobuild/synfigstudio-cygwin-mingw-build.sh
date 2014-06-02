@@ -363,7 +363,7 @@ PKG_NAME=libogg
 PKG_VERSION=1.3.1
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config ogg --exact-version=${PKG_VERSION}  --print-errors; then
     cd $WORKSPACE
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/ogg/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
@@ -398,7 +398,7 @@ PKG_NAME=libvorbis
 PKG_VERSION=1.3.4
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config vorbis --exact-version=${PKG_VERSION}  --print-errors; then
     cd $WORKSPACE
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/vorbis/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
@@ -431,7 +431,7 @@ PKG_NAME=libsamplerate
 PKG_VERSION=0.1.8
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config samplerate --exact-version=${PKG_VERSION}  --print-errors; then
     cd $WORKSPACE
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.mega-nerd.com/SRC/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
@@ -546,7 +546,7 @@ fi
 mkffmpeg()
 {
     export FFMPEG_VERSION=2.2.2
-    if ! pkg-config libswscale --exact-version=${PKG_VERSION}  --print-errors; then
+    if ! pkg-config libswscale --exact-version=${FFMPEG_VERSION}  --print-errors; then
         pushd $WORKSPACE
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
