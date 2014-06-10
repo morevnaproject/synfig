@@ -64,9 +64,9 @@ using namespace studio;
 RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Render Settings"),parent,false,true),
 	canvas_interface_(canvas_interface),
-	adjustment_quality(3,0,9),
+	adjustment_quality(Gtk::Adjustment::create(3,0,9)),
 	entry_quality(adjustment_quality,1,0),
-	adjustment_antialias(1,1,31),
+	adjustment_antialias(Gtk::Adjustment::create(1,1,31)),
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Render _current frame only"), true),
 	tparam("mpeg4",200)
@@ -321,7 +321,7 @@ RenderSettings::on_render_pressed()
 
 	target->set_canvas(canvas_interface_->get_canvas());
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
-	rend_desc.set_antialias((int)adjustment_antialias.get_value());
+	rend_desc.set_antialias((int)adjustment_antialias->get_value());
 	rend_desc.set_render_excluded_contexts(false);
 
 	// If we are to only render the current frame
@@ -329,7 +329,7 @@ RenderSettings::on_render_pressed()
 		rend_desc.set_time(canvas_interface_->get_time());
 
 	target->set_rend_desc(&rend_desc);
-	target->set_quality((int)adjustment_quality.get_value());
+	target->set_quality((int)adjustment_quality->get_value());
 	if( !target->init() ){
 		canvas_interface_->get_ui_interface()->error(_("Target initialization failure"));
 		return;
