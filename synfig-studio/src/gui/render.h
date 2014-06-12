@@ -28,6 +28,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
@@ -35,7 +37,7 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
-#include <gtkmm/combobox.h>
+#include <gtkmm/comboboxtext.h>
 
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
@@ -69,10 +71,10 @@ class RenderSettings : public Gtk::Dialog
 
 	Gtk::CheckButton toggle_single_frame;
 
-	Gtk::OptionMenu optionmenu_target;
-	Gtk::Menu *menu_target;
+	Gtk::ComboBoxText comboboxtext_target;
 	Gtk::Button *tparam_button;
 
+	std::vector<synfig::String> target_names;
 	synfig::String target_name;
 
 	void set_target(synfig::String name);
@@ -94,6 +96,7 @@ private:
 	void on_render_pressed();
 	void on_cancel_pressed();
 	void on_targetparam_pressed();
+	void on_comboboxtext_target_changed();
 
 	void on_finished();
 }; // END of class RenderSettings
