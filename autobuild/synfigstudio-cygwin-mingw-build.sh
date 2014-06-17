@@ -493,7 +493,7 @@ fi
 mkmlt()
 {
 PKG_NAME=mlt
-PKG_VERSION=0.9.0
+PKG_VERSION=0.9.1
 TAREXT=gz
 
 if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
@@ -574,7 +574,7 @@ libdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
 includedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
 
 Name: ${PKG}
-Description: Dynamic module loader for GLib
+Description: FFMpeg
 Version: ${FFMPEG_VERSION}
 
 EOF
