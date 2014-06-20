@@ -386,11 +386,10 @@ Widget_Preview::Widget_Preview():
 	jack_enabled(false),
 	jack_is_playing(false),
 	jack_time(0),
-	jack_offset(0)
+	jack_offset(0),
 #ifdef WITH_JACK
-	,
 	jack_client(NULL),
-	jack_synchronizing(false)
+	jack_synchronizing(false),
 #endif
 	zoom_preview(true)
 {
@@ -919,7 +918,7 @@ bool studio::Widget_Preview::play_update()
 			{
 				time = adj_time_scrub->get_upper();
 				adj_time_scrub->set_value(time);
-				play_pause();
+				pause();
 				update();
 
 				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
@@ -1067,7 +1066,7 @@ void studio::Widget_Preview::play()
 
 		//synfig::info("	rate = %.3lfs = %d ms",rate,timeout);
 
-		signal_play_(adj_time_scrub->get_value());
+		//signal_play_(adj_time_scrub->get_value());
 
 		//play the audio...
 		if(audio) audio->play(adj_time_scrub->get_value());
@@ -1095,22 +1094,7 @@ void studio::Widget_Preview::on_play_pause_pressed()
 	float current = adj_time_scrub->get_value();
 	Gtk::Image *icon;
 
-	if(!playing)
-	{
-		play_pausebutton->remove();
-		if(current == end) adj_time_scrub->set_value(begin);
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
-		play_pausebutton->set_tooltip_text(_("Pause"));
-		play_pausebutton->add(*icon);
-		icon->set_padding(0,0);
-		icon->show();
-
-		play_flag=true;
-	}
-	else
-	{
-		play_flag=false;
-	}
+	play_flag = !playing;
 	
 #ifdef WITH_JACK
 	if (jack_enabled)
@@ -1178,6 +1162,13 @@ void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 	scrstopcon = disp_sound.signal_stop_scrubbing().connect(sigc::mem_fun(*a,&AudioContainer::stop_scrubbing));
 	scrubcon = disp_sound.signal_scrub().connect(sigc::mem_fun(*a,&AudioContainer::scrub));
 }
+
+synfig::Time studio::Widget_Preview::get_position() const
+	{ return adj_time_scrub->get_value(); }
+synfig::Time studio::Widget_Preview::get_time_start() const
+	{ return adj_time_scrub->get_lower(); }
+synfig::Time studio::Widget_Preview::get_time_end() const
+	{ return adj_time_scrub->get_upper(); }
 
 void studio::Widget_Preview::seek(const synfig::Time &t)
 {
