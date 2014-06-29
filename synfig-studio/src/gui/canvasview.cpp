@@ -127,6 +127,7 @@
 #include "preview.h"
 #include "audiocontainer.h"
 #include "widgets/widget_timeslider.h"
+#include "widgets/widget_enum.h"
 #include "dials/keyframedial.h"
 #include "dials/jackdial.h"
 
@@ -136,6 +137,7 @@
 #include <pangomm.h>
 
 #include "general.h"
+#include "tool/progress.h"
 
 #endif
 
@@ -801,6 +803,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	event_box->show();
 	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&studio::CanvasView::on_button_press_event));
 
+	set_use_scrolled(false);
 	add(*event_box);
 
 	//set_transient_for(*App::toolbox);
@@ -1082,21 +1085,78 @@ CanvasView::create_time_bar()
 	timeslider->show();
 	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
 	timeslider->set_can_focus(true);
-
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
+	
+	timetrack = manage(new class Gtk::VBox());
+	timetrack->pack_start(*widget_kf_list);
+	timetrack->pack_start(*timeslider);
+	timetrack->pack_start(*time_window_scroll);
+	timetrack->hide();
+	
+	// Interpolation widget
+	widget_interpolation = manage(new Widget_Enum());
+	widget_interpolation->set_param_desc(
+		ParamDesc("interpolation")
+			.set_hint("enum")
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+	);
+	widget_interpolation->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
+	widget_interpolation->set_popup_fixed_width(false);
+	widget_interpolation->set_size_request(120,0);
+	widget_interpolation->show();
+	Gtk::Alignment* widget_interpolation_align=manage(new Gtk::Alignment(1, Gtk::ALIGN_CENTER, 0, 0));
+	widget_interpolation_align->add(*widget_interpolation);
+	widget_interpolation_align->show();
+	widget_interpolation_scroll=manage(new class Gtk::ScrolledWindow());
+	widget_interpolation_scroll->add(*widget_interpolation_align);
+	widget_interpolation_scroll->show();
+	widget_interpolation_scroll->set_shadow_type(Gtk::SHADOW_NONE);
+	widget_interpolation_scroll->set_policy(Gtk::POLICY_ALWAYS,Gtk::POLICY_NEVER);
+	widget_interpolation_scroll->set_size_request(25,0);
+	Gtk::Scrollbar* hscroll=widget_interpolation_scroll->get_hscrollbar();
+	hscroll->hide();
+	
+	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_interpolation_changed));
+	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::interpolation_refresh));
+	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
+	interpolation_refresh();
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
-	animatebutton = Gtk::manage(new class Gtk::ToggleButton());
-	animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
-	icon->set_padding(0,0);
-	icon->show();
-	animatebutton->add(*icon);
-	animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_animatebutton));
-	animatebutton->set_relief(Gtk::RELIEF_NONE);
-	animatebutton->show();
+	{
+		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
+		animatebutton = Gtk::manage(new class Gtk::ToggleButton());
+		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
+		icon->set_padding(0,0);
+		icon->show();
+		animatebutton->add(*icon);
+		animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_animatebutton));
+		animatebutton->set_relief(Gtk::RELIEF_NONE);
+		animatebutton->show();
+	}
+	
+	{
+		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-timetrack"), iconsize));
+		timetrackbutton = Gtk::manage(new class Gtk::ToggleButton());
+		timetrackbutton->set_tooltip_text(_("Toggle timebar"));
+		icon->set_padding(0,0);
+		icon->show();
+		timetrackbutton->add(*icon);
+		timetrackbutton->signal_toggled().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_timetrackbutton));
+		timetrackbutton->set_relief(Gtk::RELIEF_NONE);
+		timetrackbutton->show();
+	}
 
 	//Setup the audio display
 	disp_audio->set_size_request(-1,32); //disp_audio->show();
@@ -1118,6 +1178,7 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
 	);
 	current_time_widget->set_size_request(0,-1); // request horizontal shrink
+	current_time_widget->set_width_chars(5);
 	current_time_widget->set_tooltip_text(_("Current time"));
 	current_time_widget->show();
 
@@ -1143,8 +1204,6 @@ CanvasView::create_time_bar()
 	keyframedial->show();
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
-
-	timebar = Gtk::manage(new class Gtk::Table(8, 3, false));
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -1175,20 +1234,22 @@ CanvasView::create_time_bar()
 		space2->show();
 	}
 #endif
+	
+	timebar = Gtk::manage(new class Gtk::Table(10, 2, false));
 
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*framedial, 0, 2, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*widget_kf_list, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*time_window_scroll, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*space2, 3, 4, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*jackdial, 4, 5, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*keyframedial, 5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space, 6, 7, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*animatebutton, 7, 8, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*timetrackbutton, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*current_time_widget, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*framedial, 2, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*jackdial, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	//timebar->attach(*space2, 5, 6, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL);
+	timebar->attach(*widget_interpolation_scroll, 5, 7, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*keyframedial, 7, 8, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*space, 8, 9, 1, 2, Gtk::SHRINK, Gtk::FILL);
+	timebar->attach(*animatebutton, 9, 10, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	
+	timebar->attach(*timetrack, 0, 10, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 
 	timebar->show();
 
@@ -1227,7 +1288,7 @@ CanvasView::create_status_bar()
 	//statusbartable->attach(*treetogglebutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*lowerbutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*raisebutton, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-
+	
 	statusbartable->attach(*statusbar, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	statusbartable->attach(*refreshbutton, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -2783,6 +2844,15 @@ CanvasView::toggle_animatebutton()
 }
 
 void
+CanvasView::toggle_timetrackbutton()
+{
+	if (timetrackbutton->get_active())
+		timetrack->set_visible(true);
+	else
+		timetrack->set_visible(false);
+}
+
+void
 CanvasView::toggle_past_keyframe_button()
 {
 	if(toggling_animate_mode_)
@@ -2793,6 +2863,7 @@ CanvasView::toggle_past_keyframe_button()
 	else
 		set_mode((get_mode()|synfigapp::MODE_ANIMATE_PAST));
 }
+
 
 void
 CanvasView::toggle_future_keyframe_button()
@@ -4288,3 +4359,19 @@ CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position
 	return 1;
 }
 #endif
+
+void
+CanvasView::interpolation_refresh()
+{
+	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
+	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
+	synfig::info("!!!-1");
+}
+
+void
+CanvasView::on_interpolation_changed()
+{
+	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
+	widget_interpolation_scroll->get_hscrollbar()->get_adjustment()->set_value(0);
+	synfig::info("!!!-2");
+}

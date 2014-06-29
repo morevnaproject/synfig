@@ -183,7 +183,7 @@ Widget_Defaults::Widget_Defaults()
 	{
 		// widget outline color
 		_widget_otln_color = manage(new Widget_Color());
-		_widget_otln_color->set_size_request(28, 24);
+		_widget_otln_color->set_size_request(30, 26);
 		_widget_otln_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_otln_color_clicked));
 		_widget_otln_color->set_tooltip_text(_("Outline Color"));
 
@@ -194,7 +194,7 @@ Widget_Defaults::Widget_Defaults()
 
 		// widget fill color
 		_widget_fill_color = manage(new Widget_Color());
-		_widget_fill_color->set_size_request(28, 24);
+		_widget_fill_color->set_size_request(30, 26);
 		_widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
 		_widget_fill_color->set_tooltip_text(_("Fill Color"));
 
@@ -244,12 +244,37 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget brush
 	_widget_brush = manage(new Widget_Brush());
-	_widget_brush->set_size_request(48, 48);
+	_widget_brush->set_size_request(56, 48);
 	_widget_brush->set_tooltip_text(_("Brush Preview"));
+	
+	brush_increase = Gtk::manage(new class Gtk::Button("+"));
+	brush_increase->set_tooltip_text(_("Decrease brush size"));
+	brush_increase->set_relief(Gtk::RELIEF_NONE);
+	brush_increase->set_border_width(0);
+	brush_increase->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_increase_clicked));
+	
+	brush_decrease = Gtk::manage(new class Gtk::Button("-"));
+	brush_decrease->set_tooltip_text(_("Increase brush size"));
+	brush_decrease->set_relief(Gtk::RELIEF_NONE);
+	brush_decrease->set_border_width(0);
+	brush_decrease->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_decrease_clicked));
+	
+	brush_entry = Gtk::manage(new class Gtk::Entry());
+	brush_entry->set_width_chars(4);
+	brush_entry->set_has_frame(false);
+	brush_entry->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_entry_changed));
+	brush_entry->set_tooltip_text(_("Brush Size"));
+	
+	Gtk::Table* brush_layout = Gtk::manage(new class Gtk::Table(2, 3, false));
+	brush_layout->attach(*_widget_brush, 0, 2, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	brush_layout->attach(*brush_decrease, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	brush_layout->attach(*brush_increase, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	brush_layout->attach(*brush_entry, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 2);
+	brush_layout->show_all();
 
 	// fixed brush widget size
 	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	widget_brush->add(*_widget_brush);
+	widget_brush->add(*brush_layout);
 
 
 	// widget bline width
@@ -283,27 +308,6 @@ Widget_Defaults::Widget_Defaults()
 	//);
 	//widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
-	// widget interpolation
-	widget_interpolation = manage(new Widget_Enum());
-	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_interpolation_changed));
-	widget_interpolation->set_param_desc(
-		ParamDesc("interpolation")
-			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
-	);
-	widget_interpolation->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
-	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
-	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
-	widget_interpolation->set_popup_fixed_width(false);
-
 	// widget opacity
 	//widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
 	//widget_opacity->set_digits(2);
@@ -315,7 +319,7 @@ Widget_Defaults::Widget_Defaults()
 	// widget gradient
 	_widget_gradient = manage(new Widget_Gradient());
 	_widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
-	_widget_gradient->set_size_request(48, 24);
+	_widget_gradient->set_size_request(56, 24);
 	_widget_gradient->set_tooltip_text(_("Default Gradient"));
 
 	// fixed gradient widget size
@@ -335,21 +339,19 @@ Widget_Defaults::Widget_Defaults()
 		// pack brush and bline width widgets
 		{
 			widget_brush_bline_width = manage(new Gtk::VBox(false, 0));
-			widget_brush_bline_width->pack_start(*widget_brush, Gtk::PACK_SHRINK, 2);
+			//widget_brush_bline_width->pack_start(*widget_brush, Gtk::PACK_SHRINK, 2);
 			widget_brush_bline_width->pack_start(*widget_bline_width, Gtk::PACK_EXPAND_WIDGET, 2);
 		}
 
 		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
-		pack_start(*widget_brush_bline_width, Gtk::PACK_EXPAND_PADDING, 4);
-		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*widget_brush, Gtk::PACK_EXPAND_PADDING, 6);
 
 		// show all widgets
 		widget_colors_gradient->show_all();
 		//widget_blend_method->show();
 		//widget_opacity->show();
-		widget_interpolation->show();
 		widget_brush_bline_width->show_all();
 	}
 
@@ -361,14 +363,12 @@ Widget_Defaults::Widget_Defaults()
 	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
 	//synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
-	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::interpolation_refresh));
 
 	otln_color_refresh();
 	fill_color_refresh();
 	gradient_refresh();
 	//blend_method_refresh();
 	//opacity_refresh();
-	interpolation_refresh();
 }
 
 Widget_Defaults::~Widget_Defaults()
@@ -397,6 +397,7 @@ void
 Widget_Defaults::bline_width_refresh()
 {
 	widget_bline_width->set_value(synfigapp::Main::get_bline_width());
+	brush_entry->set_text(widget_bline_width->get_value().get_string(widget_bline_width->get_digits()));
 }
 
 /*
@@ -405,15 +406,7 @@ Widget_Defaults::blend_method_refresh()
 {
 	widget_blend_method->set_value(synfigapp::Main::get_blend_method());
 }
-*/
 
-void
-Widget_Defaults::interpolation_refresh()
-{
-	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
-}
-
-/*
 void
 Widget_Defaults::opacity_refresh()
 {
@@ -434,15 +427,33 @@ Widget_Defaults::on_blend_method_changed()
 */
 
 void
-Widget_Defaults::on_interpolation_changed()
-{
-	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
-}
-
-void
 Widget_Defaults::on_bline_width_changed()
 {
 	synfigapp::Main::set_bline_width(widget_bline_width->get_value());
+}
+
+void
+Widget_Defaults::on_brush_entry_changed()
+{
+	synfig::Distance distance(synfigapp::Main::get_bline_width());
+	distance = synfig::String(brush_entry->get_text());
+	synfigapp::Main::set_bline_width(distance);
+}
+
+void
+Widget_Defaults::on_brush_increase_clicked()
+{
+	synfig::Distance distance(synfigapp::Main::get_bline_width());
+	distance+=1;
+	synfigapp::Main::set_bline_width(distance);
+}
+
+void
+Widget_Defaults::on_brush_decrease_clicked()
+{
+	synfig::Distance distance(synfigapp::Main::get_bline_width());
+	distance-=1;
+	synfigapp::Main::set_bline_width(distance);
 }
 
 void
