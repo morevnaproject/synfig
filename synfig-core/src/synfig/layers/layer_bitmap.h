@@ -32,8 +32,6 @@
 #include <synfig/surface.h>
 #include <synfig/target.h> // for RenderMethod
 
-#include <synfig/rendering/surface.h>
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -61,7 +59,6 @@ public:
 	mutable synfig::Mutex mutex;
 	mutable Surface surface;
 	mutable CairoSurface csurface;
-	mutable rendering::Surface::Handle rendering_surface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
@@ -92,8 +89,6 @@ public:
 	
 	void set_cairo_surface(cairo_surface_t* cs);
 
-protected:
-	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 }; // END of class Layer_Bitmap
 
 }; // END of namespace synfig
