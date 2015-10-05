@@ -44,6 +44,8 @@
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
 #include <synfig/filesystemnative.h>
+#include <synfig/filesystemgroup.h>
+#include <synfig/filecontainerzip.h>
 
 #endif
 
@@ -135,6 +137,9 @@ Import::set_param(const String & param, const ValueBase &value)
 		String newfilename_orig = newfilename;
 		if (newfilename_orig.substr(0, String("#").size()) == "#")
 			newfilename_orig = "#images/" + newfilename_orig.substr(String("#").size());
+		
+		if (newfilename_orig.substr(String(newfilename_orig).size()-4, String(newfilename_orig).size()) == ".kra")
+			newfilename_orig = newfilename_orig + "#mergedimage.png";
 
 		if(filename.empty())
 			filename=newfilename;
@@ -163,9 +168,35 @@ Import::set_param(const String & param, const ValueBase &value)
 				}
 
 				assert(get_canvas());
-
-				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
-				if (!file_system) file_system = FileSystemNative::instance();
+				
+				FileSystemGroup::Handle file_system;
+				if (newfilename_orig.find_first_of('#')==string::npos 
+				|| newfilename_orig.substr(0, std::string("#").size())=="#")
+				{
+					//synfig::info("1");
+					file_system = get_canvas()->get_identifier().file_system;
+					if (!file_system) file_system = FileSystemNative::instance();
+				} else {
+					int pos = newfilename_orig.find_first_of('#');
+					String container_filename = newfilename_orig.substr(0, pos);
+					if(!is_absolute_path(newfilename_orig))
+						container_filename = absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+container_filename);
+					//container_filename = "/home/zelgadis/projects/seafile/morevna/ep03/014/014.kra";
+					synfig::info("============ aaa =============");
+					synfig::info("= "+container_filename);
+					synfig::info("============ aaa =============");
+					etl::handle< FileContainerZip > container = new FileContainerZip();
+					if (container->open(container_filename))
+					{
+						etl::handle< FileSystemGroup > file_system2( new FileSystemGroup(FileSystemNative::instance()) );
+						file_system2->register_system(container_filename+"#", container);
+						file_system = file_system2;
+						
+					} else
+					{
+						synfig::error("Cannot open container " + container_filename + "\n");
+					}
+				}
 
 				// todo: literal "container:"
 				if(is_absolute_path(newfilename_orig)
@@ -288,6 +319,11 @@ Import::get_param(const String & param)const
 			ret=param_filename;
 			
 			// todo: literal "container:" and "images"
+			//if(ret.get(String()).find_first_of(".kra#mergedimage.png")!=string::npos) {
+			//	int pos = ret.get(String()).size() - std::string("#mergedimage.png").size();
+			//	ret = ret.get(String()).substr(0, pos);
+			//	synfig::info("-----");
+			//} else
 			if(ret.get(String()).substr(0, std::string("#").size())!="#") {
 				string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
 				ret=relative_path(curpath,abs_filename);

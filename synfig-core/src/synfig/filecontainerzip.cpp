@@ -448,8 +448,8 @@ bool FileContainerZip::open_from_history(const std::string &container_filename, 
 			{ fclose(f); return false; }
 
 		if (cdfh.filename_length > 0
-		 && (cdfh.flags & 0x0071) == 0
-		 && cdfh.compression == 0)
+		 && (cdfh.flags & 0x0071) == 0)
+		// && cdfh.compression == 0)
 		{
 			FileInfo info;
 			if (buffer[cdfh.filename_length - 1] == '/')
