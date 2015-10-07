@@ -73,9 +73,10 @@ bool zstreambuf::inflate_buf()
     }
 
     // read and inflate new chunk of data
-    char in_buf[option_bufsize];
-    inflate_stream_.avail_in = buf_->sgetn(in_buf, sizeof(in_buf));
-    inflate_stream_.next_in = (Bytef*)in_buf;
+    inflate_stream_.avail_in += buf_->sgetn(
+    	data_ + inflate_stream_.avail_in,
+		sizeof(data_) - inflate_stream_.avail_in );
+    inflate_stream_.next_in = (Bytef*)data_;
 	read_buffer_.resize(0);
 	do
 	{
@@ -86,7 +87,8 @@ bool zstreambuf::inflate_buf()
 		read_buffer_.resize(read_buffer_.size() - inflate_stream_.avail_out);
 		if (ret != Z_OK) break;
 	} while (inflate_stream_.avail_out == 0);
-	assert(inflate_stream_.avail_in == 0);
+	memmove(data_, inflate_stream_.next_in, inflate_stream_.avail_in);
+	inflate_stream_.next_in = (Bytef*)data_;
 
 	// nothing to read
 	if (read_buffer_.empty()) return false;
@@ -172,4 +174,3 @@ int zstreambuf::overflow(int c)
 }
 
 /* === E N T R Y P O I N T ================================================= */
-

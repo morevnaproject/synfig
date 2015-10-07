@@ -56,6 +56,7 @@ namespace synfig {
 
 	private:
 		std::streambuf *buf_;
+		char data_[option_bufsize];
 
 		bool inflate_initialized;
 		z_stream inflate_stream_;
