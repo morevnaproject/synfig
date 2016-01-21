@@ -65,6 +65,7 @@ using namespace rendering;
 //#define DEBUG_THREAD_WAIT
 #endif
 
+#define DEBUG_TASK_SURFACE
 
 /* === M A C R O S ========================================================= */
 
