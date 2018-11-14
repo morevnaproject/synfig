@@ -94,6 +94,17 @@ esac
 
 # -- L I B R A R I E S ----------------------------------------
 
+#AC_INIT
+#m4_include([m4/sdl2.m4])
+#AC_CONFIG_MACRO_DIR([m4])
+
+dnl Check for SDL
+SDL_VERSION=1.2.0
+AM_PATH_SDL($SDL_VERSION,
+        :,
+        AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
+
 # Gtk compatibility hacks:
 # Since 3.14 some our hacks for GUI decorations works in other way
 # Since 3.14 for checkboxes STATE_FLAG_ACTIVE replaced with STATE_FLAG_CHECKED
@@ -226,6 +237,8 @@ Build images ---------------------> $with_images
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
 "'$'"LDFLAGS --------------------------> '$LDFLAGS'
+"'$'"SDL_CFLAGS -----------------------> '$SDL_CFLAGS'
+"'$'"SDL_LIBS -------------------------> '$SDL_LIBS'
 "'$'"SYNFIG_CFLAGS --------------------> '$SYNFIG_CFLAGS'
 "'$'"SYNFIG_LIBS ----------------------> '$SYNFIG_LIBS'
 "'$'"GTKMM_CFLAGS ---------------------> '$GTKMM_CFLAGS'
