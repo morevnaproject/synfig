@@ -1705,7 +1705,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
-		vectorizerpopup=new studio::VectorizerSettings(*App::main_window);
 		load_accel_map();
 		if (!load_settings())
 		{
@@ -3607,9 +3606,11 @@ void App::open_img_in_external(const std::string &uri)
 	}
 
 }
-void App::open_vectorizerpopup(const std::string &uri)
+void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap)
 {
-	synfig::info("Opening Vectorizerpopup");
+	String abc = my_layer_bitmap->get_description();
+	synfig::info("Opening Vectorizerpopup for :"+abc);
+	App::vectorizerpopup=new studio::VectorizerSettings(*App::main_window,my_layer_bitmap);
 	App::vectorizerpopup->show();
 
 }
