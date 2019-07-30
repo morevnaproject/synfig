@@ -22,7 +22,7 @@ target_sources(synfigapp
 )
 
 include(actions/CMakeLists.txt)
-
+include(vectorizer/CMakeLists.txt)
 install(
     TARGETS synfigapp
     DESTINATION lib

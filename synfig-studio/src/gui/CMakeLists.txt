@@ -64,7 +64,6 @@ include(states/CMakeLists.txt)
 include(trees/CMakeLists.txt)
 include(widgets/CMakeLists.txt)
 include(workarearenderer/CMakeLists.txt)
-include(vectorizer/CMakeLists.txt)
 
 target_link_libraries(synfigstudio
     ${GTKMM_LIBRARIES}
