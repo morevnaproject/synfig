@@ -85,7 +85,7 @@ ValueNode_SegCalcVertex::~ValueNode_SegCalcVertex()
 ValueBase
 ValueNode_SegCalcVertex::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Segment segment((*segment_)(t).get(Segment()));

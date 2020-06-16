@@ -108,7 +108,7 @@ CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handl
 
 CanvasInterface::~CanvasInterface()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("CanvasInterface::~CanvasInterface(): Deleted");
 }
 
@@ -317,7 +317,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == type_bone_object)
 						{
-							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
+							if (0)
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
@@ -331,7 +331,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == types_namespace::TypePair<Bone, Bone>::instance)
 						{
-							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
+							if (0)
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
@@ -345,7 +345,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == type_vector)
 						{
-							if (getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
+							if (0)
 							{
 								value_node=ValueNodeRegistry::create("static_list",iter->second);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);

@@ -166,7 +166,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		throw Exception::BadType(get_type().description.local_name);
 	}
 
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+	if (0)
 		printf("%s:%d set parent canvas for composite %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 	set_parent_canvas(canvas);
 }
@@ -191,7 +191,7 @@ ValueNode_Composite::create_new()const
 ValueBase
 synfig::ValueNode_Composite::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());

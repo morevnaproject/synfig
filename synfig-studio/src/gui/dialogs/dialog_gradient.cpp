@@ -138,7 +138,7 @@ Dialog_Gradient::on_set_default_pressed()
 void
 Dialog_Gradient::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+	if (0)
 		printf("%s:%d Dialog_Gradient::on_changed()\n", __FILE__, __LINE__);
 
 	signal_edited_(get_gradient());

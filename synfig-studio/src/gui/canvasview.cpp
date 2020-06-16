@@ -750,7 +750,7 @@ CanvasView::~CanvasView()
 
 	delete canvas_options;
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		info("CanvasView::~CanvasView(): Deleted");
 
 	SYNFIG_EXCEPTION_GUARD_END()
@@ -1025,7 +1025,7 @@ CanvasView::create_time_bar()
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
-	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
+	if(0)
 		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
 	if (header_height < 3)
 		header_height = 24;

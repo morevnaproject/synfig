@@ -94,7 +94,7 @@ ValueNode_RealString::~ValueNode_RealString()
 ValueBase
 ValueNode_RealString::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real real((*real_)(t).get(Real()));

@@ -150,7 +150,7 @@ KeyframeTree::KeyframeTree() : editable_(false)
 KeyframeTree::~KeyframeTree()
 {
 	keyframeselected.disconnect();
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("KeyframeTree::~KeyframeTree(): Deleted");
 }
 

@@ -266,7 +266,7 @@ reverse_value(const ValueBase &value)
 ValueBase
 ValueNode_Reverse::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	return reverse_value((*link_)(t));

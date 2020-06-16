@@ -165,7 +165,7 @@ Instance::~Instance()
 {
 	instance_map_.erase(canvas_);
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("Instance::~Instance(): Deleted");
 }
 

@@ -463,7 +463,7 @@ Super::perform()
 	ActionList::const_iterator iter;
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
-		if (getenv("SYNFIG_DEBUG_ACTIONS"))
+		if (0)
 			synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 
 		try
@@ -642,7 +642,7 @@ Undoable::~Undoable() {
 void
 Undoable::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
+	if (0)
 		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	Base::ref();
@@ -651,7 +651,7 @@ Undoable::ref()const
 bool
 Undoable::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
+	if (0)
 		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return Base::unref();

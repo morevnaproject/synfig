@@ -120,7 +120,7 @@ LayerParamTreeStore::~LayerParamTreeStore()
 		changed_connection_list.pop_back();
 	}
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
 }
 
