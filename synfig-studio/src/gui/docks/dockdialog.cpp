@@ -161,7 +161,7 @@ DockDialog::on_delete_event(GdkEventAny * /* event */)
 bool
 DockDialog::close()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("DockDialog::close(): Deleted");
 
 	empty_sig.disconnect();

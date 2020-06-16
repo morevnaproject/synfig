@@ -128,7 +128,7 @@ synfig::ValueNode_TimedSwap::~ValueNode_TimedSwap()
 synfig::ValueBase
 synfig::ValueNode_TimedSwap::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Time swptime=(*swap_time)(t).get(Time());

@@ -185,7 +185,7 @@ Widget_Time::on_focus_in_event(GdkEventFocus* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// if defined, show the full time format "0h 0m 5s 0f" when the time widget gets focus
-	if (getenv("SYNFIG_SHOW_FULL_TIME_ON_FOCUS"))
+	if (0)
 		set_text(time_.get_string(fps_,App::get_time_format()|Time::FORMAT_FULL));
 
 	return Gtk::Entry::on_focus_in_event(event);

@@ -117,7 +117,7 @@ LayerGroupTree::LayerGroupTree() : editable_(false)
 
 LayerGroupTree::~LayerGroupTree()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("LayerGroupTree::~LayerGroupTree(): Deleted");
 }
 

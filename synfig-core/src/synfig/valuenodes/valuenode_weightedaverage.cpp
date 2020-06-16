@@ -99,7 +99,7 @@ ValueNode_WeightedAverage::create(const ValueBase &value, Canvas::LooseHandle ca
 ValueBase
 ValueNode_WeightedAverage::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 	return ValueAverage::average_weighted(ValueNode_DynamicList::operator()(t), ValueBase(get_type()));
 }

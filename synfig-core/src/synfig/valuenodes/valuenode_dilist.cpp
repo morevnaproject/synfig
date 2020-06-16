@@ -128,7 +128,7 @@ ValueNode_DIList::create_list_entry(int index, Time time, Real /*origin*/)
 ValueBase
 ValueNode_DIList::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<DashItem> ret_list;

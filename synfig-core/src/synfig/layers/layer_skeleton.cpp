@@ -71,7 +71,7 @@ Layer_Skeleton::Layer_Skeleton():
 {
 	std::vector<synfig::Bone> bones;
 	int bone_count = 1;
-	if (getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"))
+	if (0)
 		bone_count = atoi(getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"));
 	if (bone_count < 1) bone_count = 1;
 	else if (bone_count > 10) bone_count = 10;
@@ -91,7 +91,7 @@ Layer_Skeleton::Layer_Skeleton():
 #ifdef _DEBUG
 Layer_Skeleton::~Layer_Skeleton()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		printf("%s:%d ~Layer_Skeleton()\n", __FILE__, __LINE__);
 }
 #endif

@@ -73,7 +73,7 @@ MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 
 MetaDataTreeStore::~MetaDataTreeStore()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("MetaDataTreeStore::~MetaDataTreeStore(): Deleted");
 }
 

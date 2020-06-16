@@ -95,7 +95,7 @@ ValueNode_BLineCalcVertex::~ValueNode_BLineCalcVertex()
 ValueBase
 ValueNode_BLineCalcVertex::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	const ValueBase::List bline = (*bline_)(t).get_list();

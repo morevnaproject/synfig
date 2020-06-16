@@ -267,7 +267,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 
 CellRenderer_ValueBase::~CellRenderer_ValueBase()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("CellRenderer_ValueBase::~CellRenderer_ValueBase(): Deleted");
 }
 

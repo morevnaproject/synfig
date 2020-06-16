@@ -107,7 +107,7 @@ ValueNode_Step::~ValueNode_Step()
 ValueBase
 ValueNode_Step::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Time duration    ((*duration_    )(t).get(Time()));

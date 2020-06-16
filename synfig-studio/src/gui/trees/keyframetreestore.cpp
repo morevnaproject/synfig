@@ -139,7 +139,7 @@ KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 
 KeyframeTreeStore::~KeyframeTreeStore()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("KeyframeTreeStore::~KeyframeTreeStore(): Deleted");
 }
 

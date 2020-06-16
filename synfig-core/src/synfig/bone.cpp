@@ -64,7 +64,7 @@ Bone::Bone():
 	depth_(0.0),
 	parent_(nullptr)
 {
-	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
+	if (0)
 		printf("%s:%d new bone\n", __FILE__, __LINE__);
 }
 
@@ -80,7 +80,7 @@ Bone::Bone(const Point &o, const Point &t):
 	depth_(0.0),
 	parent_(nullptr)
 {
-	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
+	if (0)
 		printf("%s:%d new bone\n", __FILE__, __LINE__);
 }
 
@@ -97,7 +97,7 @@ Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, Value
 	depth_(0.0),
 	parent_(p)
 {
-	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
+	if (0)
 		printf("%s:%d new bone\n", __FILE__, __LINE__);
 }
 

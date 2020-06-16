@@ -78,7 +78,7 @@ HistoryTreeStore::HistoryTreeStore(etl::loose_handle<studio::Instance> instance_
 
 HistoryTreeStore::~HistoryTreeStore()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	if (0)
 		synfig::info("HistoryTreeStore::~HistoryTreeStore(): Deleted");
 }
 

@@ -63,7 +63,7 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 	ValueNode	(x.get_type()),
 	value		(x)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+	if (0)
 		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 
 	if (x.get_type() == type_bone_valuenode)
@@ -122,7 +122,7 @@ ValueNode_Const::~ValueNode_Const()
 ValueBase
 ValueNode_Const::operator()(Time /*t*/)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	return value;

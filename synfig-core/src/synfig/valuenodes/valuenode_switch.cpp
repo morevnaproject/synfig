@@ -118,7 +118,7 @@ ValueNode_Switch::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Switch::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (*switch_)(t).get(bool()) ? (*link_on_)(t) : (*link_off_)(t);

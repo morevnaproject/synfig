@@ -141,7 +141,7 @@ synfig::ValueNode_Add::~ValueNode_Add()
 synfig::ValueBase
 synfig::ValueNode_Add::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (0)
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!ref_a || !ref_b)
