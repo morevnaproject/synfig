@@ -42,12 +42,15 @@ $ARCH-cairomm \
 $ARCH-ffmpeg \
 $ARCH-fftw \
 $ARCH-glibmm \
-$ARCH-imagemagick \
 $ARCH-libxml++2.6 \
 $ARCH-pango \
 $ARCH-gtkmm3 \
 $ARCH-openexr \
 $ARCH-libmng
+
+# ImageMagick is required by synfig-studio/build_tools/sif2ico.sh
+pacman -S --needed --noconfirm --color=auto \
+$ARCH-imagemagick
 
 # build mlt
 bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
