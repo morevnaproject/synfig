@@ -39,7 +39,9 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
+#include <freetype/ftbitmap.h>
 #include <pango/pangocairo.h>
+#include <pango/pangoft2.h>
 
 #include "lyr_freetype.h"
 
@@ -48,6 +50,19 @@
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/cairo_renddesc.h>
+
+#include <synfig/context.h>
+
+//#ifdef __APPLE__
+//#define USE_MAC_FT_FUNCS	(1)
+//#endif
+
+#ifdef USE_MAC_FT_FUNCS
+	#include <CoreServices/CoreServices.h>
+	#include FT_MAC_H
+#endif
+
+#include <algorithm>
 
 #endif
 
@@ -59,12 +74,34 @@ using namespace synfig;
 
 #define MAX_GLYPHS		2000
 
-#define PANGO_STYLE_NORMAL (0)
-#define PANGO_STYLE_OBLIQUE (1)
-#define PANGO_STYLE_ITALIC (2)
+// Copy of PangoStyle
+// It is necessary to keep original values if Pango ever change them
+//  - because it would change layer rendering as Synfig stores the parameter
+//     value as an integer (ie. not a weight name string)
+enum TextStyle{
+	TEXT_STYLE_NORMAL = 0,
+	TEXT_STYLE_OBLIQUE = 1,
+	TEXT_STYLE_ITALIC = 2
+};
 
-#define WEIGHT_NORMAL (400)
-#define WEIGHT_BOLD (700)
+// Copy of PangoWeight
+// It is necessary to keep original values if Pango ever change them
+//  - because it would change layer rendering as Synfig stores the parameter
+//     value as an integer (ie. not a weight name string)
+enum TextWeight{
+	TEXT_WEIGHT_THIN = 100,
+	TEXT_WEIGHT_ULTRALIGHT = 200,
+	TEXT_WEIGHT_LIGHT = 300,
+	TEXT_WEIGHT_SEMILIGHT = 350,
+	TEXT_WEIGHT_BOOK = 380,
+	TEXT_WEIGHT_NORMAL = 400,
+	TEXT_WEIGHT_MEDIUM = 500,
+	TEXT_WEIGHT_SEMIBOLD = 600,
+	TEXT_WEIGHT_BOLD = 700,
+	TEXT_WEIGHT_ULTRABOLD = 800,
+	TEXT_WEIGHT_HEAVY = 900,
+	TEXT_WEIGHT_ULTRAHEAVY = 1000
+};
 
 /* === G L O B A L S ======================================================= */
 
@@ -72,8 +109,359 @@ SYNFIG_LAYER_INIT(Layer_Freetype);
 SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.2");
+SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
+
+#ifndef __APPLE__
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".ttc"};
+#else
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont", ".ttc"};
+#endif
+
+extern FT_Library ft_library;
+
+/* === C L A S S E S ======================================================= */
+
+struct Glyph
+{
+	FT_Glyph glyph;
+	FT_Vector pos;
+	//int width;
+};
+
+struct TextLine
+{
+	int width;
+	std::vector<Glyph> glyph_table;
+
+	TextLine():width(0) { }
+	void clear_and_free();
+
+	int actual_height()const
+	{
+		int height(0);
+
+		std::vector<Glyph>::const_iterator iter;
+		for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
+		{
+			FT_BBox   glyph_bbox;
+
+			//FT_Glyph_Get_CBox( glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox );
+			FT_Glyph_Get_CBox( iter->glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
+
+			if(glyph_bbox.yMax>height)
+				height=glyph_bbox.yMax;
+		}
+		return height;
+	}
+};
+
+#ifdef WITH_FONTCONFIG
+// Allow proper finalization of FontConfig
+struct FontConfigWrap {
+	static FcConfig* init() {
+		static FontConfigWrap obj;
+		return obj.config;
+	}
+
+	FontConfigWrap(FontConfigWrap const&) = delete;
+	void operator=(FontConfigWrap const&) = delete;
+private:
+	FcConfig* config = nullptr;
+
+	FontConfigWrap()
+	{
+		config = FcInitLoadConfigAndFonts();
+	}
+	~FontConfigWrap() {
+		FcConfigDestroy(config);
+		config = nullptr;
+	}
+};
+
+static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight);
+#endif
+
+/// Metadata about a font. Used for font face cache indexing
+struct FontMeta {
+	synfig::String family;
+	int style;
+	int weight;
+	//! Canvas file path if loaded font face file depends on it.
+	//!  Empty string otherwise
+	std::string canvas_path;
+
+	FontMeta(synfig::String family, int style=0, int weight=400)
+		: family(family), style(style), weight(weight)
+	{}
+
+	bool operator==(const FontMeta& other) const
+	{
+		return family == other.family && style == other.style && weight == other.weight && canvas_path == other.canvas_path;
+	}
+
+	bool operator<(const FontMeta& other) const
+	{
+		if (family < other.family)
+			return true;
+		if (family != other.family)
+			return false;
+
+		if (style < other.style)
+			return true;
+		if (style > other.style)
+			return false;
+
+		if (weight < other.weight)
+			return true;
+		if (weight > other.weight)
+			return false;
+
+		if (canvas_path < other.canvas_path)
+			return true;
+
+		return false;
+	}
+};
+
+/// Cache font faces for speeding up the text layer rendering
+class FaceCache {
+	std::map<FontMeta, FT_Face> cache;
+public:
+	FT_Face get(const FontMeta &meta) const {
+		auto iter = cache.find(meta);
+		if (iter != cache.end())
+			return iter->second;
+		return nullptr;
+	}
+
+	void put(const FontMeta &meta, FT_Face face) {
+		cache[meta] = face;
+	}
+
+	bool has(const FontMeta &meta) const {
+		auto iter = cache.find(meta);
+		return iter != cache.end();
+	}
+
+	void clear() {
+		for (auto item : cache)
+			FT_Done_Face(item.second);
+		cache.clear();
+	}
+
+	static FaceCache& instance() {
+		static FaceCache obj;
+		return obj;
+	}
+
+private:
+	FaceCache() {}
+	FaceCache(const FaceCache&) = delete;
+
+	~FaceCache() {
+		clear();
+	}
+};
+
+
+class Layer_Freetype::PangoStuff
+{
+	PangoFontMap* font_map;
+	PangoContext* context;
+	PangoLayout* layout;
+
+	FT_Bitmap cached_bmp;
+	PangoRectangle ink;
+
+	bool is_dirty;
+
+public:
+	PangoStuff()
+	 : font_map(nullptr),
+	   context(nullptr),
+	   layout(nullptr),
+	   is_dirty(true)
+	{
+		font_map = pango_ft2_font_map_new();
+		if (!font_map) {
+			synfig::error(_("Layer_Freetype: Cannot create font map from Pango+Freetype"));
+			return;
+		}
+		context = pango_font_map_create_context(font_map);
+		if (!context) {
+			synfig::error(_("Layer_Freetype: Cannot create context from font map"));
+			return;
+		}
+		layout = pango_layout_new(context);
+		if (!layout) {
+			synfig::error(_("Layer_Freetype: Cannot create pango layout from context"));
+			return;
+		}
+		pango_layout_set_single_paragraph_mode(layout, false);
+		FT_Bitmap_Init(&cached_bmp);
+	}
+
+	~PangoStuff()
+	{
+		g_object_unref(layout);
+		g_object_unref(context);
+		g_object_unref(font_map);
+		FT_Bitmap_Done(ft_library, &cached_bmp);
+	}
+
+	void set_font_description(const PangoFontDescription *new_font_desc) {
+		const PangoFontDescription *current_font_desc = pango_layout_get_font_description(layout);
+
+		if (current_font_desc && new_font_desc)
+			if (pango_font_description_equal(current_font_desc, new_font_desc))
+				return;
+
+		pango_layout_set_font_description(layout, new_font_desc);
+
+		is_dirty = true;
+	}
+
+	void set_resolution(int xres, int yres) {
+		pango_ft2_font_map_set_resolution((PangoFT2FontMap *)font_map, xres, yres);
+		is_dirty = true;
+	}
+
+	void set_text(const std::string& text) {
+		if (pango_layout_get_text(layout) == text)
+			return;
+
+		pango_layout_set_text(layout, text.c_str(), -1);
+
+		is_dirty = true;
+	}
+
+	void set_h_compress(double compress) {
+//		Real hspace = 0.5 * size_x * abs(1 - compress);
+//		PangoAttribute* spacing_attr = pango_attr_letter_spacing_new(hspace*PANGO_SCALE);
+//		pango_layout_set_attributes(layout, attr_list);
+	}
+
+	bool is_needing_sync() const {
+		return is_dirty;
+	}
+
+	void sync() {
+		PangoRectangle rect;//TODO: remove ink
+		pango_layout_get_extents(layout, &ink, &rect);
+//		printf("Rect: w: %i h: %i (%i x %i) [%i, %i]\n", rect.width, rect.height, rect.width/PANGO_SCALE, rect.height/PANGO_SCALE, rect.x/PANGO_SCALE, rect.y/PANGO_SCALE);
+//		printf("Ink: w: %i h: %i (%i x %i) [%i, %i]\n", ink.width, ink.height, ink.width/PANGO_SCALE, ink.height/PANGO_SCALE, ink.x/PANGO_SCALE, ink.y/PANGO_SCALE);
+
+		int width = round_to_int(rect.width/Real(PANGO_SCALE));
+		int height = round_to_int(rect.height/Real(PANGO_SCALE));
+
+//		pango_layout_get_size(layout, &width, &height);
+		pango_layout_set_width(layout, rect.width);
+		pango_layout_set_height(layout, rect.height);
+
+		/* FT buffer */
+		FT_Bitmap_Done(ft_library, &cached_bmp);
+		FT_Bitmap_Init(&cached_bmp);
+		cached_bmp.rows = height;
+		cached_bmp.width = width;
+
+
+		/* create our "canvas" */
+		cached_bmp.pitch = (width + 3) & -4;
+		cached_bmp.pixel_mode = FT_PIXEL_MODE_GRAY;
+		cached_bmp.num_grays = 256;
+
+		cached_bmp.buffer = (unsigned char*)malloc(cached_bmp.rows * cached_bmp.pitch);
+		if (! cached_bmp.buffer) {
+			// TODO
+			error(_("Layer_Freetype: cannot allocate the buffer for the output bitmap."));
+			return;
+		}
+		memset(cached_bmp.buffer, 0, cached_bmp.rows * cached_bmp.pitch);
+
+//		int stride = cairo_format_stride_for_width(CAIRO_FORMAT_A8, width);
+//		cairo_surface_t* surf = cairo_image_surface_create_for_data(bmp.buffer, CAIRO_FORMAT_A8, width, height, stride);
+
+//		  if (CAIRO_STATUS_SUCCESS != cairo_surface_status(surf)) {
+//			printf("+ error: couldn't create the surface.\n");
+//			exit(EXIT_FAILURE);
+//		  }
+
+//		  /* create our cairo context object that tracks state. */
+//		  cairo_t* cr = cairo_create(surf);
+//		  if (CAIRO_STATUS_NO_MEMORY == cairo_status(cr)) {
+//			printf("+ error: out of memory, cannot create cairo_t*\n");
+//			exit(EXIT_FAILURE);
+//		  }
+//		pango_cairo_update_layout(cr, layout);
+//		int status = cairo_surface_write_to_png(surf, "test_font.png");
+//		if (CAIRO_STATUS_SUCCESS != status) {
+//		  printf("+ error: couldn't write to png\n");
+//		  exit(EXIT_FAILURE);
+//		}
+
+//		cairo_surface_destroy(surf);
+//		cairo_destroy(cr);
+
+		pango_ft2_render_layout(&cached_bmp, layout, 0, 0);
+//		printf("Pixel mode: %i pitch (%i) %i\n", bmp.pixel_mode, bmp.pitch, pango_layout_get_width(layout));
+	}
+
+	synfig::Rect get_bounding_rect() const {
+		if (!layout)
+			return Rect();
+		PangoRectangle r;
+		puts(pango_layout_get_text(layout));
+		pango_layout_get_extents(layout, nullptr, &r);
+		return Rect(r.x/PANGO_SCALE, r.y/PANGO_SCALE, r.width/PANGO_SCALE, r.height/PANGO_SCALE);
+	}
+
+	void render(Surface *surface, const Color& color, Color::BlendMethod blend_method, float amount, const Point &orig, const Point &orient, bool invert) {
+
+		if (is_dirty)
+			sync();
+
+		Surface src_;
+		Surface *src_surface = surface;
+
+		if(invert)
+		{
+			src_ = *surface;
+			src_surface = &src_;
+			Surface::alpha_pen pen(surface->begin(), amount, blend_method);
+
+			surface->fill(color,pen,surface->get_w(), surface->get_h());
+		}
+
+		const int x0 = round_to_int(orig[0] - orient[0]*cached_bmp.width);
+		const int y0 = round_to_int(orig[1]+(orient[1])*pango_layout_get_baseline(layout)/Real(PANGO_SCALE)+ink.y/Real(PANGO_SCALE));
+		for(unsigned int v = 0; v < cached_bmp.rows; v++) {
+			int y= -v + y0;
+			for(unsigned int u = 0; u < cached_bmp.width; u++) {
+				int x= u + x0;
+//				printf("x,y %i, %i yo:%i or:%i v:%u, h:%u H:%i\n", x,y, round_to_int(orig[1]), round_to_int(orient[1]*cached_bmp.rows), v, cached_bmp.rows, surface->get_h());
+				if( y>=0 &&
+					x>=0 &&
+					y<surface->get_h() &&
+					x<surface->get_w())
+				{
+					Real myamount = cached_bmp.buffer[v*cached_bmp.pitch+u]/255.0;
+//					printf("%c", cached_bmp.buffer[v*cached_bmp.pitch+u] > 128 ? 'x' : ' ');
+//					myamount=1;
+					if(invert)
+						myamount = 1.0f - myamount;
+					(*surface)[y][x]=Color::blend(color, (*src_surface)[y][x], myamount*amount, blend_method);
+				}
+			}
+//			printf("\n");
+		}
+//		FT_Bitmap_Done(ft_library, &bmp);
+		const PangoMatrix *m;
+		m = pango_context_get_matrix(context);
+		if (m)
+			printf("%lf\t%lf\n%lf\t%lf\n", m->xx, m->xy, m->yx, m->yy);
+	}
+};
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -94,10 +482,155 @@ TextLine::clear_and_free()
 	glyph_table.clear();
 }
 
+static bool
+has_valid_font_extension(const std::string &filename) {
+	return std::find(known_font_extensions.begin(), known_font_extensions.end(), filename) != known_font_extensions.end();
+}
+
+
+/// Try to map a font family to a filename (without extension nor directory)
+static void
+get_possible_font_filenames(synfig::String family, int style, int weight, std::vector<std::string>& list)
+{
+	// string :: tolower
+	std::transform(family.begin(), family.end(), family.begin(),
+		[](unsigned char c){ return std::tolower(c); });
+
+	enum FontSuffixStyle {FONT_SUFFIX_NONE, FONT_SUFFIX_BI_BD, FONT_SUFFIX_BI_BD_IT, FONT_SUFFIX_BI_RI};
+	enum FontClassification {FONT_SANS_SERIF, FONT_SERIF, FONT_MONOSPACED, FONT_SCRIPT};
+
+	struct FontFileNameEntry {
+		const char *alias;
+		const char *preffix;
+		const char *alternative_preffix;
+		FontSuffixStyle suffix_style;
+		FontClassification classification;
+
+		std::string get_suffix(int style, int weight) const {
+			std::string suffix;
+			switch (suffix_style) {
+			case FONT_SUFFIX_NONE:
+				break;
+			case FONT_SUFFIX_BI_BD:
+				if (weight>TEXT_WEIGHT_NORMAL)
+					suffix+='b';
+				if (style==TEXT_STYLE_ITALIC || style==TEXT_STYLE_OBLIQUE)
+					suffix+='i';
+				else if (weight>TEXT_WEIGHT_NORMAL)
+					suffix+='d';
+				break;
+			case FONT_SUFFIX_BI_BD_IT:
+				if (weight>TEXT_WEIGHT_NORMAL)
+					suffix+='b';
+				if (style==TEXT_STYLE_ITALIC || style==TEXT_STYLE_OBLIQUE)
+				{
+					suffix+='i';
+					if (weight<=TEXT_WEIGHT_NORMAL)
+						suffix+='t';
+				}
+				else if(weight>TEXT_WEIGHT_NORMAL)
+					suffix+='d';
+				break;
+			case FONT_SUFFIX_BI_RI:
+				if(weight>TEXT_WEIGHT_NORMAL)
+					suffix+='b';
+				else
+					suffix+='r';
+				if(style==TEXT_STYLE_ITALIC || style==TEXT_STYLE_OBLIQUE)
+					suffix+='i';
+				break;
+			}
+			return suffix;
+		}
+
+		static std::string get_alternative_suffix(int style, int weight) {
+			if (weight > TEXT_WEIGHT_NORMAL) {
+				if (style == TEXT_STYLE_ITALIC)
+					return " Bold Italic";
+				else if (style == TEXT_STYLE_OBLIQUE)
+					return " Bold Oblique";
+				else
+					return " Bold";
+			} else {
+				if (style == TEXT_STYLE_ITALIC)
+					return " Italic";
+				else if (style == TEXT_STYLE_OBLIQUE)
+					return " Oblique";
+				else
+					return "";
+			}
+		}
+
+	};
+
+	struct SpecialFontFamily {
+		const char * const alias;
+		const char * const option1;
+		const char * const option2;
+		const char * const option3;
+	};
+
+	const SpecialFontFamily special_font_family_db[] = {
+		{"sans serif", "arial", "luxi sans", "helvetica"},
+		{"serif", "times new roman", "luxi serif", nullptr},
+		{"comic", "comic sans", nullptr, nullptr},
+		{"courier", "courier new", nullptr, nullptr},
+		{"times", "times new roman", nullptr, nullptr},
+		{nullptr, nullptr, nullptr, nullptr}
+	};
+
+	const FontFileNameEntry font_filename_db[] = {
+		{"arial black", "ariblk", nullptr, FONT_SUFFIX_NONE, FONT_SANS_SERIF},
+		{"arial", "arial", "Arial", FONT_SUFFIX_BI_BD, FONT_SANS_SERIF},
+		{"comic sans", "comic", nullptr, FONT_SUFFIX_BI_BD, FONT_SANS_SERIF},
+		{"courier new", "cour", "Courier New", FONT_SUFFIX_BI_BD, FONT_MONOSPACED},
+		{"times new roman", "times", "Times New Roman", FONT_SUFFIX_BI_BD, FONT_SERIF},
+		{"trebuchet", "trebuc", "Trebuchet MS", FONT_SUFFIX_BI_BD_IT, FONT_SANS_SERIF},
+		{"luxi sans", "luxis", nullptr, FONT_SUFFIX_BI_RI, FONT_SANS_SERIF},
+		{"luxi serif", "luxir", nullptr, FONT_SUFFIX_BI_RI, FONT_SERIF},
+		{"luxi mono", "luxim", nullptr, FONT_SUFFIX_BI_RI, FONT_MONOSPACED},
+		{"luxi", "luxim", nullptr, FONT_SUFFIX_BI_RI, FONT_MONOSPACED},
+		{nullptr, nullptr, nullptr, FONT_SUFFIX_NONE, FONT_SANS_SERIF},
+	};
+
+	std::vector<std::string> possible_families;
+	for (int i = 0; special_font_family_db[i].alias; i++) {
+		const SpecialFontFamily &special_family = special_font_family_db[i];
+		if (special_family.alias == family) {
+			possible_families.push_back(special_family.option1);
+			if (special_family.option2) {
+				possible_families.push_back(special_family.option2);
+				if (special_family.option3)
+					possible_families.push_back(special_family.option3);
+			}
+			break;
+		}
+	}
+	if (possible_families.empty())
+		possible_families.push_back(family);
+
+	for (const std::string &possible_family : possible_families) {
+		for (int i = 0; font_filename_db[i].alias; i++) {
+			const FontFileNameEntry &entry = font_filename_db[i];
+			if (possible_family == entry.alias) {
+				std::string filename = entry.preffix;
+				filename += entry.get_suffix(style, weight);
+				list.push_back(filename);
+
+				filename = entry.preffix;
+				filename += entry.get_alternative_suffix(style, weight);
+				list.push_back(filename);
+			}
+		}
+	}
+}
+
 /* === M E T H O D S ======================================================= */
 
 Layer_Freetype::Layer_Freetype()
 {
+	pango_stuff = new PangoStuff();
+
 	face=0;
 
 	param_size=ValueBase(Vector(0.25,0.25));
@@ -107,13 +640,16 @@ Layer_Freetype::Layer_Freetype()
 	param_orient=ValueBase(Vector(0.5,0.5));
 	param_compress=ValueBase(Real(1.0));
 	param_vcompress=ValueBase(Real(1.0));
-	param_weight=ValueBase(WEIGHT_NORMAL);
-	param_style=ValueBase(PANGO_STYLE_NORMAL);
+	param_weight=ValueBase(TEXT_WEIGHT_NORMAL);
+	param_style=ValueBase(TEXT_STYLE_NORMAL);
 	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
 	param_grid_fit=ValueBase(false);
 	param_invert=ValueBase(false);
+	param_use_pango=ValueBase(true);
 	param_font=ValueBase(synfig::String());
+
+	font_path_from_canvas = false;
 
 	old_version=false;
 
@@ -134,33 +670,21 @@ Layer_Freetype::Layer_Freetype()
 
 Layer_Freetype::~Layer_Freetype()
 {
-	if(face)
-		FT_Done_Face(face);
+	delete pango_stuff;
 }
 
 void
 Layer_Freetype::on_canvas_set()
 {
 	Layer_Composite::on_canvas_set();
+
+	if (!font_path_from_canvas)
+		return;
+
 	synfig::String family=param_family.get(synfig::String());
 	int style=param_style.get(int());
 	int weight=param_weight.get(int());
 	new_font(family,style,weight);
-}
-
-void
-Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
-{
-	if(
-		!new_font_(family,style,weight) &&
-		!new_font_(family,style,WEIGHT_NORMAL) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,weight) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,WEIGHT_NORMAL) &&
-		!new_font_("sans serif",style,weight) &&
-		!new_font_("sans serif",style,WEIGHT_NORMAL) &&
-		!new_font_("sans serif",PANGO_STYLE_NORMAL,weight)
-	)
-		new_font_("sans serif",PANGO_STYLE_NORMAL,WEIGHT_NORMAL);
 }
 
 /*! The new_font() function try to render
@@ -168,164 +692,131 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 ** In last chance, render text as "sans serif" Normal
 ** font style.
 */
+void
+Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
+{
+	if (param_use_pango.get(bool()))
+		return;
+	if(
+		!new_font_(family,style,weight) &&
+		!new_font_(family,style,TEXT_WEIGHT_NORMAL) &&
+		!new_font_(family,TEXT_STYLE_NORMAL,weight) &&
+		!new_font_(family,TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL) &&
+		!new_font_("sans serif",style,weight) &&
+		!new_font_("sans serif",style,TEXT_WEIGHT_NORMAL) &&
+		!new_font_("sans serif",TEXT_STYLE_NORMAL,weight)
+	)
+		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
+}
+
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
+	FontMeta meta(font_fam_, style, weight);
+	if (get_canvas())
+		meta.canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
+
+	FaceCache &face_cache = FaceCache::instance();
+
+	FT_Face tmp_face = face_cache.get(meta);
+	if (tmp_face) {
+		face = tmp_face;
+		return true;
+	}
+
 	synfig::String font_fam(font_fam_);
 
-	if(new_face(font_fam_))
+	if (has_valid_font_extension(font_fam_))
+		if (new_face(font_fam_)) {
+			if (!font_path_from_canvas)
+				meta.canvas_path.clear();
+			face_cache.put(meta, face);
+			return true;
+		}
+
+#ifdef WITH_FONTCONFIG
+	if (new_face(fontconfig_get_filename(font_fam_, style, weight))) {
+		if (!font_path_from_canvas)
+			meta.canvas_path.clear();
+		face_cache.put(meta, face);
 		return true;
-
-	//start evil hack
-	for(unsigned int i=0;i<font_fam.size();i++)font_fam[i]=tolower(font_fam[i]);
-	//end evil hack
-
-	if(font_fam=="arial black")
-	{
-#ifndef __APPLE__
-		if(new_face("ariblk"))
-			return true;
-		else
+	}
 #endif
-		font_fam="sans serif";
-	}
 
-	if(font_fam=="sans serif" || font_fam=="arial")
-	{
-		String arial("arial");
-		if(weight>WEIGHT_NORMAL)
-			arial+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-			arial+='i';
-		else
-			if(weight>WEIGHT_NORMAL) arial+='d';
+	std::vector<std::string> filename_list;
+	get_possible_font_filenames(font_fam_, style, weight, filename_list);
 
-		if(new_face(arial))
+	for (std::string& filename : filename_list) {
+		if (new_face(filename)) {
+			if (!font_path_from_canvas)
+				meta.canvas_path.clear();
+			face_cache.put(meta, face);
 			return true;
-#ifdef __APPLE__
-		if(new_face("Helvetica RO"))
-			return true;
-#endif
-	}
-
-	if(font_fam=="comic" || font_fam=="comic sans")
-	{
-		String filename("comic");
-		if(weight>WEIGHT_NORMAL)
-			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="courier" || font_fam=="courier new")
-	{
-		String filename("cour");
-		if(weight>WEIGHT_NORMAL)
-			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman")
-	{
-		String filename("times");
-		if(weight>WEIGHT_NORMAL)
-			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="trebuchet")
-	{
-		String filename("trebuc");
-		if(weight>WEIGHT_NORMAL)
-			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-		{
-			filename+='i';
-			if(weight<=WEIGHT_NORMAL) filename+='t';
 		}
-		else if(weight>WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
 	}
-
-	if(font_fam=="sans serif" || font_fam=="luxi sans")
-	{
-		{
-			String luxi("luxis");
-			if(weight>WEIGHT_NORMAL)
-				luxi+='b';
-			else
-				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-				luxi+='i';
-
-			if(new_face(luxi))
-				return true;
-		}
-		if(new_face("arial"))
-			return true;
-		if(new_face("Arial"))
-			return true;
+	if (new_face(font_fam_)) {
+		if (!font_path_from_canvas)
+			meta.canvas_path.clear();
+		face_cache.put(meta, face);
+		return true;
 	}
-	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman" || font_fam=="luxi serif")
-	{
-		{
-			String luxi("luxir");
-			if(weight>WEIGHT_NORMAL)
-				luxi+='b';
-			else
-				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-				luxi+='i';
-
-			if(new_face(luxi))
-				return true;
-		}
-		if(new_face("Times New Roman"))
-			return true;
-		if(new_face("Times"))
-			return true;
-	}
-	if(font_fam=="luxi")
-	{
-		{
-			String luxi("luxim");
-			if(weight>WEIGHT_NORMAL)
-				luxi+='b';
-			else
-				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
-				luxi+='i';
-
-			if(new_face(luxi))
-				return true;
-		}
-
-		if(new_face("Times New Roman"))
-			return true;
-		if(new_face("Times"))
-			return true;
-	}
-
-	return new_face(font_fam_) || new_face(font_fam);
 
 	return false;
 }
+
+#ifdef WITH_FONTCONFIG
+
+static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight) {
+	std::string filename;
+	FcConfig* fc = FontConfigWrap::init();
+	if( !fc )
+	{
+		synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
+	} else {
+		FcPattern* pat = FcPatternCreate();
+		FcPatternAddString(pat, FC_FAMILY, (const FcChar8*)font_fam.c_str());
+		FcPatternAddInteger(pat, FC_SLANT, style == TEXT_STYLE_NORMAL ? FC_SLANT_ROMAN : (style == TEXT_STYLE_ITALIC ? FC_SLANT_ITALIC : FC_SLANT_OBLIQUE));
+		int fc_weight;
+#define SYNFIG_TO_FC(X) TEXT_WEIGHT_##X : fc_weight = FC_WEIGHT_##X ; break
+		switch (weight) {
+		case SYNFIG_TO_FC(NORMAL);
+		case SYNFIG_TO_FC(BOLD);
+		case SYNFIG_TO_FC(THIN);
+		case SYNFIG_TO_FC(ULTRALIGHT);
+		case SYNFIG_TO_FC(LIGHT);
+		case SYNFIG_TO_FC(SEMILIGHT);
+		case SYNFIG_TO_FC(BOOK);
+		case SYNFIG_TO_FC(MEDIUM);
+		case SYNFIG_TO_FC(SEMIBOLD);
+		case SYNFIG_TO_FC(ULTRABOLD);
+		case SYNFIG_TO_FC(HEAVY);
+		case TEXT_WEIGHT_ULTRAHEAVY : fc_weight = FC_WEIGHT_HEAVY ; break;
+		default:
+			fc_weight = FC_WEIGHT_NORMAL;
+		}
+#undef SYNFIG_TO_FC
+		FcPatternAddInteger(pat, FC_WEIGHT, fc_weight);
+
+		FcConfigSubstitute(fc, pat, FcMatchPattern);
+		FcDefaultSubstitute(pat);
+		FcFontSet *fs = FcFontSetCreate();
+		FcResult result;
+		FcPattern *match = FcFontMatch(fc, pat, &result);
+		if (match)
+			FcFontSetAdd(fs, match);
+		if (pat)
+			FcPatternDestroy(pat);
+		if(fs && fs->nfont){
+			FcChar8* file;
+			if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
+				filename = (const char*)file;
+			FcFontSetDestroy(fs);
+		} else
+			synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
+	}
+	return filename;
+}
+#endif
 
 #ifdef USE_MAC_FT_FUNCS
 void fss2path(char *path, FSSpec *fss)
@@ -362,7 +853,7 @@ bool
 Layer_Freetype::new_face(const String &newfont)
 {
 	synfig::String font=param_font.get(synfig::String());
-	int error;
+	int error = 0;
 	FT_Long face_index=0;
 
 	// If we are already loaded, don't bother reloading.
@@ -370,18 +861,49 @@ Layer_Freetype::new_face(const String &newfont)
 		return true;
 
 	if(face)
-	{
-		FT_Done_Face(face);
-		face=0;
+		face = nullptr;
+
+	if (newfont.empty())
+		return false;
+
+	std::vector<const char *> possible_font_extensions = {""};
+
+	// if newfont doesn't have a known extension, try to append those extensions
+	if (! has_valid_font_extension(newfont))
+		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
+
+	std::vector<std::string> possible_font_directories = {""};
+	std::string canvas_path;
+	if (get_canvas()) {
+		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
+		possible_font_directories.push_back( canvas_path );
 	}
 
-	error=FT_New_Face(ft_library,newfont.c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,(newfont+".ttf").c_str(),face_index,&face);
+#ifdef _WIN32
+	possible_font_directories.push_back("C:\\WINDOWS\\FONTS\\");
+#else
 
-	if(get_canvas())
-	{
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont).c_str(),face_index,&face);
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont+".ttf").c_str(),face_index,&face);
+#ifdef __APPLE__
+	possible_font_directories.push_back("~/Library/Fonts/");
+	possible_font_directories.push_back("/Library/Fonts/");
+#endif
+
+	possible_font_directories.push_back("/usr/share/fonts/truetype/");
+	possible_font_directories.push_back("/usr/share/fonts/opentype/");
+
+#endif
+
+	for (std::string directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			std::string path = (directory + newfont + extension);
+			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
+			if (!error) {
+				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
+				break;
+			}
+		}
+		if (!error)
+			break;
 	}
 
 #ifdef USE_MAC_FT_FUNCS
@@ -407,71 +929,14 @@ Layer_Freetype::new_face(const String &newfont)
 	}
 #endif
 
-#ifdef WITH_FONTCONFIG
 	if(error)
 	{
-		FcFontSet *fs;
-		FcResult result;
-		if( !FcInit() )
-		{
-			synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
-			error = 1;
-		} else {
-			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());
-			FcConfigSubstitute(0, pat, FcMatchPattern);
-			FcDefaultSubstitute(pat);
-			FcPattern *match;
-			fs = FcFontSetCreate();
-			match = FcFontMatch(0, pat, &result);
-			if (match)
-				FcFontSetAdd(fs, match);
-			if (pat)
-				FcPatternDestroy(pat);
-			if(fs && fs->nfont){
-				FcChar8* file;
-				if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
-					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
-				FcFontSetDestroy(fs);
-			} else
-				synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
-		}
-	}
-#endif
-
-#ifdef _WIN32
-	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont+".ttf").c_str(),face_index,&face);
-#else
-
-#ifdef __APPLE__
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
-#endif
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/TTF/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/TTF/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-#endif
-	if(error)
-	{
-		//synfig::error(strprintf("Layer_Freetype:%s (err=%d)",_("Unable to open face."),error));
+		if (!newfont.empty())
+			synfig::error(strprintf("Layer_Freetype: %s (err=%d)",_("Unable to open font face."),error));
 		return false;
 	}
 
+	// ???
 	font=newfont;
 
 	needs_sync_=true;
@@ -543,6 +1008,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 		}
 		);
 	IMPORT_VALUE(param_invert);
+	IMPORT_VALUE(param_use_pango);
 	IMPORT_VALUE_PLUS(param_orient,needs_sync_=true);
 	IMPORT_VALUE_PLUS(param_compress,needs_sync_=true);
 	IMPORT_VALUE_PLUS(param_vcompress,needs_sync_=true);
@@ -572,6 +1038,7 @@ Layer_Freetype::get_param(const String& param)const
 	EXPORT_VALUE(param_use_kerning);
 	EXPORT_VALUE(param_grid_fit);
 	EXPORT_VALUE(param_invert);
+	EXPORT_VALUE(param_use_pango);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -603,29 +1070,33 @@ Layer_Freetype::get_param_vocab(void)const
 	ret.push_back(ParamDesc("style")
 		.set_local_name(_("Style"))
 		.set_hint("enum")
-		.add_enum_value(PANGO_STYLE_NORMAL, "normal" ,_("Normal"))
-		.add_enum_value(PANGO_STYLE_OBLIQUE, "oblique" ,_("Oblique"))
-		.add_enum_value(PANGO_STYLE_ITALIC, "italic" ,_("Italic"))
+		.add_enum_value(TEXT_STYLE_NORMAL, "normal" ,_("Normal"))
+		.add_enum_value(TEXT_STYLE_OBLIQUE, "oblique" ,_("Oblique"))
+		.add_enum_value(TEXT_STYLE_ITALIC, "italic" ,_("Italic"))
 	);
 
 	ret.push_back(ParamDesc("weight")
 		.set_local_name(_("Weight"))
 		.set_hint("enum")
-		.add_enum_value(200, "ultralight" ,_("Ultralight"))
-		.add_enum_value(300, "light" ,_("light"))
-		.add_enum_value(400, "normal" ,_("Normal"))
-		.add_enum_value(700, "bold" ,_("Bold"))
-		.add_enum_value(800, "ultrabold" ,_("Ultrabold"))
-		.add_enum_value(900, "heavy" ,_("Heavy"))
+		.add_enum_value(TEXT_WEIGHT_THIN, "thin" ,_("Thin"))
+		.add_enum_value(TEXT_WEIGHT_ULTRALIGHT, "ultralight" ,_("Ultralight"))
+		.add_enum_value(TEXT_WEIGHT_LIGHT, "light" ,_("Light"))
+		.add_enum_value(TEXT_WEIGHT_BOOK, "book" ,_("Book"))
+		.add_enum_value(TEXT_WEIGHT_NORMAL, "normal" ,_("Normal"))
+		.add_enum_value(TEXT_WEIGHT_MEDIUM, "medium" ,_("Medium"))
+		.add_enum_value(TEXT_WEIGHT_BOLD, "bold" ,_("Bold"))
+		.add_enum_value(TEXT_WEIGHT_ULTRABOLD, "ultrabold" ,_("Ultrabold"))
+		.add_enum_value(TEXT_WEIGHT_HEAVY, "heavy" ,_("Heavy"))
+		.add_enum_value(TEXT_WEIGHT_ULTRAHEAVY, "ultraheavy" ,_("Ultraheavy"))
 	);
 	ret.push_back(ParamDesc("compress")
 		.set_local_name(_("Horizontal Spacing"))
-		.set_description(_("Describes how close glyphs are horizontally"))
+		.set_description(_("Defines how close the glyphs are horizontally"))
 	);
 
 	ret.push_back(ParamDesc("vcompress")
 		.set_local_name(_("Vertical Spacing"))
-		.set_description(_("Describes how close lines of text are vertically"))
+		.set_description(_("Defines how close the text lines are vertically"))
 	);
 
 	ret.push_back(ParamDesc("size")
@@ -657,15 +1128,21 @@ Layer_Freetype::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("use_kerning")
 		.set_local_name(_("Kerning"))
-		.set_description(_("Enables/Disables font kerning (If the font supports it)"))
+		.set_description(_("When checked, enables font kerning (If the font supports it)"))
 	);
 
 	ret.push_back(ParamDesc("grid_fit")
 		.set_local_name(_("Sharpen Edges"))
-		.set_description(_("Turn this off if you are going to be animating the text"))
+		.set_description(_("Turn this off if you are animating the text"))
 	);
+
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))
+	);
+
+	ret.push_back(ParamDesc("use_pango")
+		.set_local_name(_("Use Pango renderer"))
+		.set_description(_("Use pango for text rendering. Uncheck for supporting of old Synfig files"))
 	);
 	return ret;
 }
@@ -677,7 +1154,7 @@ Layer_Freetype::sync()
 }
 
 inline Color
-Layer_Freetype::color_func(const Point &point_ __attribute__ ((unused)), int quality __attribute__ ((unused)), ColorReal supersample __attribute__ ((unused)))const
+Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /*supersample*/)const
 {
 	bool invert=param_invert.get(bool());
 	if (invert)
@@ -730,7 +1207,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		return true;
 
 	// If there is no font loaded, just bail
-	if(!face)
+	if(!param_use_pango.get(bool()) && !face)
 	{
 		if(cb)cb->warning(string("Layer_Freetype:")+_("No face loaded, no text will be rendered."));
 		return true;
@@ -750,11 +1227,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int w=abs(round_to_int(size[0]*pw));
 	int h=abs(round_to_int(size[1]*ph));
 
-    //int bx=(int)((origin[0]-renddesc.get_tl()[0])*pw*64+0.5);
-    //int by=(int)((origin[1]-renddesc.get_tl()[1])*ph*64+0.5);
-    int bx=0;
-    int by=0;
-
     // If the font is the size of a pixel, don't bother rendering any text
 	if(w<=1 || h<=1)
 	{
@@ -762,6 +1234,31 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		return true;
 	}
 
+	if (param_use_pango.get(bool())) {
+		PangoFontDescription *desc = pango_font_description_new();
+		pango_font_description_set_family_static(desc, param_family.get(string()).c_str());
+		pango_font_description_set_style(desc, PangoStyle(param_style.get(int())));
+		pango_font_description_set_weight(desc, PangoWeight(param_weight.get(int())));
+	//	pango_font_description_set_style(desc, PangoStyle(param_style.get(int())));
+
+		pango_font_description_set_absolute_size(desc, h * PANGO_SCALE /1.13f/0.996);
+		pango_stuff->set_font_description(desc);
+		pango_font_description_free(desc);
+
+		pango_stuff->set_text(param_text.get(string()).c_str());
+//		pango_stuff->set_resolution(round_to_int(abs(size[0]*pw*64)),						// horizontal device resolution
+//				round_to_int(abs(size[1]*ph*64)));
+		int sign_y = ph >= 0.0 ? 1 : -1;
+		Real offset_x = (origin[0]-renddesc.get_tl()[0])*pw;
+		Real offset_y = (origin[1]-renddesc.get_tl()[1])*ph
+				      /*- sign_y*text_height*(1.0 - orient[1])*/;
+		printf("offset: %lf, %lf\n", offset_x, offset_y);
+		pango_stuff->render(surface, color, get_blend_method(), get_amount(), Point(offset_x, offset_y), orient, invert);
+//first = false;
+		return true;
+	}
+//	else
+//		return true;
 	std::lock_guard<std::recursive_mutex> lock(freetype_mutex);
 
 #define CHAR_RESOLUTION		(64)
@@ -801,6 +1298,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	lines.push_front(TextLine());
 	string::const_iterator iter;
+	int bx=0;
+	int by=0;
+
 	for (iter=text.begin(); iter!=text.end(); ++iter)
 	{
 		int multiplier(1);
@@ -1208,5 +1708,5 @@ Layer_Freetype::get_bounding_rect()const
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
 //	if(!is_disabled())
-		return synfig::Rect::full_plane();
+	return synfig::Rect::full_plane();
 }
