@@ -390,8 +390,8 @@ PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
 ])
 CONFIG_DEPS="$CONFIG_DEPS fftw3"
 
-PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
-	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"
+PKG_CHECK_MODULES(LIBPANGO, pango pangocairo pangoft2,[
+	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo pangoft2"
 ],[
 	AC_MSG_ERROR([ ** You need to install pango])
 ])
