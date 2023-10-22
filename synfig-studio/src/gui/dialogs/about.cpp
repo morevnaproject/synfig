@@ -86,7 +86,7 @@ About::About()
 	set_website("https://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright (c) 2001-2023\nSynfig developers & contributors"));
+	set_copyright(_("Copyright (c) 2021-2023\nANO \"Morevna Project\" OATDC\nCopyright (c) 2001-2023\nSynfig developers & contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -171,7 +171,7 @@ About::About()
 		{"Jess"},
 		{"Joshua Evan Arijanto"},
 		{"Keyikedalube Ndang"},
-		{"Konstantin Dmitriev (zelgadis)"},
+		{"Konstantin Dmitriev (morevnaproject)"},
 		{"Kristi Isakog"},
 		{"lenixlobo"},
 		{"luboshnikov"},

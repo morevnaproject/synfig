@@ -1512,7 +1512,7 @@ void App::init(const synfig::String& rootpath)
 
 		throw 40;
 	}
-	Glib::set_application_name(_("Synfig Studio"));
+	Glib::set_application_name(_("Synfig Studio (Morevna Edition)"));
 
 	Splash splash_screen;
 	splash_screen.show();

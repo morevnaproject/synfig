@@ -30,8 +30,7 @@ EXTRA_DIST = \
 	splash_screen-0.61.09.sif \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
-	splash_screen_development.sif.in \
-	splash_screen_development.sh \
+	splash_screen-morevna.sif \
 	about_icon.sif \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
@@ -432,15 +431,10 @@ endif
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
-if DEVELOPMENT_SNAPSHOT
-SPLASH_DEV = splash_screen_development.sif
-endif
-
 CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
 	$(WIN32_ICONS) \
-	$(SPLASH_DEV) \
 	logo_tmp.sif \
 	images.nsh \
 	unimages.nsh \
@@ -698,9 +692,7 @@ action_doc_redo_icon.$(EXT): $(srcdir)/action_doc_icons.sif
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 if DEVELOPMENT_SNAPSHOT
-splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in $(top_builddir)/autorevision.h
-	$(srcdir)/splash_screen_development.sh $@ "$(srcdir)"
-splash_screen.$(EXT): splash_screen_development.sif
+splash_screen.$(EXT): splash_screen-morevna.sif
 	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh

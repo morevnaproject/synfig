@@ -323,15 +323,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/index.theme DESTINATION share/synfig/i
 
 # Synfig Splash Screen
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-	set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_BINARY_DIR}/splash_screen_development.sif)
-	configure_file(
-		${CMAKE_CURRENT_SOURCE_DIR}/splash_screen_development.sif.in
-		${SYNFIG_SPLASH_SCREEN}
-		@ONLY
-	)
-
-	set(LOGO_ICON ${CMAKE_CURRENT_SOURCE_DIR}/logo.sif)
-	file(COPY ${LOGO_ICON} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+	set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_BINARY_DIR}/splash_screen-morevna.sif)
 else()
 	set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen.sif)
 endif()

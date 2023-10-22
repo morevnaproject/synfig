@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<canvas version="1.0" width="512" height="512" xres="5905.511856" yres="5905.511856" view-box="-1.499986 1.499986 1.499986 -1.499986" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="1.2" width="512" height="512" xres="5905.511856" yres="5905.511856" gamma-r="2.200000" gamma-g="2.200000" gamma-b="2.200000" view-box="-1.499986 1.499986 1.499986 -1.499986" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Voria Logo</name>
   <meta name="background_first_color" content="0.880000 0.880000 0.880000"/>
+  <meta name="background_rendering" content="0"/>
   <meta name="background_second_color" content="0.650000 0.650000 0.650000"/>
   <meta name="background_size" content="15.000000 15.000000"/>
   <meta name="grid_color" content="0.623529 0.623529 0.623529"/>
@@ -14,11 +15,13 @@
   <meta name="jack_offset" content="0.000000"/>
   <meta name="onion_skin" content="0"/>
   <meta name="onion_skin_future" content="0"/>
+  <meta name="onion_skin_keyframes" content="1"/>
   <meta name="onion_skin_past" content="1"/>
+  <meta name="status_ruler" content="1"/>
   <defs>
     <canvas id="WhiteBG" width="644" height="644" xres="5750.000000" yres="5750.000000" bgcolor="0.500000 0.500000 0.500000 1.000000">
       <name>WhiteBG</name>
-      <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
+      <layer type="group" active="true" exclude_from_rendering="false" version="0.3">
         <param name="z_depth">
           <real value="0.0000000000"/>
         </param>
@@ -143,7 +146,7 @@
       <defs>
         <real value="0.5850000000" id="Crutch"/>
       </defs>
-      <layer type="text" active="true" exclude_from_rendering="false" version="0.2">
+      <layer type="text" active="true" exclude_from_rendering="false" version="0.5">
         <param name="z_depth">
           <real value="0.0000000000"/>
         </param>
@@ -172,6 +175,9 @@
         </param>
         <param name="weight">
           <integer value="400"/>
+        </param>
+        <param name="direction">
+          <integer value="0" static="true"/>
         </param>
         <param name="compress">
           <real value="1.0000000000"/>
@@ -211,7 +217,7 @@
           <bool value="false"/>
         </param>
       </layer>
-      <layer type="text" active="true" exclude_from_rendering="false" version="0.2">
+      <layer type="text" active="true" exclude_from_rendering="false" version="0.5">
         <param name="z_depth">
           <real value="0.0000000000"/>
         </param>
@@ -240,6 +246,9 @@
         </param>
         <param name="weight">
           <integer value="400"/>
+        </param>
+        <param name="direction">
+          <integer value="0" static="true"/>
         </param>
         <param name="compress">
           <real value="1.0000000000"/>
@@ -279,18 +288,12 @@
           <bool value="false"/>
         </param>
       </layer>
-      <layer type="super_sample" active="true" exclude_from_rendering="false" version="0.1">
+      <layer type="super_sample" active="true" exclude_from_rendering="false" version="0.2">
         <param name="width">
           <integer value="2"/>
         </param>
         <param name="height">
           <integer value="2"/>
-        </param>
-        <param name="scanline">
-          <bool value="false"/>
-        </param>
-        <param name="alpha_aware">
-          <bool value="true"/>
         </param>
       </layer>
       <layer type="translate" active="true" exclude_from_rendering="false" version="0.1">
@@ -321,7 +324,7 @@
           <integer value="1"/>
         </param>
       </layer>
-      <layer type="group" active="true" exclude_from_rendering="false" version="0.2">
+      <layer type="group" active="true" exclude_from_rendering="false" version="0.3">
         <param name="z_depth">
           <real value="0.0000000000"/>
         </param>
@@ -443,7 +446,7 @@
       </layer>
     </canvas>
   </defs>
-  <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="Voria Logo">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="Voria Logo">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -525,7 +528,44 @@
           <param name="bline">
             <bline guid="3F2AB3B642879FB63687A7132E7461D4" type="bline_point" loop="true">
               <entry>
-                <composite type="bline_point">
+                <composite guid="15440F8FBADD6A3922B4499702C3B865" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>1.0000000000</x>
+                      <y>-1.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real guid="EE9B2DD8126DAA97A74FE6119420FA5D" value="0.0250000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="true"/>
+                  </split>
+                  <t1>
+                    <vector>
+                      <x>1.5000000000</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </t1>
+                  <t2>
+                    <vector>
+                      <x>-0.2500000000</x>
+                      <y>2.2500000000</y>
+                    </vector>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="E33EFFBEF0A10F95E97EDD37993B7455" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -562,7 +602,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="968F480CF0EE6B0D44C11D2D883840B2" type="bline_point">
                   <point>
                     <vector>
                       <x>-1.0000000000</x>
@@ -599,7 +639,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="5FE592C93F02A189C33FA2F5758CF468" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -625,43 +665,6 @@
                     <vector>
                       <x>0.7500000000</x>
                       <y>0.7500000000</y>
-                    </vector>
-                  </t2>
-                  <split_radius>
-                    <bool value="true"/>
-                  </split_radius>
-                  <split_angle>
-                    <bool value="true"/>
-                  </split_angle>
-                </composite>
-              </entry>
-              <entry>
-                <composite type="bline_point">
-                  <point>
-                    <vector>
-                      <x>1.0000000000</x>
-                      <y>-1.0000000000</y>
-                    </vector>
-                  </point>
-                  <width>
-                    <real guid="EE9B2DD8126DAA97A74FE6119420FA5D" value="0.0250000000"/>
-                  </width>
-                  <origin>
-                    <real value="0.5000000000"/>
-                  </origin>
-                  <split>
-                    <bool value="true"/>
-                  </split>
-                  <t1>
-                    <vector>
-                      <x>1.5000000000</x>
-                      <y>0.0000000000</y>
-                    </vector>
-                  </t1>
-                  <t2>
-                    <vector>
-                      <x>-0.2500000000</x>
-                      <y>2.2500000000</y>
                     </vector>
                   </t2>
                   <split_radius>
@@ -717,7 +720,44 @@
           <param name="bline">
             <bline guid="3F2AB3B642879FB63687A7132E7461D4" type="bline_point" loop="true">
               <entry>
-                <composite type="bline_point">
+                <composite guid="15440F8FBADD6A3922B4499702C3B865" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>1.0000000000</x>
+                      <y>-1.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real guid="EE9B2DD8126DAA97A74FE6119420FA5D" value="0.0250000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="true"/>
+                  </split>
+                  <t1>
+                    <vector>
+                      <x>1.5000000000</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </t1>
+                  <t2>
+                    <vector>
+                      <x>-0.2500000000</x>
+                      <y>2.2500000000</y>
+                    </vector>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="E33EFFBEF0A10F95E97EDD37993B7455" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -754,7 +794,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="968F480CF0EE6B0D44C11D2D883840B2" type="bline_point">
                   <point>
                     <vector>
                       <x>-1.0000000000</x>
@@ -791,7 +831,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="5FE592C93F02A189C33FA2F5758CF468" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -817,43 +857,6 @@
                     <vector>
                       <x>0.7500000000</x>
                       <y>0.7500000000</y>
-                    </vector>
-                  </t2>
-                  <split_radius>
-                    <bool value="true"/>
-                  </split_radius>
-                  <split_angle>
-                    <bool value="true"/>
-                  </split_angle>
-                </composite>
-              </entry>
-              <entry>
-                <composite type="bline_point">
-                  <point>
-                    <vector>
-                      <x>1.0000000000</x>
-                      <y>-1.0000000000</y>
-                    </vector>
-                  </point>
-                  <width>
-                    <real guid="EE9B2DD8126DAA97A74FE6119420FA5D" value="0.0250000000"/>
-                  </width>
-                  <origin>
-                    <real value="0.5000000000"/>
-                  </origin>
-                  <split>
-                    <bool value="true"/>
-                  </split>
-                  <t1>
-                    <vector>
-                      <x>1.5000000000</x>
-                      <y>0.0000000000</y>
-                    </vector>
-                  </t1>
-                  <t2>
-                    <vector>
-                      <x>-0.2500000000</x>
-                      <y>2.2500000000</y>
                     </vector>
                   </t2>
                   <split_radius>
@@ -983,7 +986,44 @@
           <param name="bline">
             <bline type="bline_point" loop="true">
               <entry>
-                <composite type="bline_point">
+                <composite guid="6D038749173062B92E3B85CCEE8CCC3C" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>1.0000000000</x>
+                      <y>-1.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real guid="994096E726304D2F8D59F8E5305EAF61" value="0.0250000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="true"/>
+                  </split>
+                  <t1>
+                    <vector>
+                      <x>1.5000000000</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </t1>
+                  <t2>
+                    <vector>
+                      <x>-0.2500000000</x>
+                      <y>2.2500000000</y>
+                    </vector>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="D55AAD169529F1FAABCF17A00D8EF078" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -1020,7 +1060,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="B6642FACCA09C892F560E0126DB7FECB" type="bline_point">
                   <point>
                     <vector>
                       <x>-1.0000000000</x>
@@ -1057,7 +1097,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="DA88A3F3258E663DE261E7882732712F" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -1093,47 +1133,10 @@
                   </split_angle>
                 </composite>
               </entry>
-              <entry>
-                <composite type="bline_point">
-                  <point>
-                    <vector>
-                      <x>1.0000000000</x>
-                      <y>-1.0000000000</y>
-                    </vector>
-                  </point>
-                  <width>
-                    <real guid="994096E726304D2F8D59F8E5305EAF61" value="0.0250000000"/>
-                  </width>
-                  <origin>
-                    <real value="0.5000000000"/>
-                  </origin>
-                  <split>
-                    <bool value="true"/>
-                  </split>
-                  <t1>
-                    <vector>
-                      <x>1.5000000000</x>
-                      <y>0.0000000000</y>
-                    </vector>
-                  </t1>
-                  <t2>
-                    <vector>
-                      <x>-0.2500000000</x>
-                      <y>2.2500000000</y>
-                    </vector>
-                  </t2>
-                  <split_radius>
-                    <bool value="true"/>
-                  </split_radius>
-                  <split_angle>
-                    <bool value="true"/>
-                  </split_angle>
-                </composite>
-              </entry>
             </bline>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="Sun Texture">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="Sun Texture">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1338,7 +1341,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="Logo Outline">
+        <layer type="outline" active="true" exclude_from_rendering="false" version="0.3" desc="Logo Outline">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1380,7 +1383,44 @@
           <param name="bline">
             <bline guid="3F2AB3B642879FB63687A7132E7461D4" type="bline_point" loop="true">
               <entry>
-                <composite type="bline_point">
+                <composite guid="15440F8FBADD6A3922B4499702C3B865" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>1.0000000000</x>
+                      <y>-1.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real guid="EE9B2DD8126DAA97A74FE6119420FA5D" value="0.0250000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="true"/>
+                  </split>
+                  <t1>
+                    <vector>
+                      <x>1.5000000000</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </t1>
+                  <t2>
+                    <vector>
+                      <x>-0.2500000000</x>
+                      <y>2.2500000000</y>
+                    </vector>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="true"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="E33EFFBEF0A10F95E97EDD37993B7455" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -1417,7 +1457,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="968F480CF0EE6B0D44C11D2D883840B2" type="bline_point">
                   <point>
                     <vector>
                       <x>-1.0000000000</x>
@@ -1454,7 +1494,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite type="bline_point">
+                <composite guid="5FE592C93F02A189C33FA2F5758CF468" type="bline_point">
                   <point>
                     <vector>
                       <x>0.0000000000</x>
@@ -1490,43 +1530,6 @@
                   </split_angle>
                 </composite>
               </entry>
-              <entry>
-                <composite type="bline_point">
-                  <point>
-                    <vector>
-                      <x>1.0000000000</x>
-                      <y>-1.0000000000</y>
-                    </vector>
-                  </point>
-                  <width>
-                    <real guid="EE9B2DD8126DAA97A74FE6119420FA5D" value="0.0250000000"/>
-                  </width>
-                  <origin>
-                    <real value="0.5000000000"/>
-                  </origin>
-                  <split>
-                    <bool value="true"/>
-                  </split>
-                  <t1>
-                    <vector>
-                      <x>1.5000000000</x>
-                      <y>0.0000000000</y>
-                    </vector>
-                  </t1>
-                  <t2>
-                    <vector>
-                      <x>-0.2500000000</x>
-                      <y>2.2500000000</y>
-                    </vector>
-                  </t2>
-                  <split_radius>
-                    <bool value="true"/>
-                  </split_radius>
-                  <split_angle>
-                    <bool value="true"/>
-                  </split_angle>
-                </composite>
-              </entry>
             </bline>
           </param>
           <param name="width">
@@ -1544,14 +1547,11 @@
           <param name="round_tip[1]">
             <bool value="true"/>
           </param>
-          <param name="loopyness">
-            <real value="1.0000000000"/>
-          </param>
           <param name="homogeneous_width">
             <bool value="true"/>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="Hatch Marks">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="Hatch Marks">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1591,7 +1591,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1631,9 +1631,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="6A5FC741E3F3AA04928D129E94A5EB86" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.7500000000</x>
@@ -1670,7 +1670,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="44F2DBFA9F0953F6490F718F6BA7E80D" type="bline_point">
                         <point>
                           <vector guid="B9CD34EC206EBDA66DC129C40AD08F88">
                             <x>0.0000000000</x>
@@ -1707,7 +1707,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="6ED7AF7673F4EE08DDC04C591B24866B" type="bline_point">
                         <point>
                           <vector>
                             <x>0.5000000000</x>
@@ -1760,14 +1760,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1807,9 +1804,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="8ABDADEA8ED55DAF00C14AAE8AE5ED1B" type="bline_point">
                         <point>
                           <vector>
                             <x>0.7500000000</x>
@@ -1846,7 +1843,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="A9D496AC772848E2203C9F931E4D679A" type="bline_point">
                         <point>
                           <vector guid="B9CD34EC206EBDA66DC129C40AD08F88">
                             <x>0.0000000000</x>
@@ -1883,7 +1880,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="52F7CEEEE9E901A21C788C9B80023C19" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.5000000000</x>
@@ -1936,14 +1933,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1983,9 +1977,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="37DBCC15EB724F7F16A69AEED9BA774A" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.8846153617</x>
@@ -2022,7 +2016,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="D593F71EE2AFF585B90472E7275E4998" type="bline_point">
                         <point>
                           <vector guid="FEFF5BFF0971328303A9B7191AF8F425">
                             <x>-0.5615384579</x>
@@ -2059,7 +2053,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="93DB1BABE906CBC44601344B6E120E47" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.2794871926</x>
@@ -2112,14 +2106,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2159,9 +2150,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="1621ECB3C01AC12A3D28362931CE7AD1" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.3871794939</x>
@@ -2198,7 +2189,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="A4A0504967202F97337C4A5284A4855C" type="bline_point">
                         <point>
                           <vector guid="FEFF5BFF0971328303A9B7191AF8F425">
                             <x>-0.5615384579</x>
@@ -2235,7 +2226,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="DDFA519CDF02E1263F7FF830F02D534C" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.6999999881</x>
@@ -2288,14 +2279,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2335,9 +2323,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="7886793C86C6006ADB8CCAE410D8ABA2" type="bline_point">
                         <point>
                           <vector>
                             <x>0.8846153617</x>
@@ -2374,7 +2362,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="9D6B5DA004EA8ECEBFBFC41D40C60A00" type="bline_point">
                         <point>
                           <vector guid="E36878E9187702120AE96B15EFE7FD59">
                             <x>0.5615384579</x>
@@ -2411,7 +2399,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="143054C22A16238095EB40129DD9F947" type="bline_point">
                         <point>
                           <vector>
                             <x>0.2794871926</x>
@@ -2464,14 +2452,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2511,9 +2496,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="E1563BAEEACCD6F670CDDDA99F9191FB" type="bline_point">
                         <point>
                           <vector>
                             <x>0.3871794939</x>
@@ -2550,7 +2535,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="F45769A0287522E33BD10D8FB1CDCB1D" type="bline_point">
                         <point>
                           <vector guid="E36878E9187702120AE96B15EFE7FD59">
                             <x>0.5615384579</x>
@@ -2587,7 +2572,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="C2735993DD58D08A7A7C3B7AF9C0CEA6" type="bline_point">
                         <point>
                           <vector>
                             <x>0.6999999881</x>
@@ -2640,14 +2625,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2687,9 +2669,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="F987CE7C4EAED386D00F4EC0534F758E" type="bline_point">
                         <point>
                           <vector>
                             <x>0.4713114798</x>
@@ -2726,7 +2708,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="88BDA3403982538E41EA787159DFABA7" type="bline_point">
                         <point>
                           <vector guid="DA616009EFE01AFC3459CD8311B8776B">
                             <x>0.0000000000</x>
@@ -2763,7 +2745,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="12193783406A1DFDAE3EBC30B3B9612B" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.3639999926</x>
@@ -2816,14 +2798,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2863,9 +2842,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="157FB323861B5FD12E5B81700D4C9B98" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.4713114798</x>
@@ -2902,7 +2881,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="E4150A794D409687BE17978AC6C68E96" type="bline_point">
                         <point>
                           <vector guid="DA616009EFE01AFC3459CD8311B8776B">
                             <x>0.0000000000</x>
@@ -2939,7 +2918,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="E51B970D8E7BBE8F4C3924FA265C7307" type="bline_point">
                         <point>
                           <vector>
                             <x>0.3639999926</x>
@@ -2992,14 +2971,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3039,9 +3015,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="B9A780155DCB5491AED8BD41BABF838E" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.2500000000</x>
@@ -3078,7 +3054,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="41C7813E33D6BB873E5BDD63F3597BA6" type="bline_point">
                         <point>
                           <vector guid="8F4E22A3E4E43F1F544255AA5C595BB0">
                             <x>0.0000000000</x>
@@ -3115,7 +3091,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="50D0842977A34EF973AE046238F1E713" type="bline_point">
                         <point>
                           <vector>
                             <x>0.2019230723</x>
@@ -3168,14 +3144,11 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3215,9 +3188,9 @@
                   <integer value="0"/>
                 </param>
                 <param name="bline">
-                  <bline type="bline_point" loop="false">
+                  <bline type="bline_point">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="9667374A4F56CB7DB0A27FBC5460860A" type="bline_point">
                         <point>
                           <vector>
                             <x>0.2500000000</x>
@@ -3254,7 +3227,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="80AA928F296E9F44AEEFBC830500E9AF" type="bline_point">
                         <point>
                           <vector guid="8F4E22A3E4E43F1F544255AA5C595BB0">
                             <x>0.0000000000</x>
@@ -3291,7 +3264,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="8532324C9DBA19F4E58C7EF09EA1FB29" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.2045454532</x>
@@ -3344,9 +3317,6 @@
                 <param name="round_tip[1]">
                   <bool value="false"/>
                 </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
                 </param>
@@ -3378,7 +3348,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="Shine">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="Shine">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -3547,7 +3517,52 @@
                 <param name="bline">
                   <bline type="bline_point" loop="true">
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="4EF2ADA8C5C221163EE9C83B77215BA3" type="bline_point">
+                        <point>
+                          <vector>
+                            <x>0.5000000000</x>
+                            <y>0.5000000000</y>
+                          </vector>
+                        </point>
+                        <width>
+                          <real value="1.0000000000"/>
+                        </width>
+                        <origin>
+                          <real value="0.5000000000"/>
+                        </origin>
+                        <split>
+                          <bool value="false"/>
+                        </split>
+                        <t1>
+                          <radial_composite type="vector">
+                            <radius>
+                              <real value="0.8385254934"/>
+                            </radius>
+                            <theta>
+                              <angle value="116.565048"/>
+                            </theta>
+                          </radial_composite>
+                        </t1>
+                        <t2>
+                          <radial_composite type="vector">
+                            <radius>
+                              <real value="0.7500000000"/>
+                            </radius>
+                            <theta>
+                              <angle value="90.000000"/>
+                            </theta>
+                          </radial_composite>
+                        </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
+                      </composite>
+                    </entry>
+                    <entry>
+                      <composite guid="EF1BDA7518B821367AF8172B96C2697E" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.0000000150</x>
@@ -3592,7 +3607,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="B987493EEF009453AB02A75F0555C435" type="bline_point">
                         <point>
                           <vector>
                             <x>-0.5000000000</x>
@@ -3637,7 +3652,7 @@
                       </composite>
                     </entry>
                     <entry>
-                      <composite type="bline_point">
+                      <composite guid="79EACF7461FC0FFA0D1CEF0194642186" type="bline_point">
                         <point>
                           <vector>
                             <x>0.0000000000</x>
@@ -3670,51 +3685,6 @@
                             </radius>
                             <theta>
                               <angle value="0.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                        <split_radius>
-                          <bool value="false"/>
-                        </split_radius>
-                        <split_angle>
-                          <bool value="false"/>
-                        </split_angle>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.5000000000</x>
-                            <y>0.5000000000</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.8385254934"/>
-                            </radius>
-                            <theta>
-                              <angle value="116.565048"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.7500000000"/>
-                            </radius>
-                            <theta>
-                              <angle value="90.000000"/>
                             </theta>
                           </radial_composite>
                         </t2>
@@ -3843,6 +3813,23 @@
     </param>
     <param name="z_range_blur">
       <real value="0.0000000000"/>
+    </param>
+  </layer>
+  <layer type="colorcorrect" active="true" exclude_from_rendering="false" version="0.1">
+    <param name="hue_adjust">
+      <angle value="40.000000"/>
+    </param>
+    <param name="brightness">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="contrast">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="exposure">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="gamma">
+      <real value="1.0000000000"/>
     </param>
   </layer>
   <layer type="SolidColor" active="false" exclude_from_rendering="false" version="0.1" desc="White Background">
